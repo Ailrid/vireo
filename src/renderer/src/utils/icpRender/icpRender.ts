@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2025-07-06 17:57:05
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-01-23 10:19:59
+ * @LastEditTime: 2026-01-23 10:48:56
  * @FilePath: /starry/src/renderer/src/utils/icpRender/icpRender.ts
  * @Description:定义icpRender装饰器和基类
  *

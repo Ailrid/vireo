@@ -2,8 +2,8 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-01-07 16:23:28
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-01-22 17:10:12
- * @FilePath: /server/src/routes/net_ease/index.ts
+ * @LastEditTime: 2026-01-23 11:01:57
+ * @FilePath: /starry/src/main/server/routes/index.ts
  * @Description: 网易云音乐路由集合
  *
  * Copyright (c) 2026 by ShirahaYuki, All Rights Reserved.

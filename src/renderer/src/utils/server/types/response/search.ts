@@ -1,4 +1,7 @@
 //-----------------------search_suggets---------------------------------------------------
+
+import { SearchType } from '../request/search'
+
 /**
  * @description:搜索建议
  */
@@ -323,13 +326,12 @@ export interface SearchLyric {
   [key: string]: any
 }
 
-export interface SearchResponse {
-  result:
-    | SearchSong
-    | SearchAlbum
-    | SearchSinger
-    | SearchPlaylist
-    | SearchUser
-    | SearchMV
-    | SearchLyric
+export interface SearchResultMap {
+  [SearchType.Song]: SearchSong
+  [SearchType.Album]: SearchAlbum
+  [SearchType.Singer]: SearchSinger
+  [SearchType.Playlist]: SearchPlaylist
+  [SearchType.User]: SearchUser
+  [SearchType.MV]: SearchMV
+  [SearchType.Lyric]: SearchLyric
 }

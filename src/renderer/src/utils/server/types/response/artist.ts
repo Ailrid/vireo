@@ -133,7 +133,7 @@ export interface ArtistSong {
     [key: string]: any
   }
   dt: number
-  publishTime: 1319731200000
+  publishTime: number
   [key: string]: any
 }
 
@@ -189,7 +189,7 @@ export interface ArtistDetail {
   id: number
   publishTime: number
   transNames: string[]
-  mvSize: 16
+  mvSize: number
   [key: string]: any
 }
 /**
