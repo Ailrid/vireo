@@ -1,0 +1,10 @@
+singleQuote: true # 使用单引号
+semi: false # 不使用分号（既然你决定顺应脚手架，那就贯彻到底）
+printWidth: 100 # 超过 100 字符才换行
+trailingComma: none # 彻底不要尾随逗号
+
+tabWidth: 2 # 缩进空格数，前端主流是 2
+useTabs: false # 使用空格缩进而非 Tab（保证在不同编辑器下看都一样）
+bracketSpacing: true # 对象字面量真括号间保留空格
+# arrowParens: avoid # 箭头函数参数能省括号就省
+endOfLine: lf # 强制使用 Linux 标准换行符
