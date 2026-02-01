@@ -29,16 +29,16 @@
         "src/renderer/src/components/*"
       ],
       "@core/*": [
-        "src/renderer/src/core/*"
+        "src/renderer/src/ccs/*"
       ],
       "@utils/*": [
         "src/renderer/src/utils/*"
       ],
       "@services/*": [
-        "src/renderer/src/ecs/*"
+        "src/renderer/src/logic/*"
       ],
       "@controllers/*": [
-        "src/renderer/src/ecs/systems/*"
+        "src/renderer/src/logic/systems/*"
       ]
     }
   }

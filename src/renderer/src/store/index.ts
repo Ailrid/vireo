@@ -8,10 +8,10 @@
  *
  * Copyright (c) 2025 by ShirahaYuki, All Rights Reserved.
  */
-import { useSettingStore } from './settingStore'
-//一次性导出所有的实例
-export function useStore() {
-  return {
-    settingStore: useSettingStore()
-  }
-}
+// import { useSettingStore } from './settingStore'
+// //一次性导出所有的实例
+// export function useStore() {
+//   return {
+//     settingStore: useSettingStore()
+//   }
+// }

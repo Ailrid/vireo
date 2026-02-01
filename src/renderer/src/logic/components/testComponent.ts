@@ -2,7 +2,7 @@ import { reactive, ref } from 'vue'
 import { injectable } from 'inversify'
 
 @injectable()
-export class TestCompoent {
+export class TestComponent {
   // 响应式状态
   public counter = ref(0)
 

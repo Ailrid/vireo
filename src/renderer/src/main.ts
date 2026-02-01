@@ -24,4 +24,7 @@ app.config.errorHandler = (err, instance, info) => {
   log.error('Vue 全局捕获:', err, info)
 }
 
+import { bootstrapDI } from './logic/ioc.config'
+bootstrapDI()
+
 app.mount('#app')
