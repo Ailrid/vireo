@@ -1,5 +1,4 @@
 import { TestComponent } from '@/logic/components/testComponent'
-
 import { System, Event } from '@/ccs/decorators/ccs'
 import { BaseMessage, MessageReader } from '@/ccs/message'
 export class TestMessage extends BaseMessage {}
