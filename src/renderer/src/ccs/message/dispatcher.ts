@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 16:02:19
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-01 16:41:31
+ * @LastEditTime: 2026-02-01 21:14:13
  * @FilePath: /starry/src/renderer/src/ccs/message/dispatcher.ts
  * @Description:事件调度中心
  *
@@ -11,49 +11,63 @@
 /**
  * @description: 事件调度器
  */
-export class Dispatcher {
-  private pendingTypes = new Set<any>()
-  private isRunning = false
-  // 定义一个清理回调的空位
-  private cleanupHook: (pendingTypes: Set<any>) => void = () => {}
+// ccs/message/dispatcher.ts
 
-  // 允许外部注入逻辑
+export class Dispatcher {
+  // 定义两个缓冲区
+  private backBuffer = new Set<any>() // 后台缓冲区：负责接收新消息 (Write)
+  private isRunning = false
+  private cleanupHook: (types: Set<any>) => void = () => {}
+
   public setCleanupHook(hook: (types: Set<any>) => void) {
     this.cleanupHook = hook
   }
-  // 标记某类型消息已到达并等待调度
-  public markDirty(eventClass: any, interestMap: Map<any, Array<() => void>>) {
-    this.pendingTypes.add(eventClass)
-    this.tick(interestMap)
+
+  public markDirty(eventClass: any) {
+    // 永远只往后台缓冲区塞消息
+    this.backBuffer.add(eventClass)
   }
 
-  private tick(interestMap: Map<any, Array<() => void>>) {
-    if (this.isRunning) return
+  public tick(interestMap: Map<any, Array<() => void>>) {
+    // 如果已经在执行，或者没活干，直接返回
+    if (this.isRunning || this.backBuffer.size === 0) return
     this.isRunning = true
 
     queueMicrotask(async () => {
+      // 交换缓冲区
+      // 把后台缓冲区的内容全拿到 frontBuffer，然后立刻清空后台
+      const frontBuffer = new Set(this.backBuffer)
+      this.backBuffer.clear()
+
       try {
-        //运行
+        // 收集并派发当前这一波任务
         const systemsToRun = new Set<() => any>()
-        this.pendingTypes.forEach((type) => {
+        frontBuffer.forEach((type) => {
           interestMap.get(type)?.forEach((sys) => systemsToRun.add(sys))
         })
 
-        const results = Array.from(systemsToRun).map((run) => {
+        for (const run of systemsToRun) {
           try {
-            return run()
+            const result = run()
+            if (result instanceof Promise) {
+              result.catch((e) => console.error('[CCS] Async System Error:', e))
+            }
           } catch (e) {
-            console.error('System execution error:', e)
-            return Promise.resolve()
+            console.error('[CCS] System Error:', e)
           }
-        })
+        }
 
-        await Promise.all(results)
+        // 清理当前这一波的消息
+        this.cleanupHook(frontBuffer)
       } finally {
-        //清理此次运行的事件
-        this.cleanupHook(this.pendingTypes)
-        this.pendingTypes.clear()
         this.isRunning = false
+
+        // 检查后台缓冲区是否有新活
+        // 如果处理期间产生了新消息，不再原地 while 循环
+        // 而是递归触发一个新的 tick，即申请一个新的微任务
+        if (this.backBuffer.size > 0) {
+          this.tick(interestMap)
+        }
       }
     })
   }

@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-01-31 15:24:02
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-01 17:05:26
+ * @LastEditTime: 2026-02-01 17:52:24
  * @FilePath: /starry/src/renderer/src/ccs/ioc.ts
  * @Description:依赖注入容器
  *
@@ -16,9 +16,9 @@ export const container = new Container()
 export type Newable<T> = new (...args: any[]) => T
 
 /**
- * 核心绑定逻辑：内部复用
+ * 绑定逻辑
  */
-function bindBase<T>(identifier: Newable<T>) {
+export function bindBase<T>(identifier: Newable<T>) {
   return container.bind<T>(identifier).toSelf()
 }
 

@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 15:32:13
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-01 16:43:00
+ * @LastEditTime: 2026-02-01 17:41:54
  * @FilePath: /starry/src/renderer/src/ccs/message/index.ts
  * @Description:
  *
@@ -15,10 +15,10 @@ class MessageInternal {
   static readonly dispatcher = new Dispatcher()
   static readonly interestMap = new Map<any, Array<() => void>>()
 
-  // 把 Hub 的清理能力，作为回调塞给 Dispatcher
   static {
-    this.dispatcher.setCleanupHook((types) => {
-      this.eventHub.clear(types)
+    // 连线：把 Hub 的清理逻辑注入 Dispatcher
+    this.dispatcher.setCleanupHook((snapshot) => {
+      this.eventHub.clear(snapshot)
     })
   }
 }
@@ -32,10 +32,12 @@ export abstract class BaseMessage {}
 export class MessageWriter {
   public static write<T extends BaseMessage>(message: T): void {
     const eventClass = message.constructor
-    // 存消息
+    // 1. 存入数据
     MessageInternal.eventHub.push(message)
-    // 点火
-    MessageInternal.dispatcher.markDirty(eventClass, MessageInternal.interestMap)
+    // 2. 标记脏类型
+    MessageInternal.dispatcher.markDirty(eventClass)
+    // 3. 尝试启动调度（内部有 isRunning 锁和 snapshot 机制，绝对安全）
+    MessageInternal.dispatcher.tick(MessageInternal.interestMap)
   }
 }
 
