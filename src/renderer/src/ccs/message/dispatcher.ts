@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 16:02:19
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-01 21:14:13
+ * @LastEditTime: 2026-02-02 09:43:09
  * @FilePath: /starry/src/renderer/src/ccs/message/dispatcher.ts
  * @Description:事件调度中心
  *

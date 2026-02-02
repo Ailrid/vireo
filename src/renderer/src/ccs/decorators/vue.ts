@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 15:47:24
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-01 17:05:59
+ * @LastEditTime: 2026-02-02 12:12:50
  * @FilePath: /starry/src/renderer/src/ccs/decorators/vue.ts
  * @Description:各种Vue的魔法装饰器
  *
@@ -28,7 +28,7 @@ export function Watch<T>(source: WatchSource<T>, options?: WatchOptions) {
 }
 
 /**
- * @description: 实现数据响应式
+ * @description: 实现数据投影
  * 用法：@Project() 或 @Project('a.b.c')
  */
 export function Project(path?: string) {
@@ -42,5 +42,17 @@ export function Project(path?: string) {
     const existing = Reflect.getMetadata(CCS_METADATA.PROJECT, target) || []
     existing.push(metadata)
     Reflect.defineMetadata(CCS_METADATA.PROJECT, existing, target)
+  }
+}
+/**
+ * @description: 给数据增加响应式
+ * 用法：@Responsive()
+ */
+export function Responsive() {
+  return (target: any, propertyKey: string) => {
+    // 记录哪些属性需要变成响应式
+    const props = Reflect.getMetadata(CCS_METADATA.RESPONSIVE, target) || []
+    props.push(propertyKey)
+    Reflect.defineMetadata(CCS_METADATA.RESPONSIVE, props, target)
   }
 }

@@ -1,11 +1,19 @@
 import { TestComponent } from '@/logic/components/testComponent'
-import { injectable } from 'inversify'
-import { Watch, Project } from '@/ccs/decorators/vue'
+import { Watch, Project, Responsive } from '@/ccs/decorators/vue'
+import { Controller } from '@/ccs/decorators/ccs'
 import log from 'electron-log/renderer'
 
-@injectable()
+@Controller()
 export class TestController {
+  @Responsive()
+  public self_value: number = 999
   constructor(private service: TestComponent) {}
+
+  changeSelfValue() {
+    this.self_value += 1
+    console.log('自增后的 self_value:', this.self_value)
+  }
+
   @Project('service.state.volume')
   public volume!: number
   // @Project()

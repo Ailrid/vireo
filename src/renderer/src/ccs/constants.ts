@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 15:31:35
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-01 17:05:35
+ * @LastEditTime: 2026-02-02 15:42:58
  * @FilePath: /starry/src/renderer/src/ccs/constants.ts
  * @Description:字符串类型常量
  *
@@ -16,5 +16,8 @@ export const CCS_METADATA = {
   WATCH: 'ccs:watch_metadata',
   SYSTEM: 'ccs:system_metadata',
   EVENT: 'ccs:event_configs',
-  MESSAGE: 'ccs:message'
+  MESSAGE: 'ccs:message',
+  RESPONSIVE: 'ccs:responsive',
+  CONTROLLER: 'ccs:controller',
+  COMPONENT: 'ccs:component'
 } as const

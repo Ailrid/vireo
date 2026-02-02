@@ -1,8 +1,10 @@
 <template>
   <div>{{ ctrl.volume }}</div>
   <div>{{ ctrl.isPlaying }}</div>
+  <div>{{ ctrl.self_value }}</div>
   <button @click="() => MessageWriter.write(new TestMessage())">增加音量</button>
   <button @click="() => MessageWriter.write(new PlayMessage())">播放停止</button>
+  <button @click="ctrl.changeSelfValue()">自增</button>
 </template>
 
 <script setup lang="ts">
