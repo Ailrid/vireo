@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-01-31 16:01:12
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-03 16:04:05
+ * @LastEditTime: 2026-02-03 21:44:50
  * @FilePath: /starry/src/renderer/src/ccs/adapters/hooks.ts
  * @Description:vue hooks 适配器，用于挂在各种vue魔法装饰器械
  *
@@ -16,7 +16,7 @@ import {
   createDeepShield,
   bindHooks,
   bindUseHooks,
-  bindSignals
+  bindListener
 } from './bind'
 import { onUnmounted } from 'vue'
 import { container } from '../ioc'
@@ -56,8 +56,9 @@ export function useController<T extends object>(token: Newable): T {
   bindUseHooks(proto, instance)
   // @Watch装饰器
   const stops = bindWatch(proto, instance)
-  // @Signal装饰器
-  const unbind = bindSignals(proto, instance)
+  // @Listener装饰器
+  // 运行时动态挂载监听器
+  const unbindList = bindListener(proto, instance)
   // 给 Controller 上的注入项套上护盾，禁止写操作
   if (isController) {
     Object.keys(rawDeps).forEach((key) => {
@@ -70,8 +71,8 @@ export function useController<T extends object>(token: Newable): T {
 
   onUnmounted(() => {
     stops.forEach((stop) => stop())
+    unbindList.forEach((unreg) => unreg())
     // 自动卸载信号处理器，防止 Controller 销毁后残留
-    unbind.forEach((unbind) => unbind())
   })
 
   return instance

@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-03 11:05:48
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-03 19:58:37
+ * @LastEditTime: 2026-02-03 22:05:41
  * @FilePath: /starry/src/renderer/src/ccs/adapters/bind.ts
  * @Description: hook绑定适配器，用于处理各种魔法装饰器的绑定逻辑
  *
@@ -11,8 +11,8 @@
 import { CCS_METADATA } from '../constants'
 import { watch, computed, type WatchStopHandle, isRef, ref, reactive } from 'vue'
 import { container } from '../ioc'
-import { MessageWriter } from '../message'
-import { Signal } from '../message/signal'
+import { MessageReader, MessageRegistry, MessageWriter } from '../message'
+
 export function bindProject(proto: any, instance: any, rawDeps: Record<string, any>) {
   const projects = Reflect.getMetadata(CCS_METADATA.PROJECT, proto)
   projects?.forEach(({ propertyKey, path, isAccessor }) => {
@@ -292,20 +292,42 @@ export function bindUseHooks(proto: any, instance: any) {
 }
 
 /**
- * 解析 @Respond 并将其绑定到 Signal 中心
- */
-export function bindSignals(proto: any, instance: any) {
-  const signalConfigs = Reflect.getMetadata(CCS_METADATA.SIGNAL, proto)
-  const unbinds: Array<() => void> = []
+ * @description: 为 Controller 实例绑定监听器并返回销毁函数列表
+ **/
+export function bindListener(proto: any, instance: any): (() => void)[] {
+  // 从元数据中读取该类所有被 @Listener 标记的方法配置
+  const listenerConfigs: any[] = Reflect.getMetadata(CCS_METADATA.CONTROLLER_LISTENERS, proto) || []
+  const unbindFunctions: (() => void)[] = []
 
-  signalConfigs?.forEach(({ SignalClass, methodName }) => {
-    const handler = (signalInstance: any) => {
-      return (instance[methodName] as any).call(instance, signalInstance)
+  listenerConfigs.forEach(({ propertyKey, eventClass, priority }) => {
+    const originalMethod = instance[propertyKey]
+
+    // 获取该方法的参数类型列表
+    const types: any[] = Reflect.getMetadata('design:paramtypes', proto, propertyKey) || []
+    // 获取参数中通过 @Event 标记的位置信息
+    const readerConfigs: any[] = Reflect.getMetadata(CCS_METADATA.MESSAGE, proto, propertyKey) || []
+    // 重新包装 System 函数
+    const wrappedHandler = function () {
+      const args = types.map((type: any, index: number) => {
+        const config = readerConfigs.find((c: any) => c.index === index)
+        if (config) return new MessageReader(config.eventClass)
+        else {
+          MessageWriter.error(
+            new Error(`[CCS Listener] Listener Decorator: '${type}' connot be used as a parameter.`)
+          )
+          return
+        }
+      })
+
+      // 使用 instance 作为 this 绑定执行
+      const result = originalMethod.apply(instance, args)
+      return result
     }
-    // 注册这个处理函数
-    const unbind = Signal.register(SignalClass, handler)
-    unbinds.push(unbind)
+
+    // 注册到 MessageRegistry，并收集返回的卸载句柄
+    const unregister = MessageRegistry.register(eventClass, wrappedHandler, priority)
+    unbindFunctions.push(unregister)
   })
 
-  return unbinds
+  return unbindFunctions
 }

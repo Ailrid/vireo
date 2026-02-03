@@ -2,14 +2,20 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-01-31 16:17:36
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-03 19:55:40
+ * @LastEditTime: 2026-02-03 22:06:15
  * @FilePath: /starry/src/renderer/src/ccs/decorators/ccs.ts
  * @Description: ccs核心魔法装饰器
  *
  * Copyright (c) 2026 by ShirahaYuki, All Rights Reserved.
  */
 import { container } from '@/ccs/ioc'
-import { MessageReader, MessageRegistry, BaseMessage, MessageWriter } from '../message'
+import {
+  MessageReader,
+  MessageRegistry,
+  BaseMessage,
+  MessageWriter,
+  ControllerMessage
+} from '../message'
 import { CCS_METADATA } from '../constants'
 import { injectable } from 'inversify'
 
@@ -75,7 +81,29 @@ export function Event<T extends BaseMessage>(eventClass: new (...args: any[]) =>
     Reflect.defineMetadata(CCS_METADATA.MESSAGE, configs, target, key)
   }
 }
+/**
+ * @description: Listener 装饰器 - 标记 Controller 的成员方法为消息监听器
+ * 模仿 Bevy 的即时响应机制，但严格限制其只能处理 UI 逻辑
+ */
+export function Listener<T extends ControllerMessage>(
+  eventClass: new (...args: any[]) => T,
+  priority: number = 0
+) {
+  return (target: any, propertyKey: string) => {
+    // 获取该 Controller 原型上已有的监听器元数据
+    const listeners = Reflect.getMetadata(CCS_METADATA.CONTROLLER_LISTENERS, target) || []
 
+    // 存入当前方法的配置：哪个方法(propertyKey) 听 哪个消息(eventClass)
+    listeners.push({
+      propertyKey,
+      eventClass,
+      priority
+    })
+
+    // 将元数据重新定义回类原型，供 useController 在实例化时扫描
+    Reflect.defineMetadata(CCS_METADATA.CONTROLLER_LISTENERS, listeners, target)
+  }
+}
 /**
  * @description: 标记Controller身份
  */

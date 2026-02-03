@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 15:31:35
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-03 16:00:33
+ * @LastEditTime: 2026-02-03 21:40:41
  * @FilePath: /starry/src/renderer/src/ccs/constants.ts
  * @Description:字符串类型常量
  *
@@ -23,5 +23,6 @@ export const CCS_METADATA = {
   INSTANT_PROJECT: 'ccs:instant_project',
   LIFE_CRICLE: 'ccs:life_cricle',
   USE_HOOKS: 'ccs:use_hooks',
-  SIGNAL: 'ccs:signal'
+  SIGNAL: 'ccs:signal',
+  CONTROLLER_LISTENERS: 'ccs:controller_listeners'
 } as const
