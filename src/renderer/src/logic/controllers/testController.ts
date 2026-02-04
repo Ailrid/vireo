@@ -1,8 +1,13 @@
 import { TestComponent } from '@/logic/components/testComponent'
 import { Watch, Project, Responsive, InstantProject, OnHook, Use } from '@/ccs/decorators/vue'
+import { Listener, Event } from '@/ccs/decorators/ccs'
+import { ControllerMessage } from '@/ccs/message'
 import { Controller } from '@/ccs/decorators/ccs'
 import log from 'electron-log/renderer'
 import { useRouter, type Router } from 'vue-router'
+
+class TestControllerMessage extends ControllerMessage {}
+
 @Controller()
 export class TestController {
   @Responsive()
@@ -38,7 +43,10 @@ export class TestController {
   public watchIsPlaying() {
     log.info('isPlaying:', this.test.state.isPlaying)
   }
-
+  @Listener(TestControllerMessage)
+  testListener(@Event(TestControllerMessage) _message: TestControllerMessage) {
+    log.info('testListener:')
+  }
   @OnHook('onMounted')
   onMounted() {
     log.info('TestController 挂载成功，test 自动注入！')

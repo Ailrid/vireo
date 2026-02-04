@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 15:31:35
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-03 21:40:41
+ * @LastEditTime: 2026-02-04 16:23:54
  * @FilePath: /starry/src/renderer/src/ccs/constants.ts
  * @Description:字符串类型常量
  *
@@ -24,5 +24,7 @@ export const CCS_METADATA = {
   LIFE_CRICLE: 'ccs:life_cricle',
   USE_HOOKS: 'ccs:use_hooks',
   SIGNAL: 'ccs:signal',
-  CONTROLLER_LISTENERS: 'ccs:controller_listeners'
+  CONTROLLER_LISTENERS: 'ccs:controller_listeners',
+  INHERIT: 'ccs:inherit',
+  ATTR: 'ccs:attr'
 } as const

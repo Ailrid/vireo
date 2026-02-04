@@ -2,75 +2,119 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-03 11:05:48
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-03 22:05:41
+ * @LastEditTime: 2026-02-04 21:36:13
  * @FilePath: /starry/src/renderer/src/ccs/adapters/bind.ts
  * @Description: hook绑定适配器，用于处理各种魔法装饰器的绑定逻辑
  *
  * Copyright (c) 2026 by ShirahaYuki, All Rights Reserved.
  */
 import { CCS_METADATA } from '../constants'
-import { watch, computed, type WatchStopHandle, isRef, ref, reactive } from 'vue'
+import {
+  watch,
+  computed,
+  type WatchStopHandle,
+  isRef,
+  ref,
+  reactive,
+  shallowReactive,
+  onMounted,
+  onUnmounted,
+  onUpdated,
+  onActivated,
+  onDeactivated
+} from 'vue'
 import { container } from '../ioc'
-import { MessageReader, MessageRegistry, MessageWriter } from '../message'
-
-export function bindProject(proto: any, instance: any, rawDeps: Record<string, any>) {
-  const projects = Reflect.getMetadata(CCS_METADATA.PROJECT, proto)
-  projects?.forEach(({ propertyKey, path, isAccessor }) => {
-    let c: any
-    // 1处理手写的 get/set
-    if (isAccessor) {
-      const rawDescriptor = Object.getOwnPropertyDescriptor(proto, propertyKey)
-      c = computed({
-        // 这里 call(instance) 没问题，因为内部逻辑只要不直接修改注入项就不会触发报错
-        get: () => rawDescriptor?.get?.call(instance),
-        set: (val) => rawDescriptor?.set?.call(instance, val)
-      })
-    }
-    // 处理路径映射
-    else if (path) {
-      const keys = path.split('.')
-      const rootKey = keys[0] // 比如 'playerService'
-      const lastKey = keys.pop()! // 比如 'counter'
-      const midKeys = keys.slice(1) // 路径中间的部分
-
-      c = computed({
-        // 读取：走 instance。因为 instance 里的 service 是 Proxy，
-        // 这样可以确保如果 Service 里的属性是 ref，我们能正常触发依赖收集。
-        get: () => {
-          const value = path.split('.').reduce((obj, key) => obj?.[key], instance)
-          return isRef(value) ? value.value : value
-        },
-        // 写入：必须走“密道” (rawDeps)
-        set: (val) => {
-          // 优先从 rawDeps 拿真身，拿不到（说明不是注入项）再回退到 instance
-          const root = rawDeps[rootKey] || (instance as any)[rootKey]
-          if (!root) return
-
-          // 寻址到倒数第二层
-          const targetObj = midKeys.reduce((obj, key) => obj?.[key], root)
-
-          if (targetObj) {
-            const targetValue = targetObj[lastKey]
-            // 真正干活的地方：由于 targetObj 是从 rawDeps 出来的“真身”，
-            // 这里的赋值不会触发 createDeepShield 的 Proxy.set 报错！
-            if (isRef(targetValue)) {
-              targetValue.value = val
-            } else {
-              targetObj[lastKey] = val
-            }
-          }
-        }
-      })
+import { CCSSystemContext, MessageRegistry, MessageWriter } from '../message'
+// controller注册表
+export class GlobalRegistry {
+  private static globalRegistry = shallowReactive(new Map<string, any>())
+  static set(id: string, instance: any): () => boolean {
+    if (!this.globalRegistry.has(id)) {
+      this.globalRegistry.set(id, instance)
+      //返回卸载函数
+      return () => {
+        this.globalRegistry.delete(id)
+        return true
+      }
     } else {
       MessageWriter.error(
+        new Error(`[CCS UseController] Duplicate ID: Controller ${id} already exists`)
+      )
+      return () => false
+    }
+  }
+  static get(id: string): any {
+    //如果找不见，直接报错
+    if (!this.globalRegistry.has(id)) {
+      MessageWriter.error(
+        new Error(`[CCS UseController] ID Not Found: No Controller found with ID: ${id}`)
+      )
+      return null
+    }
+    return this.globalRegistry.get(id)
+  }
+}
+/**
+ * @Project 连接component，只读一个component的值
+ */
+export function bindProject(proto: any, instance: any, rawDeps: Record<string, any>) {
+  const projects = Reflect.getMetadata(CCS_METADATA.PROJECT, proto)
+
+  projects?.forEach((config) => {
+    const { propertyKey, isAccessor, type, componentClass, source } = config
+    let c: any
+    let setter: (val: any) => void = () => {
+      MessageWriter.error(
         new Error(
-          `[CCS Project] Data Not Found: Property ${propertyKey} @Project but missing logic/path.`
+          `[CCS Shield] Property "${propertyKey}" is read-only. ` +
+            `If you need to mutate, define an explicit setter and ensure the dependency is injected.`
         )
       )
-      return
     }
 
-    // 将计算属性挂载到 Controller 实例上
+    // 手写 get/set (支持提权写入)
+    if (isAccessor) {
+      const rawDescriptor = Object.getOwnPropertyDescriptor(proto, propertyKey)
+
+      //如果有set，就警告
+      if (rawDescriptor?.set) {
+        MessageWriter.warn(
+          `[CCS Project] Possible Implicit Modification: Manual Set on "${propertyKey}".` +
+            `If this is not intentional, please do not use set.`
+        )
+        setter = (val) => {
+          // 只有在这里，我们允许绕过 Shield
+          const elevatedContext = new Proxy(instance, {
+            get(target, key) {
+              if (typeof key === 'string' && rawDeps[key]) {
+                return rawDeps[key] // 返回未经 Proxy 劫持的原始对象
+              }
+              return Reflect.get(target, key)
+            }
+          })
+          // 执行用户手写的 setter
+          rawDescriptor?.set?.call(elevatedContext, val)
+        }
+      }
+      c = computed({
+        get: () => rawDescriptor?.get?.call(instance),
+        set: setter
+      })
+    }
+    // 函数式投影 (只读契约)
+    else {
+      // 这里的 targetBase 要么是 instance，要么是 Registry 里的 Component
+      const targetBase = type === 'component' ? container.get(componentClass) : instance
+      c = computed({
+        get: () => {
+          const value = source(targetBase)
+          return isRef(value) ? value.value : value
+        },
+        set: setter
+      })
+    }
+
+    // 挂载计算属性
     Object.defineProperty(instance, propertyKey, {
       get: () => c.value,
       set: (val) => (c.value = val),
@@ -79,35 +123,46 @@ export function bindProject(proto: any, instance: any, rawDeps: Record<string, a
     })
   })
 }
+/**
+ * @Watch 自动把函数变成watch
+ */
 
 export function bindWatch(proto: any, instance: any) {
-  // 处理 @Watch
-  // hooks.ts -> useController 内部
   const watches: any[] = Reflect.getMetadata(CCS_METADATA.WATCH, proto)
   const stops: WatchStopHandle[] = []
-  watches?.forEach(({ source, methodName, options }) => {
-    const getter = () => {
-      if (typeof source === 'string') {
-        // 路径解析
-        const val = source.split('.').reduce((obj, key) => obj?.[key], instance)
-        return isRef(val) ? val.value : val
-      } else {
-        // 函数模式
-        return source(instance)
+
+  watches?.forEach((config) => {
+    const { type, source, methodName, options } = config
+
+    let getter: () => any
+
+    if (type === 'component') {
+      // 核心：从 Registry 获取全局单例进行监听
+      try {
+        const componentInstance = container.get(config.componentClass)
+        getter = () => source(componentInstance)
+      } catch (_e) {
+        MessageWriter.error(
+          new Error(`[CCS Watch] Data Not Found: Component ${config.componentClass} missing .`)
+        )
+        return
       }
+    } else {
+      // 监听 Controller 自身的变量（@Responsive）
+      getter = () => source(instance)
     }
 
-    // 绑定 watch
     const stop = watch(getter, (instance as any)[methodName].bind(instance), options)
     stops.push(stop)
   })
+
   return stops
 }
 
 /**
- * 递归处理依赖注入树中的所有 Component，将其标记属性变为响应式
+ * @Responsive 递归处理依赖注入树中的所有 Component，将其标记属性变为响应式
  */
-// @/ccs/adapters/hooks.ts
+
 export function bindResponsive(instance: any) {
   if (!instance || typeof instance !== 'object') return
   if (Object.prototype.hasOwnProperty.call(instance, '__ccs_processed__')) return
@@ -214,44 +269,6 @@ export function createDeepShield(target: any, rootName: string, path: string = '
     }
   })
 }
-/**
- * 处理 @InstanceProject，实现自动注入并建立属性投影
- */
-export function bindInstantProject(proto: any, instance: any) {
-  const projects = Reflect.getMetadata(CCS_METADATA.INSTANT_PROJECT, proto)
-
-  projects?.forEach(({ propertyKey, componentToken, selector }) => {
-    // 1. 自动从 IOC 容器获取目标组件实例 (单例)
-    const targetComponent = container.get(componentToken)
-
-    // 2. 建立计算属性投影
-    const c = computed({
-      get: () => {
-        // 执行选择器逻辑
-        const value = selector(targetComponent)
-        // 自动解包 ref，保持 API 一致性
-        return isRef(value) ? value.value : value
-      },
-      set: (_val) => {
-        MessageWriter.error(
-          new Error(
-            `[CCS InstantProject] No Modification：Attempted to set read-only InstanceProject property: ${propertyKey}`
-          )
-        )
-      }
-    })
-
-    // 3. 挂载到 Controller 实例上
-    Object.defineProperty(instance, propertyKey, {
-      get: () => c.value,
-      set: (val) => (c.value = val),
-      enumerable: true,
-      configurable: true
-    })
-  })
-}
-
-import { onMounted, onUnmounted, onUpdated } from 'vue'
 
 /**
  * 解析 @OnHook 并将其绑定到 Vue 生命周期
@@ -272,7 +289,13 @@ export function bindHooks(proto: any, instance: any) {
       case 'onUpdated':
         onUpdated(fn)
         break
-      // 你可以根据需要扩展更多的钩子
+      case 'onActivated':
+        onActivated(fn)
+        break
+      case 'onDeactivated':
+        onDeactivated(fn)
+        break
+      // 可以根据需要扩展更多的钩子
     }
   })
 }
@@ -292,42 +315,74 @@ export function bindUseHooks(proto: any, instance: any) {
 }
 
 /**
- * @description: 为 Controller 实例绑定监听器并返回销毁函数列表
+ * @description: 启动@Listener 为 Controller 实例绑定监听器并返回销毁函数列表
  **/
 export function bindListener(proto: any, instance: any): (() => void)[] {
-  // 从元数据中读取该类所有被 @Listener 标记的方法配置
   const listenerConfigs: any[] = Reflect.getMetadata(CCS_METADATA.CONTROLLER_LISTENERS, proto) || []
   const unbindFunctions: (() => void)[] = []
 
   listenerConfigs.forEach(({ propertyKey, eventClass, priority }) => {
     const originalMethod = instance[propertyKey]
 
-    // 获取该方法的参数类型列表
-    const types: any[] = Reflect.getMetadata('design:paramtypes', proto, propertyKey) || []
-    // 获取参数中通过 @Event 标记的位置信息
-    const readerConfigs: any[] = Reflect.getMetadata(CCS_METADATA.MESSAGE, proto, propertyKey) || []
-    // 重新包装 System 函数
-    const wrappedHandler = function () {
-      const args = types.map((type: any, index: number) => {
-        const config = readerConfigs.find((c: any) => c.index === index)
-        if (config) return new MessageReader(config.eventClass)
-        else {
-          MessageWriter.error(
-            new Error(`[CCS Listener] Listener Decorator: '${type}' connot be used as a parameter.`)
-          )
-          return
-        }
-      })
-
-      // 使用 instance 作为 this 绑定执行
-      const result = originalMethod.apply(instance, args)
-      return result
+    // 强制只能接受一个参数且是 SingleMessage
+    const wrappedHandler = function (msgs) {
+      // 只有当确实有消息时才触发，没消息不空跑
+      if (msgs.length > 0) {
+        // 直接注入快照数组副本，实现所有权转移
+        originalMethod.apply(instance, [msgs])
+      }
     }
 
-    // 注册到 MessageRegistry，并收集返回的卸载句柄
+    // 给包装后的函数挂载上下文信息（供 Dispatcher 读取）
+    const taskContext: CCSSystemContext = {
+      params: eventClass,
+      targetClass: instance.constructor,
+      methodName: proto,
+      originalMethod: originalMethod
+    }
+    ;(wrappedHandler as any).ccsContext = taskContext
+
     const unregister = MessageRegistry.register(eventClass, wrappedHandler, priority)
     unbindFunctions.push(unregister)
   })
 
   return unbindFunctions
+}
+
+/**
+ * @description: 启动@Inherit 使能够只读其他的controller
+ **/
+export function bindInherit(proto: any, instance: any) {
+  const inherits = Reflect.getMetadata(CCS_METADATA.INHERIT, proto)
+  if (!inherits) return
+  // @ts-ignore : token
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  inherits.forEach(({ propertyKey, token, id, selector }) => {
+    // 为每个继承属性创建一个私有的 computed 引用
+    // 这个 computed 就像一个隧道，一头连着 Registry，一头连着子组件
+    const tunnel = computed(() => {
+      const target = GlobalRegistry.get(id) // 自动依赖 Registry 的增删
+      if (!target) return null
+      // 这里的 selector(target) 也会触发依赖收集
+      // 如果 target.state.count 变了，这个 computed 也会感知到
+      return selector ? selector(target) : target
+    })
+
+    Object.defineProperty(instance, propertyKey, {
+      get: () => {
+        const val = tunnel.value // 访问 computed.value
+        // 返回时依然套上护盾，确保“弱引用”也是“只读引用”
+        return val ? createDeepShield(val, propertyKey, '') : null
+      },
+      set: () => {
+        MessageWriter.error(
+          new Error(
+            `[CCS Inherit] No Modification：Attempted to set read-only Inherit property: ${propertyKey}`
+          )
+        )
+      },
+      enumerable: true,
+      configurable: true
+    })
+  })
 }
