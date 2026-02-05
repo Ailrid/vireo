@@ -1,34 +1,47 @@
-# template
+## 🏗️ Starry (CCS Framework)
 
-An Electron application with Vue and TypeScript
+A Heavy-Duty Architecture for Large-Scale Frontend Applications.
 
-## Recommended IDE Setup
+"让 Vue 只做渲染，让逻辑回归秩序。" —— 这是一个由 Rust 开发者为解决前端混乱而锻造的工业级底座。
 
-- [VSCode](https://code.visualstudio.com/) + [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint) + [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar)
+## 🚀 核心理念：CCS (Component-Controller-System)
 
-## Project Setup
+Starry 摒弃了传统 Vue 项目中散乱的状态管理，通过借鉴 ECS (实体组件系统) 和 IoC (依赖注入) 理念，构建了一个三位一体的确定性架构：
 
-### Install
+Component (数据/状态)： 纯粹的 POJO 类，作为“单一事实来源”。
 
-```bash
-$ pnpm install
-```
+Controller (交互/展示)： UI 的逻辑适配层，负责响应 Vue 生命周期并投影数据。
 
-### Development
+System (业务/逻辑)： 无状态的静态处理器，通过“消息总线”驱动，与渲染层彻底解耦
 
-```bash
-$ pnpm dev
-```
+## ✨ 为什么选择 Starry？
 
-### Build
+1. ## 强力解耦：逻辑可脱离 UI 运行
 
-```bash
-# For windows
-$ pnpm build:win
+  得益于 IoC 容器（Inversify）和消息调度系统，你的核心业务逻辑完全不依赖 Vue。这意味着你可以：
 
-# For macOS
-$ pnpm build:mac
+在没有浏览器的情况下进行纯逻辑测试。
 
-# For Linux
-$ pnpm build:linux
-```
+轻松实现 Electron 主/渲染进程的逻辑复用。
+
+在不改动逻辑的情况下，将渲染层从 Vue 迁移至其他框架。
+
+2. ## 消息驱动的“确定性”
+
+  所有的状态变更必须通过 Dispatcher 派发消息。
+
+单向数据流： 每一条消息都是不可变的，状态变更可预测、可追踪。
+
+日志修改： 所有的修改操作都无法脱离调度系统，不存在“谁动了我的代码”这种问题
+
+## 🛠️ 工业级特性
+
+双缓冲调度： 模拟游戏引擎，在前端实现可靠、有序的调度系统，按照顺序执行系统。
+
+依赖注入： 自动管理控制器与系统的生命周期，彻底告别手动实例化的烦恼。
+
+装饰器驱动： 声明式开发，代码风格高度统一，极大降低大型团队的协作成本。
+
+## 💡 开发者寄语
+
+Starry 不是为了写简单的“增删改查”而生的，它是为了那些逻辑密度极高、对稳定性有近乎偏执要求的重型 Electron 应用而打造。

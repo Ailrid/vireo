@@ -41,7 +41,6 @@ export class PlayMessage extends SingleMessage {
 //不可合并，每个消息都会调用对应的system
 export class IncreasePlayNumMessage extends EventMessage {}
 
-@injectable()
 export class Player {
   @System()
   static changePlaylist(
