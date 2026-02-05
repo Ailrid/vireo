@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-03 11:05:48
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-05 15:30:18
+ * @LastEditTime: 2026-02-05 16:29:08
  * @FilePath: /starry/src/renderer/src/ccs/adapters/bind.ts
  * @Description: hook绑定适配器，用于处理各种魔法装饰器的绑定逻辑
  *
@@ -15,13 +15,13 @@ import {
   type WatchStopHandle,
   isRef,
   ref,
-  reactive,
   shallowReactive,
   onMounted,
   onUnmounted,
   onUpdated,
   onActivated,
-  onDeactivated
+  onDeactivated,
+  shallowRef
 } from 'vue'
 import { container } from '../ioc'
 import { CCSSystemContext, MessageRegistry, MessageWriter } from '../message'
@@ -71,6 +71,15 @@ export function bindProject(proto: any, instance: any, rawDeps: Record<string, a
         )
       )
     }
+    // 获取目标对象（确保它是已经 bindResponsive 过的）
+    const getTarget = () => {
+      const target = type === 'component' ? container.get(componentClass) : instance
+      if (target && !target.__ccs_processed__) {
+        // 兜底：如果没处理过，现场处理（虽然最好在外部流转中处理好）
+        bindResponsive(target)
+      }
+      return target
+    }
 
     // 手写 get/set (支持提权写入)
     if (isAccessor) {
@@ -97,27 +106,29 @@ export function bindProject(proto: any, instance: any, rawDeps: Record<string, a
         }
       }
       c = computed({
-        get: () => rawDescriptor?.get?.call(instance),
+        get: () => {
+          // 这里的 this 绑定必须非常明确
+          return rawDescriptor?.get?.call(instance)
+        },
         set: setter
       })
     }
     // 函数式投影 (只读契约)
     else {
-      // 这里的 targetBase 要么是 instance，要么是 Registry 里的 Component
-      const targetBase = type === 'component' ? container.get(componentClass) : instance
-      c = computed({
-        get: () => {
-          const value = source(targetBase)
-          return isRef(value) ? value.value : value
-        },
-        set: setter
+      // 处理普通的函数式投影
+      c = computed(() => {
+        const target = getTarget()
+        // 调试用：console.log(`[Project Debug] Tracking ${propertyKey} from`, target);
+        return source(target)
       })
     }
 
-    // 挂载计算属性
+    const currentDescriptor = Object.getOwnPropertyDescriptor(instance, propertyKey)
+    if (currentDescriptor && currentDescriptor.configurable === false) return
+
     Object.defineProperty(instance, propertyKey, {
       get: () => c.value,
-      set: (val) => (c.value = val),
+      set: (val) => (c.value = val), // computed 如果没设 setter，这里赋值会报错，符合你 read-only 的预期
       enumerable: true,
       configurable: true
     })
@@ -128,31 +139,39 @@ export function bindProject(proto: any, instance: any, rawDeps: Record<string, a
  */
 
 export function bindWatch(proto: any, instance: any) {
-  const watches: any[] = Reflect.getMetadata(CCS_METADATA.WATCH, proto)
+  const watches: any[] = Reflect.getMetadata(CCS_METADATA.WATCH, proto) || []
   const stops: WatchStopHandle[] = []
 
-  watches?.forEach((config) => {
-    const { type, source, methodName, options } = config
+  watches.forEach((config) => {
+    const { type, source, methodName, options, componentClass } = config
 
-    let getter: () => any
-
-    if (type === 'component') {
-      // 核心：从 Registry 获取全局单例进行监听
-      try {
-        const componentInstance = container.get(config.componentClass)
-        getter = () => source(componentInstance)
-      } catch (_e) {
-        MessageWriter.error(
-          new Error(`[CCS Watch] Data Not Found: Component ${config.componentClass} missing .`)
-        )
-        return
-      }
-    } else {
-      // 监听 Controller 自身的变量（@Responsive）
-      getter = () => source(instance)
+    // 获取目标实例
+    const target = type === 'component' ? container.get(componentClass) : instance
+    // 确保目标实例已经过响应式处理
+    if (target && !target.__ccs_processed__) {
+      bindResponsive(target)
     }
-
-    const stop = watch(getter, (instance as any)[methodName].bind(instance), options)
+    // 封装 getter
+    const getter = () => {
+      try {
+        return source(target)
+      } catch (e) {
+        MessageWriter.error(e as Error, `[CCS Watch] Getter error in ${methodName}`)
+        return undefined
+      }
+    }
+    // 使用 bind 确保回调函数内部的 this 指向当前的 Controller/Instance
+    const callback = (instance[methodName] as any).bind(instance)
+    // 执行监听
+    const stop = watch(
+      getter,
+      (newVal, oldVal) => {
+        callback(newVal, oldVal)
+      },
+      {
+        ...options
+      }
+    )
     stops.push(stop)
   })
 
@@ -170,41 +189,38 @@ export function bindResponsive(instance: any) {
 
   // 偷梁换柱
   const props = Reflect.getMetadata(CCS_METADATA.RESPONSIVE, instance) || []
-  props.forEach((key: string) => {
+  // 先将当前层级的所有属性Ref化
+  props.forEach((config: any) => {
+    const key = config.propertyKey
     const rawValue = instance[key]
-    const internalState = typeof rawValue === 'object' ? reactive(rawValue) : ref(rawValue)
+
+    // 如果该属性已经是 getter/setter 了（可能被重复调用），跳过
+    const descriptor = Object.getOwnPropertyDescriptor(instance, key)
+    if (descriptor && descriptor.get) return
+
+    const internalState = config.shallow ? shallowRef(rawValue) : ref(rawValue)
 
     Object.defineProperty(instance, key, {
-      get: () => {
-        const val = isRef(internalState) ? internalState.value : internalState
-        return val
-      },
+      get: () => internalState.value,
       set: (val) => {
-        if (isRef(internalState)) {
-          internalState.value = val
-        } else {
-          // 对于对象/数组，使用 Object.assign 或 Vue 的响应式逻辑
-          Object.assign(internalState, val)
-        }
+        internalState.value = val
       },
       enumerable: true,
       configurable: true
     })
   })
 
-  // 递归处理
-  const allKeys = Object.keys(instance)
-  for (const key of allKeys) {
-    const val = instance[key]
-    if (val && typeof val === 'object') {
-      // 只要父级是 Component，或者在 Controller 里明确标记了这是注入项
-      // 递归下去的每一层都应该维持 isService = true
+  // 只针对已经“Ref化”的对象或普通属性进行深度处理
+  // 使用 Reflect.ownKeys 获取所有属性，包括不可枚举的
+  Reflect.ownKeys(instance).forEach((key) => {
+    if (key === '__ccs_processed__') return
+    const val = instance[key] // 这里会触发上面定义的 get()
+    if (val && typeof val === 'object' && !isRef(val)) {
+      // 递归处理子对象
       bindResponsive(val)
     }
-  }
+  })
 }
-
-// @/ccs/utils/shield.ts
 
 /**
  * 递归物理护盾：将对象及其所有后代变为硬只读

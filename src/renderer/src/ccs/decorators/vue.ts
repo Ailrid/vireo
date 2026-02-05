@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-02-01 15:47:24
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-05 13:32:45
+ * @LastEditTime: 2026-02-05 16:04:53
  * @FilePath: /starry/src/renderer/src/ccs/decorators/vue.ts
  * @Description:各种Vue的魔法装饰器
  *
@@ -86,11 +86,11 @@ export function Project(arg1: any, arg2?: any) {
  * @description: 给数据增加响应式
  * 用法：@Responsive()
  */
-export function Responsive() {
+export function Responsive(shallow = false) {
   return (target: any, propertyKey: string) => {
     // 记录哪些属性需要变成响应式
     const props = Reflect.getMetadata(CCS_METADATA.RESPONSIVE, target) || []
-    props.push(propertyKey)
+    props.push({ propertyKey, shallow })
     Reflect.defineMetadata(CCS_METADATA.RESPONSIVE, props, target)
   }
 }

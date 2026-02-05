@@ -18,7 +18,6 @@ export class PlaylistController {
 
   @Listener(SongControllerMessage)
   onMessage(@Message(SongControllerMessage) message: SongControllerMessage) {
-    console.log('message :>> ', message)
     console.log('song', this.playlist[message.index])
     //可以做一些操作统一拦截，或者直接调用播放器
     PlaySongMesage.send(this.playlist[message.index])

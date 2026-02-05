@@ -2,7 +2,7 @@
  * @Author: ShirahaYuki  shirhayuki2002@gmail.com
  * @Date: 2026-01-31 16:01:12
  * @LastEditors: ShirahaYuki  shirhayuki2002@gmail.com
- * @LastEditTime: 2026-02-05 13:44:32
+ * @LastEditTime: 2026-02-05 16:33:48
  * @FilePath: /starry/src/renderer/src/ccs/adapters/hooks.ts
  * @Description:vue hooks 适配器，用于挂在各种vue魔法装饰器械
  *
@@ -32,6 +32,9 @@ import { MessageWriter } from '../message'
  */
 export function useController<T>(token: Newable<T>, options?: { id?: string; context?: any }): T {
   const instance = container.get<T>(token) as any
+  // 处理@Responsive，将属性变成响应式的
+  bindResponsive(instance)
+
   //注入vue的乱七八糟的context
   const reactiveContext = options?.context || useAttrs()
   if (reactiveContext) {
@@ -53,8 +56,6 @@ export function useController<T>(token: Newable<T>, options?: { id?: string; con
     })
   }
 
-  // 处理@Responsive，将属性变成响应式的
-  bindResponsive(instance)
   //绑定各种魔法装饰器
   const proto = Object.getPrototypeOf(instance)
   // @Project装饰器

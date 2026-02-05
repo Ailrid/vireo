@@ -24,9 +24,16 @@ export class HomePageConrtoller {
   //创建一个投影，从component中映射数据
   @Project(PlaylistComponent, (i) => i.currentSong)
   public currentSong!: Song
+  //创建一个投影，从component中映射数据
+  @Project(PlaylistComponent, (i) => i.playlist)
+  public playlist!: Song[]
   //观测当前歌曲，如果变了就触发某些操作
   @Watch(PlaylistComponent, (i) => i.currentSong, {})
   watchCurrentSong() {
-    console.log('监听到当前歌曲改变：', this.currentSong)
+    console.log('监听到当前歌曲改变PlaylistComponent：', this.currentSong)
+  }
+  @Watch<HomePageConrtoller>((i) => i.currentSong, {})
+  watchSelfSong() {
+    console.log('监听到当前歌曲改变HomePageConrtoller：', this.currentSong)
   }
 }
