@@ -23,3 +23,10 @@ export interface SongLikeRequest {
   id: number
   like: boolean
 }
+//-----------------------song_detail---------------------------------------------------
+/**
+ * @description: 音乐详情
+ */
+export interface SongDetailRequest {
+  ids: { id: number }[]
+}

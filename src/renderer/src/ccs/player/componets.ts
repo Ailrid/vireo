@@ -10,8 +10,12 @@ export class Player {
   public volume: number = 0.5
 
   @Responsive() public isPlaying: boolean = false
-  @Responsive() public currentSong: SongDetail = null!
-  @Responsive() public currentTime: number = 0.0
+
+  @Responsive()
+  public currentSong: SongDetail = null!
+
+  @Responsive()
+  public currentTime: number = 0.0
 
   constructor() {
     this.audio = new Audio()

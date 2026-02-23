@@ -1,11 +1,7 @@
 import { request } from '../request'
 import { Result } from 'ts-results'
-import { LoginQrCreateRequest, LoginQrCheckRequest } from './types/request/login'
-import {
-  LoginQrCreateResponse,
-  LoginQrKeyResponse,
-  LoginQrCheckResponse
-} from './types/response/login'
+import { LoginQrCreateRequest, LoginQrCheckRequest } from './types'
+import { LoginQrCreateResponse, LoginQrKeyResponse, LoginQrCheckResponse } from './types'
 //-----------------------login_qr_check---------------------------------------------------
 /**
  * @description: 登陆检查

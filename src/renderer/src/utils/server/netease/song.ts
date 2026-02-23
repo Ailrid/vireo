@@ -1,7 +1,12 @@
 import { request } from '../request'
 import { Result } from 'ts-results'
-import { SongCommentRequest, SongLikeChechRequest, SongLikeRequest } from './types/request/song'
-import { SongCommentResponse, SongLikeCheckResponse } from './types/response/song'
+import {
+  SongCommentRequest,
+  SongLikeChechRequest,
+  SongLikeRequest,
+  SongDetailRequest
+} from './types'
+import { SongCommentResponse, SongLikeCheckResponse, SongDetailResponse } from './types'
 //-----------------------song_comment---------------------------------------------------
 /**
  * @description: 音乐评论
@@ -33,4 +38,13 @@ export async function songLikeCheck(
  */
 export async function songLike(params: SongLikeRequest): Promise<Result<unknown, string>> {
   return await request<unknown, SongLikeRequest>('/api/netease/song/like', params)
+}
+//-----------------------song_detail---------------------------------------------------
+/**
+ * @description: 音乐详情
+ */
+export async function songDetail(
+  params: SongDetailRequest
+): Promise<Result<SongDetailResponse, string>> {
+  return await request<SongDetailResponse, SongDetailRequest>('/api/netease/song/detail', params)
 }

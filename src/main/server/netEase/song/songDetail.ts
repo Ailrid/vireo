@@ -1,6 +1,6 @@
 import { type Request, type Response } from 'express'
 
-import { createRequest } from '../utils/request.js'
+import { createRequest } from '../../utils/request.js'
 export const apiUrl = '/song/detail'
 export async function handler(req: Request, res: Response): Promise<any> {
   const query = req.body
@@ -40,7 +40,7 @@ export async function handler(req: Request, res: Response): Promise<any> {
         name: song.al?.name || '未知专辑',
         cover: song.al?.picUrl || ''
       },
-      duration: song.dt || 0,
+      duration: song.dt / 1000 || 0,
       isAvailable: privilege ? privilege.fee !== 4 : true,
       raw: song // 保留原始数据备用
     }

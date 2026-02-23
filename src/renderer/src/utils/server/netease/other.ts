@@ -6,7 +6,7 @@ import {
   MvUrlRequest,
   UgcRequest,
   IntelligenceRequest
-} from './types/request/other'
+} from './types'
 import {
   MvDetailResponse,
   MvUrlResponse,
@@ -15,7 +15,7 @@ import {
   RecommendSongResponse,
   VipInfoResponse,
   IntelligenceResponse
-} from './types/response/other'
+} from './types'
 //-----------------------comment---------------------------------------------------
 /**
  * @description: 评论

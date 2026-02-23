@@ -10,7 +10,7 @@ export interface SongDetail {
     name: string
     cover: string
   }
-  duration: number // 统一毫秒或秒
+  duration: number // 统一毫秒
   url?: string // 预留给播放地址
   level?: string // 音质标识
   isAvailable: boolean // 是否有版权/文件是否存在
@@ -30,7 +30,7 @@ export interface PlaylistDetail {
 
 export interface LyricDetail {
   isPure: boolean
-  data: {
+  lyrics: {
     time: number
     text: string
     trans: string

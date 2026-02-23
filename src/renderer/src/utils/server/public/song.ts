@@ -1,17 +1,7 @@
 import { request } from '../request'
 import { Result } from 'ts-results'
-import { SongDetailRequest, SongUrlRequest } from './types/request/song'
-import { SongDetailResponse, SongUrlResponse } from './types/response/song'
-
-//-----------------------song_detail---------------------------------------------------
-/**
- * @description: 音乐详情
- */
-export async function songDetail(
-  params: SongDetailRequest
-): Promise<Result<SongDetailResponse, string>> {
-  return await request<SongDetailResponse, SongDetailRequest>('/api/song/detail', params)
-}
+import { SongUrlRequest, LyricRequest } from './types'
+import { SongUrlResponse, LyircResponse } from './types'
 
 //-----------------------song_url---------------------------------------------------
 /**
@@ -20,4 +10,11 @@ export async function songDetail(
  */
 export async function songUrl(params: SongUrlRequest): Promise<Result<SongUrlResponse, string>> {
   return await request<SongUrlResponse, SongUrlRequest>('/api/song/url', params)
+}
+//-----------------------lyric_new---------------------------------------------------
+/**
+ * @description: 歌词
+ */
+export async function lyric(params: LyricRequest): Promise<Result<LyircResponse, string>> {
+  return await request<LyircResponse, LyricRequest>('/api/lyric', params)
 }

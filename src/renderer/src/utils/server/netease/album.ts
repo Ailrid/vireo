@@ -1,7 +1,7 @@
 import { request } from '../request'
 import { Result } from 'ts-results'
-import { AlbumSublistRequest, AlbumDetailRequest, AlbumSubRequest } from './types/request/album'
-import { AlbumSublistResponse, AlbumDetailResponse } from './types/response/album'
+import { AlbumSublistRequest, AlbumDetailRequest, AlbumSubRequest } from './types'
+import { AlbumSublistResponse, AlbumDetailResponse } from './types'
 
 //-----------------------alibum_detail---------------------------------------------------
 /**

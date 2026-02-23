@@ -1,4 +1,4 @@
-import { System, Message } from '@virid/core'
+import { System, Message, MessageWriter } from '@virid/core'
 import { InitializationMessage } from '@main/messages'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { server } from '@main/server'
@@ -9,6 +9,7 @@ import { DatabaseComponent } from '@main/components'
 import Database from 'better-sqlite3'
 import fs from 'fs'
 import { activateDb } from '@main/server'
+
 const PORT = '1566'
 
 export class InitSystem {
@@ -16,7 +17,7 @@ export class InitSystem {
   static initApp(@Message(InitializationMessage) _message: InitializationMessage) {
     //启动服务器
     server.listen(PORT, () => {
-      console.log(`Server listening on port ${PORT}`)
+      MessageWriter.info(`Server listening on port ${PORT}`)
     })
     //配置设置
     electronApp.setAppUserModelId('starry')
@@ -33,6 +34,7 @@ export class InitSystem {
         app.quit()
       }
     })
+    MessageWriter.info('Initialization completed.')
   }
   @System(100)
   static initDatabase(
@@ -72,7 +74,7 @@ export class InitSystem {
   )
 `)
     activateDb(dbComp)
-    console.log('Database and Cache path bound successfully.')
+    MessageWriter.info('Database and Cache path bound successfully.')
   }
   static createMainWindow() {
     const mainWindow = new BrowserWindow({
@@ -96,5 +98,6 @@ export class InitSystem {
       return { action: 'deny' }
     })
     mainWindow.loadURL(`http://localhost:${PORT}`)
+    MessageWriter.info('Initialize window and mount page completed.')
   }
 }

@@ -103,8 +103,12 @@
   },
   "pnpm": {
     "onlyBuiltDependencies": [
+      "@swc/core",
+      "better-sqlite3",
       "electron",
-      "esbuild"
+      "electron-winstaller",
+      "esbuild",
+      "vue-demi"
     ],
     "overrides": {
       "vite": "^7.3.0"

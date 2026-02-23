@@ -7,8 +7,8 @@ import {
   PlaylistOrderRequest,
   PlaylistTracksRequest,
   PlaylistUpdateRequest
-} from './types/request/playlist'
-import { PlaylistCreateResponse, PlaylistDetailResponse } from './types/response/playlist' //-----------------------playlist_create---------------------------------------------------
+} from './types'
+import { PlaylistCreateResponse, PlaylistDetailResponse } from './types' //-----------------------playlist_create---------------------------------------------------
 /**
  * @description: 创建歌单
  */

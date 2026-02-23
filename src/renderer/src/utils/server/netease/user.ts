@@ -1,13 +1,13 @@
 import { request } from '../request'
 import { Result } from 'ts-results'
-import { UserDetailRequest, UserPlaylistRequest, UserRecordRequest } from './types/request/user'
+import { UserDetailRequest, UserPlaylistRequest, UserRecordRequest } from './types'
 import {
   UserAccountResponse,
   UserDetailResponse,
   UserPlaylistResponse,
   UserRecordResponse,
   UserSubCountResponse
-} from './types/response/user'
+} from './types'
 //-----------------------user_account---------------------------------------------------
 
 /**

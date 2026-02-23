@@ -1,7 +1,7 @@
 import { request } from '../request'
 import { Result } from 'ts-results'
-import { SearchSuggestRequest, SearchType, SearchRequest } from './types/request/search'
-import { SearchSuggestResponse, SearchResultMap } from './types/response/search'
+import { SearchSuggestRequest, SearchType, SearchRequest } from './types'
+import { SearchSuggestResponse, SearchResultMap } from './types'
 //-----------------------search_suggets---------------------------------------------------
 /**
  * @description:搜索建议

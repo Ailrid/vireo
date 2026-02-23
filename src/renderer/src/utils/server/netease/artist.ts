@@ -7,14 +7,14 @@ import {
   ArtistSubRequest,
   ArtistSublistRequest,
   ArtistDetailtRequest
-} from './types/request/artist'
+} from './types'
 import {
   ArtistAlbumResponse,
   ArtistMVResponse,
   ArtistSongResponse,
   ArtistSublistResponse,
   ArtistDetailtResponse
-} from './types/response/artist'
+} from './types'
 
 //-----------------------artist_album---------------------------------------------------
 

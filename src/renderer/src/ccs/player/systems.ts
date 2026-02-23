@@ -8,11 +8,12 @@ import {
   SetPlaylistMessage,
   SetPlayModeMessage,
   LoadFMPlaylistMessage,
-  LoadIntellgencePlaylistMessage
+  LoadIntellgencePlaylistMessage,
+  CurrentSongChangedMessage
 } from './messages'
 import { PlayerComponent, PlaylistComponent, LyricComponent } from './componets'
-import { personalFm, intelligence } from '@/utils/server/netease'
-import { songDetail, songUrl, lyric } from '@/utils/server/public'
+import { personalFm, intelligence, songDetail } from '@/utils/server/netease'
+import { songUrl, lyric } from '@/utils/server/public'
 import { match, P } from 'ts-pattern'
 import { SongDetail } from './interface'
 
@@ -43,7 +44,7 @@ export class PlayerSystem {
     match(lyricDetail)
       .with({ ok: true }, ({ val }) => {
         //在开头插入一个歌词
-        val.data.unshift({
+        val.lyrics.unshift({
           time: 0.0,
           text: `${song.name}-${song.artists[0].name}`,
           trans: ''
@@ -61,13 +62,14 @@ export class PlayerSystem {
       .with({ ok: true }, ({ val }) => {
         const url = val.data.url
         playerComponent.player.setSrc(url)
-        playerComponent.player.play()
       })
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(new Error(val))
         NextSongMessage.send()
       })
       .exhaustive()
+    PlayOrPauseMessage.send(true)
+    CurrentSongChangedMessage.send()
   }
 
   /**
@@ -80,6 +82,9 @@ export class PlayerSystem {
   ) {
     if (!playerComponet.player.currentSong) return
     message.play ? playerComponet.player.play() : playerComponet.player.pause()
+    message.play
+      ? (navigator.mediaSession.playbackState = 'playing')
+      : (navigator.mediaSession.playbackState = 'paused')
   }
 
   /**
@@ -332,5 +337,40 @@ export class PlaylistSystem {
     playlistComponent.currentSongs = message.songs
     playlistComponent.playlistDetail = message.detail
     playlistComponent.currentIndex = 0
+  }
+}
+
+export class MediaSessionSystem {
+  private static lastSongId: number = 0
+
+  @System()
+  async changeSongMatedata(
+    @Message(CurrentSongChangedMessage) _message: CurrentSongChangedMessage,
+    playerComponent: PlayerComponent
+  ) {
+    const currentSong = playerComponent.player.currentSong
+
+    if (!currentSong) return
+
+    // 只有当歌曲真正改变时，才更新元数据（避免暂停/播放时重复刷新封面）
+    if (MediaSessionSystem.lastSongId !== currentSong.id) {
+      navigator.mediaSession.metadata = new MediaMetadata({
+        // title: currentSong.name,
+        // artist: currentSong.artists.map((a) => a.name).join('/'),
+        // album: currentSong.album.name,
+        artwork: [{ src: `${currentSong.album.cover}?param=512y512`, sizes: '512x512' }]
+      })
+
+      MediaSessionSystem.lastSongId = currentSong.id
+    }
+    // 播放状态是每次消息过来都要更新的
+    navigator.mediaSession.setPositionState({
+      // 总时长
+      duration: currentSong.duration,
+      // 播放速率
+      playbackRate: 1,
+      // 当前播放到的时间
+      position: 0
+    })
   }
 }
