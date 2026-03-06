@@ -1,6 +1,6 @@
 import { createRequest, CryptoMode } from '../../utils'
 import { Body, Cookies, Headers, HttpSystem, Ok } from '@virid/express'
-import { AlbumWikiRequestMessage } from '../../other/message'
+import { AlbumWikiRequestMessage } from '../message'
 import { type AlbumWikiRequest } from '../types'
 
 export class AlbumWikiSystem {

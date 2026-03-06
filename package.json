@@ -30,6 +30,7 @@
     "@virid/main": "link:../../virid/packages/main",
     "@virid/renderer": "link:../../virid/packages/renderer",
     "@virid/vue": "link:../../virid/packages/vue",
+    "@vueuse/core": "^14.2.1",
     "axios": "^1.13.2",
     "better-sqlite3": "^12.6.2",
     "class-variance-authority": "^0.7.1",

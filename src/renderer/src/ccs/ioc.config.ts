@@ -2,7 +2,9 @@ import { createVirid } from '@virid/core'
 import { VuePlugin } from '@virid/vue'
 import { RenderPlugin } from '@virid/renderer'
 import { bindPlayback } from './playback'
-import { bindPublicControllers } from './vue/public-controllers'
+import { bindSetting } from './settings'
+import { bindPublicControllers } from '@/components/public/controllers'
+import { bindSettingControllers } from '@/components/setting/controllers'
 import { InitializationMessage } from './init'
 const app = createVirid()
 app.use(VuePlugin, {})
@@ -13,8 +15,10 @@ app.use(RenderPlugin, {
  * 所有的 Controller 和 Component 都在这里排队登记
  */
 export function bootstrapDI() {
+  bindSetting(app)
   bindPlayback(app)
   bindPublicControllers(app)
+  bindSettingControllers(app)
   // 启动初始化
   InitializationMessage.send()
   // setTimeout(() => {

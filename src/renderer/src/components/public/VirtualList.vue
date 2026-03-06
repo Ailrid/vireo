@@ -18,7 +18,7 @@
 
 <script setup lang="ts" generic="T">
 import { useController } from '@virid/vue'
-import { VirtualListController } from '@/ccs/vue'
+import { VirtualListController } from './controllers'
 
 const props = withDefaults(
   defineProps<{

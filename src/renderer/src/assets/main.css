@@ -77,37 +77,57 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  /* Blender 风格的核心背景：深灰偏冷 (#212121) */
+  --background: oklch(0.25 0 0);
+  /* 柔和的非纯白文字，避免刺眼 (#E6E6E6) */
+  --foreground: oklch(0.92 0.01 0);
+
+  /* 面板颜色：比背景略亮一点 (#2E2E2E) */
+  --card: oklch(0.32 0 0);
+  --card-foreground: oklch(0.92 0.01 0);
+
+  --popover: oklch(0.32 0 0);
+  --popover-foreground: oklch(0.92 0.01 0);
+
+  /* Blender 经典的橙色强调色 (#E87D0D) */
+  --primary: oklch(0.68 0.18 45);
+  --primary-foreground: oklch(0.15 0 0);
+
+  /* 悬停态或次要控件色 (#3B3B3B) */
+  --secondary: oklch(0.38 0 0);
   --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+
+  /* 禁用的或次要的状态 */
+  --muted: oklch(0.35 0 0);
+  --muted-foreground: oklch(0.65 0 0);
+
+  /* 激活态颜色 */
+  --accent: oklch(0.38 0 0);
   --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
+
+  --destructive: oklch(0.6 0.18 25);
+
+  /* 极细的深色边框，这是 Blender 精致感的来源 */
+  --border: oklch(0.18 0 0);
+  --input: oklch(0.22 0 0);
+  --ring: oklch(0.68 0.18 45);
+
+  /* 图表颜色也相应调低饱和度以适应专业感 */
+  --chart-1: oklch(0.68 0.18 45);
+  --chart-2: oklch(0.6 0.15 180);
+  --chart-3: oklch(0.75 0.1 80);
+  --chart-4: oklch(0.65 0.15 300);
+  --chart-5: oklch(0.7 0.15 30);
+
+  /* 侧边栏保持 Blender 面板的深色调 */
+  --sidebar: oklch(0.28 0 0);
+  --sidebar-foreground: oklch(0.92 0.01 0);
+  --sidebar-primary: oklch(0.68 0.18 45);
   --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent: oklch(0.35 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --sidebar-border: oklch(0.2 0 0);
+  --sidebar-ring: oklch(0.68 0.18 45);
 }
 
 @layer base {

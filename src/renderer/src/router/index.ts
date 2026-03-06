@@ -3,7 +3,13 @@ const routes = [
   {
     path: '/',
     component: () => import('@/layouts/MainLayout.vue'),
-    children: []
+    redirect: '/setting',
+    children: [
+      {
+        path: '/setting',
+        component: () => import('@/pages/Setting.vue')
+      }
+    ]
   }
 ]
 

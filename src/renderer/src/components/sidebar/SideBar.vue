@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar-content h-full">
-    <VirtualList :list-data="allData" :item-height="50" key-field="id">
+    <!-- <VirtualList :list-data="allData" :item-height="50" key-field="id">
       <template #item="{ item, index }">
         <div
           class="flex items-center h-full px-4 hover:bg-accent/50 cursor-pointer transition-colors"
@@ -9,7 +9,7 @@
           <span class="text-sm font-medium truncate">{{ item.title }}</span>
         </div>
       </template>
-    </VirtualList>
+    </VirtualList> -->
   </div>
 </template>
 

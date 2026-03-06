@@ -17,3 +17,9 @@ export class AlbumSubRequestMessage extends HttpRequestMessage {}
   method: 'post'
 })
 export class AlbumSublistRequestMessage extends HttpRequestMessage {}
+
+@HttpRoute({
+  path: '/netease/albums/wiki',
+  method: 'post'
+})
+export class AlbumWikiRequestMessage extends HttpRequestMessage {}

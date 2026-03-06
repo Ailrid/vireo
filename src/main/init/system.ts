@@ -1,17 +1,49 @@
 import { System, MessageWriter, Message } from '@virid/core'
 import { CreateMainWindowMessage, BootStrapElectronMessage } from './message'
 import { electronApp, optimizer } from '@electron-toolkit/utils'
-import { app, shell, BrowserWindow } from 'electron'
-import { join } from 'path'
+import { app, shell, net, BrowserWindow, protocol } from 'electron'
+import { pathToFileURL } from 'url'
+import { join, normalize, isAbsolute } from 'path'
 import icon from '../../../resources/icon.png?asset'
 
 export class InitSystem {
+  static registerProtocols() {
+    // 必须在 app ready 之前调用
+    protocol.registerSchemesAsPrivileged([
+      {
+        scheme: 'local-file',
+        privileges: {
+          secure: true,
+          standard: true,
+          supportFetchAPI: true,
+          bypassCSP: true,
+          stream: true
+        }
+      }
+    ])
+  }
   /*
    *
    * 初始化electronApp
    */
   @System()
   static initApp(@Message(BootStrapElectronMessage) message: BootStrapElectronMessage) {
+    // 处理协议的具体逻辑
+    protocol.handle('local-file', (request) => {
+      // 去掉协议头
+      const rawPath = request.url.replace('local-file://', '')
+      // 对路径进行解码
+      const decodedPath = decodeURIComponent(rawPath)
+      // 转换为标准平台路径并转为 file:// 格式
+      try {
+        const absolutePath = isAbsolute(decodedPath) ? decodedPath : `/${decodedPath}`
+        const fileUrl = pathToFileURL(normalize(absolutePath)).toString()
+        return net.fetch(fileUrl)
+      } catch (e) {
+        MessageWriter.error(e as Error, `[Main] Local File Protocol: Failed to load file.`)
+        return new Response('File not found', { status: 404 })
+      }
+    })
     //配置设置
     electronApp.setAppUserModelId('starry')
     app.on('browser-window-created', (_, window) => {

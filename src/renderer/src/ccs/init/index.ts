@@ -7,6 +7,7 @@ import {
   NextSongMessage,
   PlaylistComponent
 } from '../playback'
+import { LoadSettingsMessage } from '../settings'
 export class InitializationMessage extends SingleMessage {}
 
 export class InitSystem {
@@ -15,7 +16,8 @@ export class InitSystem {
     messageClass: InitializationMessage
   })
   static initSetting() {
-    //TODO
+    //启动的时候自动加载一次设置
+    LoadSettingsMessage.send()
   }
   @System({
     priority: 999,

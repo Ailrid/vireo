@@ -3,17 +3,17 @@
     <div class="flex-1 h-full"></div>
     <div class="no-drag flex items-center">
       <button
-        class="flex h-10 w-10 cursor-pointer items-center justify-center transition-opacity hover:opacity-50 active:opacity-30"
+        class="flex h-10 w-10 cursor-pointer items-center justify-center transition-colors hover:text-destructive active:opacity-50"
         @click="() => MinimizeWindowMessage.send()"
       >
-        <Minus :size="16" :stroke-width="1.2" class="text-foreground" />
+        <Minus :size="16" :stroke-width="1.2" />
       </button>
 
       <button
-        class="flex h-10 w-10 cursor-pointer items-center justify-center transition-opacity hover:opacity-50 active:opacity-30"
+        class="flex h-10 w-10 cursor-pointer items-center justify-center transition-colors hover:text-destructive active:opacity-50"
         @click="() => MaximizeWindowMessage.send()"
       >
-        <Square :size="14" :stroke-width="1.2" class="text-foreground" />
+        <Square :size="14" :stroke-width="1.2" />
       </button>
 
       <button

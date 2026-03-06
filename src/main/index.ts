@@ -4,7 +4,7 @@ export * from './init'
 export * from './server'
 export * from './windows'
 //启动
-import { InitStarryMessage } from './init'
+import { InitStarryMessage, InitSystem } from './init'
 import { server } from './utils'
 import { createVirid } from '@virid/core'
 import { MainPlugin } from '@virid/main'
@@ -17,6 +17,8 @@ const virid = createVirid()
 //绑定组件
 bindComponents(virid)
 
+//注册协议
+InitSystem.registerProtocols()
 // 初始化完成，点火
 app.whenReady().then(() => {
   InitStarryMessage.send(server, 1566)

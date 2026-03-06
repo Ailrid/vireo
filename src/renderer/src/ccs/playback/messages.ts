@@ -1,5 +1,5 @@
 import { SingleMessage } from '@virid/core'
-import { PlaylistDetail, SongDetail } from './interfaces'
+import { PlaylistDetail, SongDetail } from '@/utils/server/interfaces'
 
 export class PlaySongMessage extends SingleMessage {
   constructor(public song: SongDetail) {
