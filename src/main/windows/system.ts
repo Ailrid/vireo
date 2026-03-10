@@ -1,11 +1,10 @@
-import { dialog, BrowserWindow } from 'electron'
+import { dialog } from 'electron'
 import {
   CloseWindowMessage,
   MinimizeWindowMessage,
   MaximizeWindowMessage,
   OpenDialogMessage,
   RenderDialogMessage,
-  NeteaseWindowMessage
 } from './message'
 import { System, Message } from '@virid/core'
 
@@ -36,26 +35,5 @@ export class WindowSystem {
       return new RenderDialogMessage(selectedPath)
     }
     return
-  }
-}
-
-export class NeteaseVerifySystem {
-  // 在 WindowSystem 或者 InitSystem 中增加
-  @System({
-    messageClass: NeteaseWindowMessage
-  })
-  static async handleVerification(
-  ) {
-    const verifyWin = new BrowserWindow({
-      width: 1200,
-      height: 800,
-      modal: true,
-      parent: BrowserWindow.getFocusedWindow() || undefined,
-      webPreferences: {
-        // 验证页面不需要 preload，给它最纯净的环境
-        nodeIntegration: false,
-        contextIsolation: true
-      }
-    })
   }
 }

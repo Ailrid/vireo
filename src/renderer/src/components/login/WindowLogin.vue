@@ -1,5 +1,6 @@
 <template>
   <div class="flex flex-col items-center justify-center space-y-6 py-2">
+    <!-- 开头装饰 -->
     <div class="flex flex-col items-center space-y-2 text-center">
       <div
         class="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-100 bg-slate-50 text-slate-900 shadow-sm"
@@ -24,27 +25,23 @@
       </div>
       <div>
         <h3 class="text-base font-bold text-slate-800">网页安全登录</h3>
-        <p class="text-[11px] text-slate-400">通过网易云官方窗口完成身份验证</p>
+        <p class="text-sm text-slate-400">通过网易云官方窗口完成身份验证</p>
       </div>
     </div>
-
-    <div class="w-full max-w-[280px] space-y-3">
+    <!-- 提示 -->
+    <div class="w-full max-w-72 space-y-3">
       <div class="flex items-start gap-3">
-        <span
-          class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[10px] font-bold text-slate-500"
-          >1</span
-        >
-        <p class="text-xs leading-5 text-slate-600">点击“去登录”，在弹出的官方页面完成登录操作。</p>
+        <span class="prompt-text">1</span>
+        <p class="text-xs leading-5 text-slate-600">点击“去登录”，在弹出的官方页面完成登录操作</p>
       </div>
       <div class="flex items-start gap-3">
-        <span
-          class="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[10px] font-bold text-slate-500"
-          >2</span
-        >
-        <p class="text-xs leading-5 text-slate-600">完成后回到此处点击“确认登录”同步数据。</p>
+        <span class="prompt-text">2</span>
+        <p class="text-xs leading-5 text-slate-600">
+          完成后窗口将自动关闭，若未关闭可以点击按钮手动关闭
+        </p>
       </div>
     </div>
-
+    <!-- 登录状态 -->
     <div
       class="flex w-full items-center justify-center gap-2 rounded-xl border py-2.5 transition-all duration-300"
       :class="{
@@ -62,7 +59,7 @@
         wct.loginInfo || '准备就绪'
       }}</span>
     </div>
-
+    <!-- 按钮 -->
     <div class="flex w-full gap-3">
       <Button
         variant="outline"
@@ -93,8 +90,11 @@ const wct = useController(WindowLoginController)
 </script>
 
 <style scoped>
-/* 保持与 QrLogin 一致的微动效 */
+@reference "@/assets/main.css";
 .transition-all {
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+.prompt-text {
+  @apply flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-500;
 }
 </style>

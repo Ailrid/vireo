@@ -3,8 +3,14 @@ import { OpenLoginWindowRequestMessage, CloseLoginWindowRequestMessage } from '.
 import { BrowserWindow } from 'electron'
 import { Message } from '@virid/core'
 import { type OpenLoginWindowResponse, type CloseLoginWindowResponse } from '../types'
+import { ToRenderMessage } from '@virid/main'
 
 let loginWindow: BrowserWindow | null = null
+//发送登陆完成消息
+class NeteaseWindowMessage extends ToRenderMessage {
+  __virid_messageType: string = 'login-netease-window'
+  __virid_target: string = 'renderer'
+}
 
 export class LoginCellphoneSystem {
   /**
@@ -33,9 +39,25 @@ export class LoginCellphoneSystem {
     const chromeUA =
       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'
     loginWindow.webContents.setUserAgent(chromeUA)
-
+    //删除原来的cookies
+    await loginWindow.webContents.session.clearStorageData({
+      storages: ['cookies']
+    })
     // 加载官方登录入口
     loginWindow.loadURL('https://music.163.com/#/login')
+    // 监听并绑定事件
+    loginWindow.webContents.session.cookies.on(
+      'changed',
+      async (_event, _cookie, _cause, removed) => {
+        if (removed || !loginWindow) return
+        const allCookies = await loginWindow.webContents.session.cookies.get({})
+        const hasCsrf = allCookies.find(c => c.name === '__csrf')
+        const hasMusicU = allCookies.find(c => c.name === 'MUSIC_U')
+        if (hasCsrf && hasMusicU) {
+          NeteaseWindowMessage.send()
+        }
+      }
+    )
     return Ok({ code: 200, message: 'Window created' } as OpenLoginWindowResponse)
   }
 
@@ -63,7 +85,7 @@ export class LoginCellphoneSystem {
       return Ok({
         code: 500,
         message: '登录凭证不完整，请确保已在窗口内完成登录'
-      })
+      } as CloseLoginWindowResponse)
     }
 
     // 核心字段白名单：加上 A_T 和 R_T 会更稳健
@@ -96,11 +118,8 @@ export class LoginCellphoneSystem {
     loginWindow = null
 
     // 返回结果，Set-Cookie 会让前端浏览器层自动持久化
-    return Ok(
-      { code: 200, message: '登录成功' },
-      {
-        'Set-Cookie': setCookieHeaders
-      }
-    )
+    return Ok({ code: 200, message: '登录成功' } as CloseLoginWindowResponse, {
+      'Set-Cookie': setCookieHeaders
+    })
   }
 }

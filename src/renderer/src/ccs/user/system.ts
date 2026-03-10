@@ -4,6 +4,9 @@ import { FetchUserAccountMessage, FetchUserPlaylistMessage, LogoutMessage } from
 import { match } from 'ts-pattern'
 import { userAccount, userPlaylist, logout } from '@/utils/server'
 export class UserSystem {
+  /**
+   * * 获取用户信息
+   */
   @System({
     messageClass: FetchUserAccountMessage
   })
@@ -26,6 +29,9 @@ export class UserSystem {
       })
       .exhaustive()
   }
+  /**
+   * * 获取用户歌单
+   */
   @System({
     messageClass: FetchUserPlaylistMessage
   })
@@ -48,6 +54,9 @@ export class UserSystem {
       })
       .exhaustive()
   }
+  /**
+   * * 登出
+   */
   @System({
     messageClass: LogoutMessage
   })

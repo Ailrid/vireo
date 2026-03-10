@@ -24,10 +24,3 @@ export class RenderDialogMessage extends ToRenderMessage {
     super()
   }
 }
-
-@FromRender('netease-window')
-export class NeteaseWindowMessage extends FromRenderMessage {
-  constructor(public url: string) {
-    super()
-  }
-}

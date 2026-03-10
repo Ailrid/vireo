@@ -1,8 +1,12 @@
 import { Controller, MessageWriter } from '@virid/core'
 import { openLoginWindow, closeLoginWindow } from '@/utils/server'
 import { match } from 'ts-pattern'
-import { Responsive } from '@virid/vue'
+import { Listener, Responsive } from '@virid/vue'
 import { FetchUserAccountMessage } from '@/ccs/user'
+import { FromIpc, FromMainMessage } from '@virid/renderer'
+//监听主进程发来的消息，一旦登陆完成，获取cookies
+@FromIpc('login-netease-window')
+class NeteaseWindowMessage extends FromMainMessage {}
 
 @Controller()
 export class WindowLoginController {
@@ -13,7 +17,7 @@ export class WindowLoginController {
   public loginInfo: string = '待登录'
 
   /**
-   * 唤起网易云官方登录窗口
+   * *唤起网易云官方登录窗口
    */
   public async openWindow() {
     this.loginStatus = 'waiting'
@@ -37,7 +41,7 @@ export class WindowLoginController {
   }
 
   /**
-   * 收割 Cookie 并关闭窗口
+   * *收割 Cookie 并关闭窗口
    */
   public async closeWindow() {
     this.loginInfo = '正在验证登录状态...'
@@ -62,5 +66,12 @@ export class WindowLoginController {
         MessageWriter.error(new Error(val), '[Login Window] Close Failed')
       })
       .otherwise(() => {})
+  }
+  /**
+   * *监听登录窗口消息
+   */
+  @Listener(NeteaseWindowMessage)
+  public onNeteaseWindowMessage() {
+    this.closeWindow()
   }
 }

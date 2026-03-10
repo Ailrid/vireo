@@ -80,7 +80,6 @@ const qct = useController(QrLoginController)
   transform: scale(1.2);
 }
 
-/* 容器呼吸灯效果 */
 .qr-container {
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
