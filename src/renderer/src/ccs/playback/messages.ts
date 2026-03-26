@@ -39,20 +39,8 @@ export class SetPlayModeMessage extends SingleMessage {
 }
 
 export class LoadFMPlaylistMessage extends SingleMessage {}
-export class LoadIntelligencePlaylistMessage extends SingleMessage {
-  constructor(
-    public id: number,
-    public pid: number,
-    public sid: number
-  ) {
-    super()
-  }
-}
+export class LoadIntelligencePlaylistMessage extends SingleMessage {}
 
-export class MediaSessionMessage extends SingleMessage {
-  constructor() {
-    super()
-  }
-}
+export class MediaSessionMessage extends SingleMessage {}
 
 export class SongLikeMessage extends SingleMessage {}

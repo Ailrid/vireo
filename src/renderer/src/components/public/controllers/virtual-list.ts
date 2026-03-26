@@ -107,4 +107,14 @@ export class VirtualListController<T> {
     if (this.keyField) return (item as any)[this.keyField]
     return this.actualStartIndex + index
   }
+  public scrollTo(index: number) {
+    const container = this.containerRef.value
+    if (!container) return
+    // 边界检查
+    const targetIndex = Math.max(0, Math.min(index, this.listData.length - 1))
+    // 计算位移：目标索引 * 每个条目的高度
+    const targetTop = targetIndex * this.itemHeight
+    container.scrollTop = targetTop
+    container.scrollTo({ top: targetTop, behavior: 'smooth' });
+  }
 }

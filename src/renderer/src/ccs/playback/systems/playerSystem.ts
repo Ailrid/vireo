@@ -137,12 +137,7 @@ export class PlayerSystem {
           PlaySongMessage.send(currentList[currentIndex + 1])
         } else {
           this.consumeBuffer(intelligenceList, () => {
-            if (!currentSong) return
-            LoadIntelligencePlaylistMessage.send(
-              currentSong.id,
-              playlistComponent.playlistId,
-              currentSong.id
-            )
+            LoadIntelligencePlaylistMessage.send()
           })
         }
       })
@@ -219,25 +214,16 @@ export class PlayerSystem {
     const oldMode = playerComponent.playMode
     playerComponent.playMode = message.playMode
 
-    // 如果切到 FM 或心动，清空所有列表
+    // 如果切到 FM 或心动
     if (message.playMode === 'fm' || message.playMode === 'intelligence') {
-      const playlistId = playlistComponent.playlistId
-      // 重置所有状态
+      // 备份当前顺序列表到 staging
+      playlistComponent.stagingList = [...playlistComponent.currentList]
+      // 重置当前状体啊
       playlistComponent.currentList = []
-      playlistComponent.fmList = []
-      playlistComponent.intelligenceList = []
-      playlistComponent.stagingList = []
-      playlistComponent.currentIndex = 0
-      playlistComponent.playlistId = 0
-
-      // 加载歌单
       if (message.playMode === 'fm') LoadFMPlaylistMessage.send()
-      if (message.playMode === 'intelligence') {
-        const currentSong = playlistComponent.currentSong
-        LoadIntelligencePlaylistMessage.send(currentSong!.id, playlistId, currentSong!.id)
-      }
-      return
+      if (message.playMode === 'intelligence') LoadIntelligencePlaylistMessage.send()
     }
+
     // 如果切换到随机模式：生成洗牌列表
     if (message.playMode === 'random') {
       if (!playlistComponent.currentList || playlistComponent.currentList.length == 0) return
@@ -267,6 +253,14 @@ export class PlayerSystem {
       )
       // 清空备份
       playlistComponent.stagingList = []
+    }
+    if (oldMode === 'fm' || oldMode === 'intelligence') {
+      if (playlistComponent.stagingList.length == 0) return
+      // 还原备份的顺序列表
+      playlistComponent.currentList = [...playlistComponent.stagingList]
+      // 清空备份
+      playlistComponent.stagingList = []
+      PlaySongMessage.send(playlistComponent.currentList[0])
     }
   }
 }

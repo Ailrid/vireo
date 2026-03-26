@@ -9,7 +9,7 @@
             @wheel="TitleBarLeftControllerMessage.send($event)"
           >
             <span>{{ tct.currentViewName }}</span>
-            <ChevronDownIcon :size="14" class="opacity-50" />
+            <ChevronDown :size="14" class="opacity-50" />
           </button>
         </DropdownMenuTrigger>
 
@@ -27,43 +27,55 @@
             @click="tct.changeView('current-playlist')"
             class="focus:bg-primary/10 text-foreground hover:text-foreground cursor-pointer"
           >
-            <ListMusicIcon class="mr-2 h-4 w-4" /> 播放列表
+            <ListMusic class="mr-2 h-4 w-4" /> 播放列表
           </DropdownMenuItem>
           <DropdownMenuItem
             @click="tct.changeView('playlist-manager')"
             class="focus:bg-primary/10 text-foreground hover:text-foreground cursor-pointer"
           >
-            <DiscIcon class="mr-2 h-4 w-4" /> 歌单列表
+            <Disc class="mr-2 h-4 w-4" /> 歌单列表
           </DropdownMenuItem>
           <DropdownMenuItem
             @click="tct.changeView('recent-play')"
             class="focus:bg-primary/10 text-foreground hover:text-foreground cursor-pointer"
           >
-            <HeartIcon class="mr-2 h-4 w-4" /> 最近播放
+            <Heart class="mr-2 h-4 w-4" /> 最近播放
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </div>
     <div class="drag h-full flex-1"></div>
     <div class="no-drag flex items-center">
-      <button
-        type="button"
+      <Button
+        v-if="tct.currentView === 'current-playlist'"
+        type="icon"
+        class="group flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden transition-all duration-300 active:scale-75"
+        @click="MoveToCurrentSongMessage.send()"
+      >
+        <MapPin
+          :size="18"
+          :stroke-width="1.2"
+          class="group-hover:text-primary transition-all duration-500 ease-out group-hover:scale-125"
+        />
+      </Button>
+      <Button
+        type="icon"
         class="group flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden transition-all duration-300 active:scale-75"
         @click="$router.push({ name: 'setting' })"
       >
-        <SettingsIcon
+        <Settings
           :size="18"
           :stroke-width="1.2"
           class="group-hover:text-primary transition-all duration-500 ease-out group-hover:scale-125 group-hover:rotate-180"
         />
-      </button>
+      </Button>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import LoginDialog from '@/components/login/LoginDialog.vue'
-import { SettingsIcon, ChevronDownIcon, ListMusicIcon, DiscIcon, HeartIcon } from 'lucide-vue-next'
+import { Settings, ChevronDown, ListMusic, Disc, Heart, MapPin } from 'lucide-vue-next'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -75,6 +87,7 @@ import {
 import { useController } from '@virid/vue'
 import { SettingController } from '@/ccs/settings'
 import { TitleBarLeftController, TitleBarLeftControllerMessage } from '../controllers'
+import { MoveToCurrentSongMessage } from '@/components/sidebar/controllers'
 const sct = useController(SettingController)
 const tct = useController(TitleBarLeftController, {
   id: 'title-bar-left'

@@ -12,6 +12,7 @@ import { bindSidebarControllers } from '@/components/sidebar/controllers'
 import { bindLayoutControllers } from '@/layouts/controllers'
 import { bindPageControllers } from '@/pages/controllers'
 import { InitializationMessage } from './init'
+import * as _ from './utils'
 const app = createVirid()
 app.use(VuePlugin, {})
 app.use(RenderPlugin, {

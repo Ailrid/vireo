@@ -9,6 +9,7 @@ export class TitleBarLeftControllerMessage extends SingleMessage {
   }
 }
 type NameType = 'current-playlist' | 'playlist-manager' | 'recent-play'
+
 @Controller()
 export class TitleBarLeftController {
   public nameMap = {

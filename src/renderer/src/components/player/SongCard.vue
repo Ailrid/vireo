@@ -13,8 +13,10 @@
           @click="PlayOrPauseMessage.send(!sct.isPlaying)"
         >
           <div class="play-btn flex h-12 w-12 items-center justify-center">
-            <Play v-if="!sct.isPlaying" class="h-6 w-6 fill-current" />
-            <Pause v-else class="h-6 w-6 fill-current" />
+            <Button variant="icon">
+              <Play v-if="!sct.isPlaying" class="h-6 w-6 fill-current" />
+              <Pause v-else class="h-6 w-6 fill-current" />
+            </Button>
           </div>
         </div>
       </div>
@@ -24,8 +26,12 @@
       <div class="flex w-full">
         <div class="flex-1" @dblclick="PlayerControllerMessage.send($event, true)"></div>
         <div class="flex w-[80%] items-center justify-between px-2">
-          <SkipBack class="control-btn" @click="PreviousSongMessage.send()" />
-          <SkipForward class="control-btn" @click="NextSongMessage.send()" />
+          <Button variant="icon" @click="PreviousSongMessage.send()">
+            <SkipBack class="control-btn"
+          /></Button>
+          <Button variant="icon" @click="NextSongMessage.send()">
+            <SkipForward class="control-btn"
+          /></Button>
         </div>
         <div class="flex-1" @dblclick="PlayerControllerMessage.send($event, true)"></div>
       </div>
@@ -48,6 +54,7 @@
 </template>
 
 <script setup lang="ts">
+import { Button } from '@/components/ui/button'
 import { SkipBack, SkipForward, Play, Pause } from 'lucide-vue-next'
 import { PlayOrPauseMessage, NextSongMessage, PreviousSongMessage } from '@/ccs/playback'
 import { PlayerControllerMessage, SongCardController } from './controllers'

@@ -1,5 +1,5 @@
 import { PlaySongMessage, SetPlaylistMessage } from '@/ccs/playback'
-import { FetchUserPlaylistSongMessage, UserComponent, FlashPageDataMessage } from '@/ccs/user'
+import { FetchUserPlaylistSongMessage, UserComponent } from '@/ccs/user'
 import { SongDetail, type PlaylistDetail } from '@/utils'
 import { Controller, SingleMessage } from '@virid/core'
 import { Project, Responsive, Use, Listener, OnHook } from '@virid/vue'
@@ -89,16 +89,5 @@ export class UserPlaylistPageController {
     if (!this.currentPlaylistId) return
     FetchUserPlaylistSongMessage.send(this.currentPlaylistId, this.pageIndex)
   }
-  /**
-   * * 页面强制刷新该页数据
-   */
-  @Listener({
-    messageClass: FlashPageDataMessage
-  })
-  public onFleshPageData(message: FlashPageDataMessage) {
-    //只有是自己的时候，才去刷新
-    if (!this.currentPlaylistId || this.currentPlaylistId !== message.playlistId) return
-    //重新获取当前页面的数据
-    FetchUserPlaylistSongMessage.send(this.currentPlaylistId, this.pageIndex)
-  }
+ 
 }

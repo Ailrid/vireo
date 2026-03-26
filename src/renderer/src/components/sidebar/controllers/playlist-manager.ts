@@ -15,7 +15,7 @@ export class PlaylistManagerController {
   @Responsive()
   public currentPlaylistId: number | null = null
 
-  @Watch<PlaylistManagerController>(i => i.route.fullPath)
+  @Watch<PlaylistManagerController>(i => i.route.fullPath, { immediate: true })
   onRouteChange() {
     if (this.route.name !== 'playlist') this.currentPlaylistId = null
     const id = this.route.params.id

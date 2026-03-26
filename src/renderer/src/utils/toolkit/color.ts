@@ -1,5 +1,5 @@
 /**
- * 颜色转换辅助：RGB 转 HSL
+ * RGB 转 HSL
  */
 function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
   r /= 255
@@ -31,7 +31,7 @@ function rgbToHsl(r: number, g: number, b: number): [number, number, number] {
 }
 
 /**
- * 颜色转换辅助：HSL 转 RGB
+ * HSL 转 RGB
  */
 function hslToRgb(h: number, s: number, l: number): [number, number, number] {
   s /= 100
@@ -70,7 +70,7 @@ export async function getAccentRGB(imageUrl: string): Promise<{
     img.crossOrigin = 'anonymous'
 
     img.onload = () => {
-      const size = 50 // 50x50 采样
+      const size = 64 // 50x50 采样
       const canvas = document.createElement('canvas')
       canvas.width = size
       canvas.height = size
@@ -90,7 +90,7 @@ export async function getAccentRGB(imageUrl: string): Promise<{
           g = data[i + 1],
           b = data[i + 2]
 
-        // 关键：过滤掉过于暗淡或过于惨白的像素（灰度过滤）
+        // 过滤掉过于暗淡或过于惨白的像素（灰度过滤）
         const brightness = (r * 299 + g * 587 + b * 114) / 1000
         if (brightness > 20 && brightness < 235) {
           rSum += r
@@ -124,9 +124,13 @@ export async function getAccentRGB(imageUrl: string): Promise<{
       }
       // 转回 RGB 输出
       const accentColor = hslToRgb(h, accentS, accentL)
+
+      const maxChannelValue = Math.max(avgR, avgG, avgB)
       resolve({
         accentColor: accentColor,
-        avgColor: [Math.round(avgR), Math.round(avgG), Math.round(avgB)]
+        avgColor: [Math.round(avgR), Math.round(avgG), Math.round(avgB)].map(
+          item => (item / maxChannelValue) * 255
+        )
       })
     }
     img.onerror = () => reject(new Error('Image Load Failed'))

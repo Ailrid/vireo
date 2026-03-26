@@ -101,7 +101,7 @@
               >
                 <!-- 序号 -->
                 <div
-                  class="group-hover:text-primary w-8 text-right font-mono text-xs transition-all group-hover:opacity-100"
+                  class="group-hover:text-primary mr-1 ml-1 w-4 text-center font-mono text-xs transition-all group-hover:opacity-100"
                 >
                   {{ (pct.pageIndex * 200 + index + 1).toString().padStart(2, '0') }}
                 </div>
@@ -159,7 +159,6 @@
           :message-type="PageChangeMessage"
         />
       </div>
-      <div v-else class="flex h-full w-8 flex-col"></div>
     </section>
   </div>
 </template>

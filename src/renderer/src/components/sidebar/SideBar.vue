@@ -1,9 +1,7 @@
 <template>
   <div class="h-full w-full">
     <Transition name="fade" mode="out-in">
-      <component :is="CurrentPlaylist" v-if="sct.currentView == 'current-playlist'" />
-      <component :is="PlaylistManager" v-if="sct.currentView == 'playlist-manager'" />
-      <component :is="RecentPlay" v-if="sct.currentView == 'recent-play'" />
+      <component :is="componentsMap[sct.currentView!]" />
     </Transition>
   </div>
 </template>
@@ -15,6 +13,11 @@ import RecentPlay from './RecentPlay.vue'
 import { useController } from '@virid/vue'
 import { SideBarController } from './controllers'
 const sct = useController(SideBarController)
+const componentsMap = {
+  'current-playlist': CurrentPlaylist,
+  'playlist-manager': PlaylistManager,
+  'recent-play': RecentPlay
+}
 </script>
 <style scoped>
 .fade-enter-active,

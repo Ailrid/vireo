@@ -130,12 +130,14 @@ export class Player {
 
   public setVolume(val: number) {
     this.volume = val
-    this.gainNode.gain.setValueAtTime(val, this.ctx.currentTime)
+    const physicalGain = val * val
+    this.gainNode.gain.setTargetAtTime(physicalGain, this.ctx.currentTime, 0.01)
   }
 }
 
 @Component()
 export class PlayerComponent {
   public player: Player = new Player()
+  @Responsive()
   public playMode: 'order' | 'random' | 'loop' | 'fm' | 'intelligence' = 'order'
 }

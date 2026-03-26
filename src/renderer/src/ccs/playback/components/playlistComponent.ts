@@ -7,7 +7,7 @@ export class PlaylistComponent {
   @Responsive()
   public playlistDetail: PlaylistDetail | null = null
   // 当前播放列表的歌曲
-  @Responsive(true)
+  @Responsive()
   public currentList: SongDetail[] = []
   // 当前播放的歌曲的索引
   @Responsive()
@@ -16,8 +16,6 @@ export class PlaylistComponent {
   @Responsive()
   public currentSong: SongDetail | null = null
 
-  // 当前列表的id
-  public playlistId: number = 0
   // 暂存列表
   public stagingList: SongDetail[] = []
   // fm和心动模式的缓冲列表

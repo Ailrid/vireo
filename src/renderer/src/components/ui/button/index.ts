@@ -16,7 +16,8 @@ export const buttonVariants = cva(
         secondary: 'cursor-pointer  bg-secondary text-secondary-foreground hover:bg-secondary/80',
         ghost:
           'cursor-pointer  hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50',
-        link: 'cursor-pointer  text-primary underline-offset-4 hover:underline'
+        link: 'cursor-pointer  text-primary underline-offset-4 hover:underline',
+        icon: 'cursor-pointer'
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

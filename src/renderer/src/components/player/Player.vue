@@ -5,7 +5,7 @@
     @dblclick="PlayerControllerMessage.send($event, false)"
   >
     <SongCard class="h-20 w-64" />
-    <div class="flex-1" @dblclick="PlayerControllerMessage.send($event, true)"></div>
+    <div class="flex-1 " @dblclick="PlayerControllerMessage.send($event, true)"></div>
     <Slider class="h-8" />
     <div class="flex-1" @dblclick="PlayerControllerMessage.send($event, true)"></div>
     <Volume />
@@ -19,4 +19,3 @@ import { useController } from '@virid/vue'
 import { PlayerController, PlayerControllerMessage } from './controllers'
 useController(PlayerController)
 </script>
-<style scoped></style>

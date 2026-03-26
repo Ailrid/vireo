@@ -31,6 +31,9 @@ const props = withDefaults(
 )
 
 const vlc = useController(VirtualListController<T>, { context: props })
+defineExpose({
+  scrollTo: (index: number) => vlc.scrollTo(index)
+})
 </script>
 
 <style scoped>

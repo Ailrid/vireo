@@ -1,7 +1,7 @@
 <template>
-  <div class="flex items-center gap-2 px-6">
+  <div class="mr-2 flex items-center gap-2">
     <Button
-      variant="ghost"
+      variant="icon"
       size="icon"
       class="group/like h-9 w-9 rounded-full transition-all"
       :class="pct.currentSong?.like ? 'text-primary' : 'opacity-50 hover:opacity-100'"
@@ -13,63 +13,87 @@
         class="transition-transform group-active/like:scale-75"
       />
     </Button>
-
-    <!-- <Button
-      variant="ghost"
+    <Button
+      variant="icon"
       size="icon"
-      class="h-9 w-9 rounded-full transition-all"
-      :class="pct.isDesktopLyricOpen ? 'text-primary' : 'opacity-50 hover:opacity-100'"
-      @click="pct.toggleDesktopLyric()"
+      class="group/like h-9 w-9 rounded-full transition-all"
+      @click="pct.changeMode()"
     >
-      <Music2 :size="18" />
-    </Button> -->
-
-    <Popover>
-      <PopoverTrigger as-child>
-        <Button
-          variant="ghost"
-          size="icon"
-          class="h-9 w-9 rounded-full opacity-50 transition-all hover:opacity-100"
-        >
-          <Volume2 v-if="pct.volume > 0" :size="18" />
-          <VolumeX v-else :size="18" class="text-destructive" />
-        </Button>
-      </PopoverTrigger>
-
-      <PopoverContent
-        side="top"
-        :side-offset="20"
-        class="border-border/40 bg-card/60 w-12 rounded-2xl p-3 shadow-2xl backdrop-blur-xl"
+      <Repeat
+        v-if="pct.playMode == 'order'"
+        :size="18"
+        class="transition-transform group-active/like:scale-75"
+      />
+      <Repeat1
+        v-else-if="pct.playMode == 'loop'"
+        :size="18"
+        class="transition-transform group-active/like:scale-75"
+      />
+      <Shuffle
+        v-else-if="pct.playMode == 'random'"
+        :size="18"
+        class="transition-transform group-active/like:scale-75"
+      />
+      <Activity
+        v-else-if="pct.playMode == 'intelligence'"
+        :size="18"
+        class="transition-transform group-active/like:scale-75"
+      />
+    </Button>
+    <div class="group relative flex flex-col items-center">
+      <div
+        class="bg-card pointer-events-none absolute bottom-full mb-2 flex h-40 w-12 translate-y-2 flex-col items-center justify-between gap-2 rounded-2xl border p-3 opacity-0 shadow-2xl backdrop-blur-sm transition-all duration-300 ease-out group-hover:pointer-events-auto group-hover:translate-y-0 group-hover:opacity-100"
       >
-        <div class="flex h-32 flex-col items-center justify-between">
-          <span class="font-mono text-[10px] font-bold opacity-40">{{ pct.volume }}</span>
+        <div class="absolute -bottom-2 left-0 h-2 w-full bg-transparent" />
 
+        <span class="text-foreground font-mono text-sm font-black italic select-none">
+          {{ (pct.volume * 100).toFixed(0) }}
+        </span>
+
+        <div
+          ref="volumeBar"
+          class="bg-foreground/10 relative w-3 flex-1 cursor-pointer overflow-hidden rounded-full ring-1 ring-black/5 ring-inset"
+          @mousedown.stop="pct.onVolumeMouseDown($event)"
+          @wheel.prevent="pct.onWheel($event)"
+        >
           <div
-            ref="volumeBar"
-            class="bg-secondary/50 relative w-1.5 flex-1 cursor-pointer overflow-hidden rounded-full"
-            @mousedown="pct.onVolumeMouseDown($event)"
+            class="bg-primary absolute bottom-0 w-full transition-all duration-150 ease-out"
+            :style="{ height: `${pct.volume * 100}%` }"
           >
-            <div
-              class="bg-primary absolute bottom-0 w-full transition-all duration-75"
-              :style="{ height: `${pct.volume}%` }"
-            >
-              <div
-                class="absolute top-0 h-1.5 w-1.5 rounded-full bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]"
-              ></div>
-            </div>
+            <div class="absolute top-0 h-2 w-full bg-white/30 blur-[1px]" />
           </div>
-
-          <div class="bg-primary/20 mt-1 h-1 w-1 rounded-full"></div>
         </div>
-      </PopoverContent>
-    </Popover>
+
+        <div class="bg-foreground/20 h-1 w-1 rounded-full"></div>
+      </div>
+
+      <Button
+        variant="icon"
+        size="icon"
+        class="relative h-9 w-9 rounded-full transition-all hover:bg-white/10 active:scale-90"
+        @click="pct.mute()"
+        @wheel.prevent="pct.onWheel($event)"
+      >
+        <Volume2 v-if="pct.volume > 0.5" :size="18" />
+        <Volume1 v-else-if="pct.volume > 0" :size="18" />
+        <VolumeX v-else :size="18" />
+      </Button>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Heart, Volume2, VolumeX } from 'lucide-vue-next'
+import {
+  Heart,
+  Volume2,
+  Volume1,
+  VolumeX,
+  Shuffle,
+  Repeat,
+  Repeat1,
+  Activity
+} from 'lucide-vue-next'
 import { useController } from '@virid/vue'
 import { PlayerButtonController } from './controllers'
 import { SongLikeMessage } from '@/ccs/playback'
