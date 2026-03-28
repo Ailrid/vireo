@@ -70,3 +70,7 @@ export interface PersonalFmRequest {
 export interface VipInfoRequest {
   uid: number
 }
+
+export interface HomepageRequest {
+  refresh?: number
+}

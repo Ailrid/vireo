@@ -1,11 +1,4 @@
-import {
-  createRequest,
-  CryptoMode,
-  type RawSongDetailResponse,
-  convertSongDetail,
-  type SongDetail,
-  type AlbumDetail
-} from '../../utils'
+import { createRequest, CryptoMode, type AlbumDetail, getSongDetail } from '../../utils'
 import { Body, Cookies, Headers, HttpSystem, Ok } from '@virid/express'
 import { AlbumDetailRequestMessage } from '../message'
 import { type AlbumDetailRequest, type AlbumDetailResponse } from '../types'
@@ -31,32 +24,8 @@ export class AlbumDetailSystem {
 
     const rawData = albumAnswer.data as RawAlbumDetailResponse
     const rawAlbum = rawData.album
-
-    const tracksID = (rawData.songs || []).map(s => ({ id: s.id }))
-    const tracksAnswer = await createRequest(CryptoMode.weapi, {
-      url: '/v3/song/detail',
-      data: { c: JSON.stringify(tracksID) },
-      headers,
-      cookies
-    })
-
-    const formattedSongs: SongDetail[] = convertSongDetail(
-      tracksAnswer.data as RawSongDetailResponse
-    )
-    // 检查歌曲喜欢的状态
-    const answer = await createRequest(CryptoMode.eapi, {
-      url: '/song/like/check',
-      data: {
-        trackIds: formattedSongs.map(i => i.id)
-      },
-      cookies,
-      headers
-    })
-    const likedIdSet = new Set(answer.data.ids || answer.data.data || [])
-    // 返回一个和输入 ids 等长的布尔数组
-    formattedSongs.forEach(song => {
-      song.like = likedIdSet.has(song.id)
-    })
+    const tracksID = (rawData.songs || []).map(s => s.id)
+    const formattedSongs = await getSongDetail(tracksID, cookies, headers)
 
     const albumDetail: AlbumDetail = {
       id: rawAlbum.id,

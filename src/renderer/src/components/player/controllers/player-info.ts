@@ -8,9 +8,10 @@ import {
 } from '@/ccs/playback'
 import { Controller } from '@virid/core'
 import { Project, Responsive, Use, Watch } from '@virid/vue'
-import { type PlaylistDetail, type SongDetail } from '@/utils'
+import { type PlaylistInfo, type PlaylistDetail, type SongDetail } from '@/utils'
 import { type ShallowRef, useTemplateRef } from 'vue'
 import { type PlayerConfig, SettingComponent } from '@/ccs/settings'
+import { UserComponent } from '@/ccs/user'
 
 @Controller()
 export class PlayerInfoController {
@@ -36,6 +37,10 @@ export class PlayerInfoController {
   //当前的播放模式
   @Project(PlayerComponent, i => i.playMode)
   public playMode!: string
+
+  //用户当前喜欢歌曲的列表
+  @Project(UserComponent, i => i.userPlaylists)
+  public userPlaylists: PlaylistInfo[] = []
 
   @Use(() => useTemplateRef('volumeBar'))
   public volumeBar!: ShallowRef<HTMLDivElement>
@@ -105,7 +110,7 @@ export class PlayerInfoController {
     }
     //右键点击
     else {
-      if (!this.playListDetail) return
+      if (!this.playListDetail || this.playListDetail.id !== this.userPlaylists.at(0)?.id) return
       if (this.playMode === 'intelligence') SetPlayModeMessage.send('order')
       else SetPlayModeMessage.send('intelligence')
     }

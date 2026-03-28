@@ -31,7 +31,7 @@
       <template #item="{ item, index }">
         <div class="flex h-full w-full items-center justify-center">
           <div
-            class="group flex h-14 w-full items-center gap-1 rounded-xl px-1 transition-all hover:bg-current/5 active:scale-[0.98]"
+            class="group flex h-14 w-full items-center gap-1 rounded-xl px-1 transition-all duration-300 hover:bg-current/5 active:scale-[0.98]"
             @click="PlaySongMessage.send(item)"
           >
             <!-- 标记 -->

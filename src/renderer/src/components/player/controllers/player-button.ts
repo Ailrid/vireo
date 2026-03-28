@@ -68,7 +68,7 @@ export class PlayerButtonController {
     }
     //右键点击
     else {
-      if (!this.playListDetail) return
+      if (!this.playListDetail || this.playListDetail.id !== this.userPlaylists.at(0)?.id) return
       if (this.playMode === 'intelligence') SetPlayModeMessage.send('order')
       else SetPlayModeMessage.send('intelligence')
     }

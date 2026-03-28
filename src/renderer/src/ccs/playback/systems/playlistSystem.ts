@@ -4,7 +4,8 @@ import {
   SetPlaylistMessage,
   LoadFMPlaylistMessage,
   LoadIntelligencePlaylistMessage,
-  SongLikeMessage
+  SongLikeMessage,
+  SetPlayModeMessage
 } from '../messages'
 import { PlayerComponent, PlaylistComponent } from '../components'
 import { personalFm, intelligence, songLike } from '@/utils/server'
@@ -62,6 +63,8 @@ export class PlaylistSystem {
       })
       .with({ ok: false }, ({ val: err }) => {
         MessageWriter.error(new Error(err))
+        // 回退到顺序播放
+        SetPlayModeMessage.send('order')
       })
       .exhaustive()
   }

@@ -45,4 +45,10 @@ export class RecommendSongRequestMessage extends HttpRequestMessage {}
   path: '/netease/vip/info',
   method: 'post'
 })
-export class VipInfoRequestMessage extends HttpRequestMessage {}
+export class VipInfoRequestMessage extends HttpRequestMessage { }
+
+@HttpRoute({
+  path: '/netease/homepage',
+  method: 'post'
+})
+export class HomepageRequestMessage extends HttpRequestMessage {}

@@ -1,10 +1,10 @@
 import {
   createRequest,
   CryptoMode,
-  type SongDetail,
   type AlbumInfo,
   type ArtistInfo,
-  type PlaylistInfo
+  type PlaylistInfo,
+  getSongDetail
 } from '../../utils'
 import { Body, Cookies, Headers, HttpSystem, Ok } from '@virid/express'
 import { SearchSuggestRequestMessage } from '../message'
@@ -30,27 +30,8 @@ export class SearchSuggestSystem {
     })
 
     const raw = (answer.data as RawSearchSuggestResponse).result || {}
-
-    // Songs (搜索建议的歌曲信息是不全的，但要强行转为 SongDetail 结构)
-    const songs: SongDetail[] = (raw.songs || []).map(s => ({
-      id: s.id,
-      platformId: String(s.id),
-      source: 'netease',
-      name: s.name,
-      artists: (s.artists || []).map((ar: any) => ({
-        id: ar.id,
-        name: ar.name
-      })),
-      album: {
-        id: s.album?.id || 0,
-        name: s.album?.name || '',
-        cover: '' // 搜索建议接口通常不带歌曲的封面图
-      },
-      duration: s.duration,
-      isAvailable: true, // 建议阶段默认给 true，点击播放时再校验
-      raw: s,
-      like: false
-    }))
+    const ids = raw.songs?.map((s: any) => s.id) || []
+    const songs = await getSongDetail(ids, cookies, headers)
 
     // Albums
     const albums: AlbumInfo[] = (raw.albums || []).map(al => ({

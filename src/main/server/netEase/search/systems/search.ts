@@ -1,12 +1,11 @@
 import {
   createRequest,
   CryptoMode,
-  convertSongDetail,
-  RawSongDetailResponse,
   type SongDetail,
   type AlbumInfo,
   type ArtistInfo,
-  type PlaylistInfo
+  type PlaylistInfo,
+  getSongDetail
 } from '../../utils'
 import { Body, Cookies, Headers, HttpSystem, Ok } from '@virid/express'
 import { SearchRequestMessage } from '../message'
@@ -46,20 +45,11 @@ export class SearchSystem {
       case SearchType.Lyric: {
         const rawSongs: RawSearchSong = result.songs || []
         if (rawSongs.length === 0) return this.empty(200)
-
-        // 提取 ID 走 v3 黄金补全流程，拿高清封面和准确权限
-        const ids = rawSongs.map((s: any) => ({ id: s.id }))
-        const tracksAnswer = await createRequest(CryptoMode.weapi, {
-          url: '/v3/song/detail',
-          data: { c: JSON.stringify(ids) },
-          cookies,
-          headers
-        })
-
-        const items = convertSongDetail(tracksAnswer.data as RawSongDetailResponse)
+        const ids = rawSongs.map((s: any) => s.id)
+        const formattedSongs = await getSongDetail(ids, cookies, headers)
         return Ok({
           code: 200,
-          items,
+          items: formattedSongs,
           total: result.songCount || 0,
           hasMore: result.hasMore ?? true
         } as SearchResponse<SongDetail>)
@@ -130,7 +120,6 @@ export class SearchSystem {
           hasMore: result.hasMore ?? true
         } as SearchResponse<PlaylistInfo>)
       }
-      // ... 接之前的 switch (type) 逻辑
 
       // ================= 用户搜索 =================
       case SearchType.User: {

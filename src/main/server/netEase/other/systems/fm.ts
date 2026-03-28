@@ -2,7 +2,8 @@ import {
   createRequest,
   CryptoMode,
   type RawSongDetailResponse,
-  convertSongDetail
+  convertSongDetail,
+  getSongDetail
 } from '../../utils'
 import { Body, Cookies, Headers, HttpSystem, Ok } from '@virid/express'
 import { FmModeRequestMessage } from '../message'
@@ -39,34 +40,9 @@ export class PersonalFmSystem {
 
     // 提取 ID
     const rawList = fmAnswer.data?.data || []
-    const tracksID = rawList.map((item: any) => ({
-      id: item.id
-    }))
+    const tracksID = rawList.map((item: any) => item.id)
+    const formattedSongs = await getSongDetail(tracksID, cookies, headers)
 
-    // 补全歌曲
-    const tracksAnswer = await createRequest(CryptoMode.weapi, {
-      url: '/v3/song/detail',
-      data: { c: JSON.stringify(tracksID) },
-      cookies,
-      headers
-    })
-
-    // 数据清洗
-    const rawSongData: RawSongDetailResponse = tracksAnswer.data
-    const formattedSongs = convertSongDetail(rawSongData)
-    const res = await createRequest(CryptoMode.eapi, {
-      url: '/song/like/check',
-      data: {
-        trackIds: formattedSongs.map(i => i.id)
-      },
-      cookies,
-      headers
-    })
-    const likedIdSet = new Set(res.data.ids || res.data.data || [])
-    // 返回一个和输入 ids 等长的布尔数组
-    formattedSongs.forEach(song => {
-      song.like = likedIdSet.has(song.id)
-    })
     return Ok({
       code: 200,
       songs: formattedSongs,
