@@ -1,8 +1,6 @@
 import {
   createRequest,
   CryptoMode,
-  type RawSongDetailResponse,
-  convertSongDetail,
   getSongDetail
 } from '../../utils'
 import { Body, Cookies, Headers, HttpSystem, Ok } from '@virid/express'

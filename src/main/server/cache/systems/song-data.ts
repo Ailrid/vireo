@@ -172,7 +172,10 @@ export class CacheSongDataSystem {
       .run(id)
     const absolutePath = path.isAbsolute(cachePath) ? cachePath : path.join('/', cachePath)
     return StreamFile(absolutePath, {
-      dotfiles: 'allow'
+      dotfiles: 'allow',
+      headers: {
+        'From-Cache': 'true'
+      }
     })
   }
 }
