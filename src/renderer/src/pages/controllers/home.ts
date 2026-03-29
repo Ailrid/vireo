@@ -117,12 +117,12 @@ export class HomePageController {
   get discoverData() {
     // 拿到封面链接
     if (this.recommendSongs.at(0)?.album.cover)
-      this.covers.set('recommend', this.recommendSongs.at(0)?.album.cover + '?param=200y200')
+      this.covers.set('recommend', this.recommendSongs.at(0)!.album.cover)
     if (this.personalRadar?.firstSongCover)
-      this.covers.set('radar', this.personalRadar.firstSongCover + '?param=200y200')
+      this.covers.set('radar', this.personalRadar.firstSongCover)
     if (this.intelligenceSong?.album.cover)
-      this.covers.set('intelligence', this.intelligenceSong.album.cover + '?param=200y200')
-    if (this.fmSong?.album.cover) this.covers.set('fm', this.fmSong.album.cover + '?param=200y200')
+      this.covers.set('intelligence', this.intelligenceSong.album.cover)
+    if (this.fmSong?.album.cover) this.covers.set('fm', this.fmSong.album.cover)
 
     return {
       recommend: {
