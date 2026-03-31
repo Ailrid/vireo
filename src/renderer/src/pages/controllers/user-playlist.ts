@@ -7,7 +7,7 @@ import { useRoute } from 'vue-router'
 
 let _isSidebarOpen = true
 
-export class PageChangeMessage extends SingleMessage {
+export class UserPlaylistPageChangeMessage extends SingleMessage {
   constructor(public pageIndex: number) {
     super()
   }
@@ -49,7 +49,7 @@ export class UserPlaylistPageController {
   }
   //当前歌单里的歌曲从userPlaylistsSongs里投影
   @Project()
-  get currentPlaylistSong(): SongDetail[] | null {
+  get currentPageSong(): SongDetail[] | null {
     const playlistId = this.currentPlaylistId
     const pageIndex = this.pageIndex
     return playlistId && this.userPlaylistsSongs.get(playlistId)?.get(pageIndex)
@@ -65,18 +65,18 @@ export class UserPlaylistPageController {
    * * 设置播放列表为此页
    */
   setPlaylist(song: SongDetail | null) {
-    if (!this.currentPlaylistSong || !this.currentPlaylist || !song) return
+    if (!this.currentPageSong || !this.currentPlaylist || !song) return
     //替换歌单并播放第一首
-    SetPlaylistMessage.send(this.currentPlaylistSong, this.currentPlaylist)
+    SetPlaylistMessage.send(this.currentPageSong, this.currentPlaylist)
     PlaySongMessage.send(song)
   }
   /**
    * * 改变页面的时候获取新的数据
    */
   @Listener({
-    messageClass: PageChangeMessage
+    messageClass: UserPlaylistPageChangeMessage
   })
-  public onPageChange(message: PageChangeMessage) {
+  public onPageChange(message: UserPlaylistPageChangeMessage) {
     this.pageIndex = message.pageIndex
     //顺便拉取一下新的页面数据
     this.initPageData()

@@ -94,9 +94,9 @@ export class ThemeController {
     setTimeout(() => {
       this.activeBtn = ''
     }, 500)
-    this.setting.immersiveMode = false
     //亮色和暗色主题
     if (mode === 'light' || mode === 'dark') {
+      this.setting.immersiveMode = false
       return SaveSettingsMessage.send(settings => {
         settings.theme.mode = mode
       })
@@ -135,7 +135,9 @@ export class ThemeController {
   @Watch<ThemeController>(i => i.setting.immersiveMode)
   public async onImmersiveModeChange() {
     // 仅在图像模式下有效
-    if (this.setting.mode !== 'image') return
+    if (this.setting.mode !== 'image') {
+      await this.toggleTheme('image')
+    }
     //切换回来的时候要看看变回什么原来的模式
     if (!this.setting.immersiveMode) {
       //重新获取颜色

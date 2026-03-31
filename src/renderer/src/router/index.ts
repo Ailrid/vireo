@@ -67,7 +67,7 @@ const routes = [
           {
             path: '/recommend',
             name: 'recommend',
-            component: () => import('@/pages/Recommend.vue')
+            component: () => import('@/pages/Recommended.vue')
           }
         ]
       }

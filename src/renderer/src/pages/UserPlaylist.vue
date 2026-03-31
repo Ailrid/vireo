@@ -25,20 +25,18 @@
           <div class="mb-6 flex w-full gap-2">
             <div class="flex-1"></div>
             <Button
-              variant="outline"
-              size="icon"
-              class="shrink-0 backdrop-blur-md"
+              variant="icon"
               @click="
                 () => {
-                  const song = pct.currentPlaylistSong ? pct.currentPlaylistSong[0] : null
+                  const song = pct.currentPageSong ? pct.currentPageSong[0] : null
                   pct.setPlaylist(song)
                 }
               "
             >
-              <Play :size="16" fill="currentColor" />
+              <Play :size="18" fill="currentColor" />
             </Button>
-            <Button variant="outline" size="icon" class="shrink-0 backdrop-blur-md" @click="">
-              <Heart :size="16" />
+            <Button variant="icon" @click="">
+              <Heart :size="18" />
             </Button>
           </div>
           <div class="flex-1"></div>
@@ -87,69 +85,21 @@
         <!-- 列表 -->
         <div class="flex-1">
           <VirtualList
-            v-if="pct.currentPlaylistSong"
+            v-if="pct.currentPageSong"
             :key-field="'id'"
             :buffer="3"
-            :list-data="pct.currentPlaylistSong"
+            :list-data="pct.currentPageSong"
           >
             <template #item="{ item, index }">
-              <div class="flex h-full w-full items-center justify-center">
-                <div
-                  class="group flex h-14 w-full items-center gap-1 rounded-xl px-1 transition-all hover:bg-current/5 active:scale-[0.98]"
+              <div class="h-full w-full">
+                <Song
                   @click="PlaySongMessage.send(item)"
                   @dblclick="pct.setPlaylist(item)"
-                >
-                  <!-- 序号 -->
-                  <div
-                    class="group-hover:text-primary mr-1 ml-1 w-4 text-center font-mono text-xs transition-all group-hover:opacity-100"
-                  >
-                    {{ (pct.pageIndex * 200 + index + 1).toString().padStart(2, '0') }}
-                  </div>
-                  <!-- 封面 -->
-                  <div class="h-13 w-13 shrink-0 overflow-hidden rounded-lg shadow-sm">
-                    <img
-                      :src="item.album.cover + '?param=64y64'"
-                      class="h-full w-full cursor-pointer object-cover transition-transform group-hover:scale-110"
-                    />
-                  </div>
-                  <!-- 歌曲信息，名字和歌手和专辑 -->
-                  <div class="flex flex-1 flex-col truncate">
-                    <span class="truncate text-sm font-semibold tracking-tight">
-                      {{ item.name }}
-                    </span>
-                    <div class="mt-0.5 flex items-center gap-1 truncate text-sm opacity-60">
-                      <div class="flex shrink-0 items-center gap-1">
-                        <div class="flex flex-wrap gap-x-2">
-                          <span
-                            v-for="artist in item.artists"
-                            :key="artist.id"
-                            class="song-info-text"
-                            @click.stop="
-                              $router.push({
-                                name: 'artist',
-                                params: { id: artist.id }
-                              })
-                            "
-                          >
-                            {{ artist.name }}
-                          </span>
-                        </div>
-                      </div>
-                      <span class="mx-1 shrink-0">-</span>
-                      <span
-                        class="song-info-text"
-                        @click.stop="
-                          $router.push({
-                            name: 'artist',
-                            params: { id: item.album.id }
-                          })
-                        "
-                      >
-                        {{ item.album.name }}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                  :item="item"
+                  :index="index"
+                  :page-index="pct.pageIndex"
+                  :key="item.id"
+                ></Song>
               </div>
             </template>
           </VirtualList>
@@ -167,7 +117,7 @@
         <Scrubber
           :page-index="pct.pageIndex"
           :max-page-length="pct.maxPageLength"
-          :message-type="PageChangeMessage"
+          :message-type="UserPlaylistPageChangeMessage"
         />
       </div>
     </section>
@@ -178,15 +128,10 @@
 import Scrubber from '@/components/public/Scrubber.vue'
 import VirtualList from '@/components/public/VirtualList.vue'
 import { useController } from '@virid/vue'
-import { UserPlaylistPageController, PageChangeMessage } from './controllers'
+import { UserPlaylistPageController, UserPlaylistPageChangeMessage } from './controllers'
 import { Button } from '@/components/ui/button'
 import { Play, Heart, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 import { PlaySongMessage } from '@/ccs/playback'
+import Song from '@/components/public/Song.vue'
 const pct = useController(UserPlaylistPageController)
 </script>
-<style>
-@reference "@/assets/main.css";
-.song-info-text {
-  @apply hover:text-primary cursor-pointer underline-offset-2 transition-transform hover:scale-105;
-}
-</style>

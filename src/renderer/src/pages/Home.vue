@@ -121,14 +121,14 @@
                 <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg shadow-sm">
                   <img
                     :src="item.album.cover + '?param=64y64'"
-                    class="h-full w-full cursor-pointer object-cover transition-transform group-hover:scale-110"
+                    class="h-full w-full cursor-pointer object-cover transition-all duration-300 group-hover:scale-110"
                   />
                 </div>
                 <!-- 歌曲信息-->
                 <div class="flex flex-1 flex-col truncate">
                   <div class="flex w-full items-center gap-1 overflow-hidden">
                     <span
-                      class="hover:text-primary min-w-0 cursor-pointer truncate text-sm font-semibold"
+                      class="hover:text-primary min-w-0 cursor-pointer truncate text-sm font-semibold transition-all duration-300"
                       @click.stop="
                         $router.push({
                           name: 'artist',
@@ -264,7 +264,7 @@ const hct = useController(HomePageController)
   overflow: hidden;
   text-overflow: ellipsis;
 
-  @apply hover:text-primary min-w-0 cursor-pointer text-sm underline-offset-2 transition-transform hover:scale-105;
+  @apply hover:text-primary min-w-0 cursor-pointer text-sm underline-offset-2 transition-all duration-300 hover:scale-105;
   color: var(--foreground);
   opacity: 0.6;
 }

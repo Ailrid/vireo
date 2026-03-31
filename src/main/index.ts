@@ -11,6 +11,8 @@ import { MainPlugin } from '@virid/main'
 import { ExpressPlugin } from '@virid/express'
 import { app } from 'electron'
 import { bindComponents } from './server'
+
+
 const virid = createVirid()
   .use(MainPlugin, { electronApp: app })
   .use(ExpressPlugin, { server: server })

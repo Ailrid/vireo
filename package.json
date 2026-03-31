@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "description": "An Electron application with Vue and Virid",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": {
+    "name": "Ailrid",
+    "email": "shirahayuki2002@gmail.com"
+  },
   "homepage": "https://electron-vite.org",
   "scripts": {
     "format": "prettier --write .",
@@ -62,6 +65,14 @@
     "copyright": "Copyright © 2026 Starry",
     "compression": "maximum",
     "asar": true,
+    "protocols": [
+      {
+        "name": "Orpheus Protocol",
+        "schemes": [
+          "orpheus"
+        ]
+      }
+    ],
     "directories": {
       "output": "dist",
       "buildResources": "build"
@@ -76,10 +87,12 @@
     },
     "linux": {
       "target": [
-        "deb",
-        "AppImage"
+        "deb"
       ],
-      "category": "Music"
+      "category": "Music;",
+      "mimeTypes": [
+        "x-scheme-handler/orpheus"
+      ]
     },
     "nsis": {
       "oneClick": false,

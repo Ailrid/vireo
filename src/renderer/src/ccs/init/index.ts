@@ -46,6 +46,10 @@ export class InitSystem {
           high = mid - 1
         }
       }
+      // 时间超出时候默认取最后一句
+      if (time >= data.lyrics[data.lyrics.length - 1].time) {
+        index = data.lyrics.length - 1
+      }
       if (index !== -1 && index !== lyricComponent.currentIndex) {
         lyricComponent.currentIndex = index
         navigator.mediaSession.metadata!.title = data.lyrics[index].text
