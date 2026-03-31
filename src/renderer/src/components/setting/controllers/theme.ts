@@ -136,14 +136,14 @@ export class ThemeController {
   public async onImmersiveModeChange() {
     // 仅在图像模式下有效
     if (this.setting.mode !== 'image') {
-      await this.toggleTheme('image')
+      this.setting.immersiveMode = false
+      return
     }
-    //切换回来的时候要看看变回什么原来的模式
-    if (!this.setting.immersiveMode) {
+    if (!this.setting.immersiveMode && this.setting.mode == 'image') {
       //重新获取颜色
       await this.toggleUrl(this.setting.fileUrl)
-    } else {
-      // 使用当前专辑封面颜色
+    } else if (this.setting.immersiveMode && this.setting.mode == 'image') {
+      // 立刻使用当前专辑封面颜色
       if (this.currentSong) await this.toggleUrl(this.currentSong.album.cover)
     }
   }

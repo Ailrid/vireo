@@ -1,6 +1,6 @@
 <template>
-  <div class="h-full w-full p-8">
-    <div class="h-full w-full overflow-y-auto">
+  <div class="h-full w-full pr-8 pl-8">
+    <div class="mask h-full w-full overflow-y-auto">
       <div class="flex w-full flex-col gap-4">
         <!-- 日推 -->
         <section class="no-scrollbar section">
@@ -19,23 +19,6 @@
               @click="item.click()"
               :style="{ '--card-color': hct.colors.get(index) }"
             >
-              <!-- <div
-                class="bg-primary relative aspect-square w-full shrink-0 overflow-hidden rounded-2xl shadow-md"
-              >
-                <Transition name="bg-fade">
-                  <img
-                    v-if="item.cover"
-                    :src="item.cover"
-                    :key="item.cover"
-                    class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                    alt="Cover"
-                  />
-                </Transition>
-                <div
-                  v-if="!item.cover"
-                  class="bg-primary inset-0 flex h-full w-full animate-pulse items-center justify-center opacity-30"
-                ></div>
-              </div> -->
               <div
                 class="bg-primary relative aspect-square w-full shrink-0 overflow-hidden rounded-2xl shadow-md"
               >
@@ -237,6 +220,7 @@ const hct = useController(HomePageController)
 
 <style scoped>
 @reference "@/assets/main.css";
+
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;

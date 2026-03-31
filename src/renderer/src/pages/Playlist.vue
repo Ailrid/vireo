@@ -7,7 +7,7 @@
     >
       <div class="flex h-full w-full">
         <!-- 歌单信息 -->
-        <div class="flex h-full w-full flex-1 flex-col overflow-hidden p-8">
+        <div class="flex h-full w-full flex-1 flex-col overflow-hidden pr-8 pl-8">
           <div class="flex-1"></div>
           <!-- 封面 -->
           <div class="mb-6 aspect-square w-full shrink-0 overflow-hidden rounded-xl shadow-lg">
@@ -58,7 +58,7 @@
     </section>
     <!-- 列表 -->
     <section class="flex flex-1 overflow-hidden">
-      <div class="flex h-full flex-1 flex-col p-8 pl-0">
+      <div class="flex h-full flex-1 flex-col pr-8">
         <!-- 列表标头 -->
         <div class="mb-6 flex items-end justify-between border-b border-current/10 pb-4">
           <div class="flex items-center">

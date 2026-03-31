@@ -186,7 +186,10 @@
             </div>
             <div class="space-y-3">
               <label class="setting-item-title block">沉浸模式 (Immersive)</label>
-              <Switch v-model="tch.setting.immersiveMode" />
+              <div class="flex items-center justify-between">
+                <Switch v-model="tch.setting.immersiveMode" />
+                <p class="prompt-text">仅图像模式下有效</p>
+              </div>
             </div>
           </div>
         </div>

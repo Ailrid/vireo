@@ -8,7 +8,7 @@
       >
         <div class="flex h-full w-full">
           <!-- 歌单信息 -->
-          <div class="flex h-full w-full flex-1 flex-col overflow-hidden p-8">
+          <div class="flex h-full w-full flex-1 flex-col overflow-hidden pr-8 pl-8">
             <div class="flex-1"></div>
             <!-- 封面 -->
             <div class="mb-6 aspect-square w-full shrink-0 overflow-hidden rounded-xl shadow-lg">
@@ -22,7 +22,7 @@
                 <span class="text-xs opacity-20">No Cover</span>
               </div>
             </div>
-            <!-- 两个操作按钮 -->
+            <!-- 操作按钮 -->
             <div class="mb-6 flex w-full gap-2">
               <div class="flex-1"></div>
               <Button variant="icon" @click="rct.setPlaylist(rct.songs!.at(0)!)">
@@ -32,8 +32,11 @@
             <div class="flex-1"></div>
             <!-- 歌单文字信息 -->
             <div class="flex flex-1 flex-col justify-start">
-              <h1 class="mb-3 text-2xl leading-tight font-black tracking-tighter">
-                {{ '每日推荐' }}
+              <h1
+                class="mb-3 flex justify-between text-2xl leading-tight font-black tracking-tighter"
+              >
+                <span>每日推荐</span>
+                <span>{{ rct.getMonthAndDate() }}</span>
               </h1>
               <p class="mb-6 line-clamp-4 text-xs leading-relaxed opacity-60">
                 {{ rct.songs ? `今日为你推荐${rct.songs.length}首歌，每日6:00更新` : 'Loading...' }}
@@ -45,7 +48,7 @@
       </section>
       <!-- 列表 -->
       <section class="flex flex-1 overflow-hidden">
-        <div class="flex h-full w-full flex-1 flex-col p-8 pl-0">
+        <div class="flex h-full w-full flex-1 flex-col pr-8 pl-0">
           <!-- 列表标头 -->
           <div class="mb-6 flex w-full items-end justify-between border-b border-current/10 pb-4">
             <div class="flex items-center">
@@ -77,15 +80,18 @@
                 }"
               >
                 <div class="relative flex flex-col items-center self-stretch px-3">
-                  <div class="absolute top-0 bottom-0 w-[1.5px] bg-gray-200 dark:bg-white/10"></div>
                   <div
-                    class="relative z-10 h-2.5 w-2.5 shrink-0 rounded-full border-2 border-white shadow-sm transition-all duration-300 group-hover:scale-125 dark:border-zinc-900"
+                    class="absolute top-0 bottom-0 w-[2px] bg-white/20 shadow-[0_0_1px_rgba(0,0,0,0.1)]"
+                  ></div>
+                  <div
+                    class="relative z-10 h-3 w-3 shrink-0 rounded-full border-2 border-white shadow-lg transition-all duration-300 group-hover:scale-150 dark:border-zinc-900"
                     :style="{
-                      backgroundColor: rct.colors.get(item.id)
+                      backgroundColor: rct.colors.get(item.id),
+                      boxShadow: `0 0 10px ${rct.colors.get(item.id)}80`
                     }"
                   ></div>
                 </div>
-                <div class="flex-1 min-w-0">
+                <div class="min-w-0 flex-1">
                   <Song
                     @click="PlaySongMessage.send(item)"
                     @dblclick="rct.setPlaylist(item)"

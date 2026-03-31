@@ -59,4 +59,14 @@ export class RecommendedPageController {
     })
     PlaySongMessage.send(song)
   }
+
+  /**
+   * * 获取当前的月份和日期
+   */
+  getMonthAndDate() {
+    const date = new Date()
+    const month = date.getMonth() + 1
+    const day = date.getDate()
+    return `${month}/${day}`
+  }
 }
