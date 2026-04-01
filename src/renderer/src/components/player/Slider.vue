@@ -1,26 +1,46 @@
 <template>
-  <div class="flex items-center">
-    <span class="time-text">{{ sct.currentTime }}</span>
+  <div class="flex max-w-[calc(100vw-23.25rem)] items-center overflow-hidden" ref="sliderRoot">
+    <div class="time-text">
+      <span>{{ sct.currentTime }}</span>
+    </div>
     <div
       ref="sliderContainer"
       class="group relative flex cursor-pointer items-center"
       @mousedown="SliderControllerMessage.send($event)"
     >
-      <div class="flex items-center justify-center gap-1">
-        <div
-          v-for="(val, i) in sct.slider"
-          :key="i"
-          class="wave-bar"
-          :class="sct.waveBarStyle(sct.sliderMask[i])"
-          :style="{
-            height: `${val * 1.5 + 0.5}rem`
-          }"
-        ></div>
-      </div>
+      <Transition name="slider-fade">
+        <div v-if="!sct.changeSlider" class="flex items-center justify-center gap-1">
+          <div
+            v-for="(val, i) in sct.slider"
+            :key="i"
+            class="wave-bar"
+            :class="sct.waveBarStyle(sct.sliderMask[i])"
+            :style="{
+              height: `${val * 1.5 + 0.5}rem`
+            }"
+          ></div>
+        </div>
+        <div v-else class="flex h-4 w-[calc(100vw-30.75rem)] items-center justify-between">
+          <div class="relative w-full flex-1 cursor-pointer">
+            <div
+              class="absolute z-10 h-2 w-full rounded-2xl opacity-20"
+              :class="[sct.progressBarStyle()]"
+            ></div>
+            <div
+              class="z-100 h-2 rounded-2xl transition-all duration-300"
+              :class="[sct.progressBarStyle()]"
+              :style="{
+                width: `${sct.progress}%`
+              }"
+            ></div>
+          </div>
+        </div>
+      </Transition>
     </div>
-    <span class="time-text">{{
-      sct.player.duration ? formatTime(sct.player.duration) : '00:00'
-    }}</span>
+
+    <div class="time-text">
+      <span>{{ sct.player.duration ? formatTime(sct.player.duration) : '00:00' }}</span>
+    </div>
   </div>
 </template>
 
@@ -42,6 +62,17 @@ const sct = useController(SliderController)
 .time-text {
   font-size: 0.8rem;
   opacity: 0.8;
-  @apply p-4;
+  @apply flex w-15 items-center justify-center;
+}
+.slider-fade-enter-active,
+.slider-fade-leave-active {
+  transition: opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.slider-fade-leave-active {
+  position: absolute;
+}
+.slider-fade-enter-from,
+.slider-fade-leave-to {
+  opacity: 0;
 }
 </style>

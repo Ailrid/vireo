@@ -30,10 +30,10 @@
         <div class="flex-1" @dblclick="PlayerControllerMessage.send($event, true)"></div>
         <div class="flex w-[80%] items-center justify-between px-2">
           <Button variant="icon" @click="PreviousSongMessage.send()">
-            <SkipBack class="control-btn"
+            <SkipBack class="control-btn" :size="18"
           /></Button>
           <Button variant="icon" @click="NextSongMessage.send()">
-            <SkipForward class="control-btn"
+            <SkipForward class="control-btn" :size="18"
           /></Button>
         </div>
         <div class="flex-1" @dblclick="PlayerControllerMessage.send($event, true)"></div>
@@ -88,7 +88,7 @@ const sct = useController(SongCardController)
   backface-visibility: hidden;
 }
 .control-btn {
-  @apply m-1 h-5 w-5 cursor-pointer fill-current transition-all duration-300 hover:scale-110 active:scale-95;
+  @apply m-1 h-5! w-5! cursor-pointer fill-current transition-all;
 }
 .song-text:hover {
   transform: scale(1.08);

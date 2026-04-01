@@ -32,12 +32,16 @@ export class PlayerSystem {
     const list = playlistComponent.currentList
     // 更新播放列表
     let index = list.findIndex(item => item.id === message.song.id)
+    let song
     if (index === -1) {
-      const song = JSON.parse(JSON.stringify(message.song))
-      list.push(song)
-      index = list.length - 1
+      song = JSON.parse(JSON.stringify(message.song))
+      // list.unshift(song)
+      // index = list.length - 1
+      list.splice(playlistComponent.currentIndex + 1, 0, song)
+      index = playlistComponent.currentIndex + 1
+    } else {
+      song = list[index]
     }
-    const song = list[index]
     playlistComponent.currentIndex = index
     playlistComponent.currentSong = song
     playerComponent.player.duration = song.duration

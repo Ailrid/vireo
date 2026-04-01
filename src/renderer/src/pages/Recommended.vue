@@ -48,7 +48,7 @@
       </section>
       <!-- 列表 -->
       <section class="flex flex-1 overflow-hidden">
-        <div class="flex h-full w-full flex-1 flex-col pr-8 pl-0">
+        <div class="flex h-full w-full flex-1 flex-col pr-8" :class="[rct.isSidebarOpen ? 'pl-0' : 'pl-8']">
           <!-- 列表标头 -->
           <div class="mb-6 flex w-full items-end justify-between border-b border-current/10 pb-4">
             <div class="flex items-center">

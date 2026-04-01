@@ -88,8 +88,8 @@
             <div></div>
             <span>推荐歌曲</span>
           </h2>
-          <div class="flex w-full justify-between gap-4">
-            <div v-for="group in hct.pageSong" class="flex w-48 flex-col gap-4">
+          <div class="grid grid-flow-col auto-cols-fr gap-4 w-full">
+            <div v-for="group in hct.pageSong" class="flex flex-col gap-4">
               <div class="flex h-10 w-full flex-col">
                 <span class="truncate text-sm">{{ group.title }}</span>
                 <span class="truncate text-sm opacity-50">{{ group.subTitle }}</span>
@@ -220,7 +220,6 @@ const hct = useController(HomePageController)
 
 <style scoped>
 @reference "@/assets/main.css";
-
 
 .no-scrollbar::-webkit-scrollbar {
   display: none;

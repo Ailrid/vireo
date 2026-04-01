@@ -139,7 +139,7 @@ export class HomePageController {
       radar: {
         cover: this.covers.get('radar') || '',
         title: '02 私人雷达',
-        subTitle: '反复聆听你的声音',
+        subTitle: '反复聆听你喜欢的歌',
         click: () => {
           this.router.push({ name: 'playlist', params: { id: this.personalRadar?.id || 0 } })
         }
@@ -155,7 +155,7 @@ export class HomePageController {
       fm: {
         cover: this.covers.get('fm') || '',
         title: '04 FM漫游',
-        subTitle: '来自未来的呼唤',
+        subTitle: '在音乐的世界里漫游',
         click: () => {
           SetPlayModeMessage.send('fm')
         }

@@ -92,7 +92,7 @@ export class DB {
       VALUES (?, ?, ?, CURRENT_TIMESTAMP)
     `
       )
-      .run(id, JSON.stringify(lyrics_json), is_pure ? 1 : 0)
+      .run(id, lyrics_json, is_pure ? 1 : 0)
   }
   getLyricCache(id: number): LyricCacheRecord | undefined {
     return this.db.prepare('SELECT lyrics_json FROM lyric_cache WHERE id = ?').get(id) as
