@@ -4,11 +4,10 @@
     <!-- 封面 -->
     <div class="flex w-full flex-col">
       <div class="aspect-square w-full shrink-0 overflow-hidden rounded-xl shadow-lg">
-        <img
+        <Img
           v-if="pct.currentSong?.album?.cover"
-          :src="pct.currentSong?.album?.cover"
-          class="h-full w-full cursor-pointer overflow-hidden object-cover transition-transform duration-300 hover:scale-105"
-          alt="Cover"
+          :cover="pct.currentSong?.album?.cover"
+          class="cursor-pointer overflow-hidden transition-transform duration-300 hover:scale-105"
           @click="SwitchViewMessage.send()"
         />
         <div v-else class="bg-muted flex h-full w-full items-center justify-center">
@@ -175,7 +174,7 @@ import {
   Play,
   Pause
 } from 'lucide-vue-next'
-import Button from '../ui/button/Button.vue'
+import Button from '../ui/Button.vue'
 import {
   NextSongMessage,
   PlayOrPauseMessage,
@@ -183,6 +182,7 @@ import {
   SongLikeMessage
 } from '@/ccs/playback'
 import { formatTime } from '@/utils'
+import Img from '../public/Img.vue'
 const icons = {
   order: Repeat,
   loop: Repeat1,

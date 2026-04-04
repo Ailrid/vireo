@@ -47,9 +47,10 @@
             </div>
             <!-- 封面 -->
             <div class="h-13 w-13 shrink-0 overflow-hidden rounded-lg shadow-sm">
-              <img
-                :src="item.album.cover + '?param=64y64'"
-                class="h-full w-full cursor-pointer object-cover transition-all duration-300 group-hover:scale-110"
+
+              <Img
+                :cover="item.album.cover + '?param=64y64'"
+                class="cursor-pointer transition-all duration-300 group-hover:scale-110"
               />
             </div>
             <!-- 歌曲信息-->
@@ -59,7 +60,7 @@
                   class="hover:text-primary min-w-0 cursor-pointer truncate text-sm font-semibold transition-all duration-300"
                   @click.stop="
                     $router.push({
-                      name: 'artist',
+                      name: 'album',
                       params: { id: item.album.id }
                     })
                   "
@@ -98,6 +99,7 @@ import { CurrentPlaylistController } from './controllers'
 import { useController } from '@virid/vue'
 import { PlaySongMessage } from '@/ccs/playback'
 import { Music } from 'lucide-vue-next'
+import Img from '../public/Img.vue'
 const cct = useController(CurrentPlaylistController)
 </script>
 <style>

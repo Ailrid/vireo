@@ -1,54 +1,60 @@
 <template>
   <div class="drag z-50 flex w-full items-center justify-between px-2">
-    <div class="no-drag flex items-center gap-1">
-      <LoginDialog class="h-10 w-10" />
+    <div class="no-drag flex items-center justify-center gap-2">
+      <LoginDialog />
       <DropdownMenu>
-        <DropdownMenuTrigger as-child>
-          <button
-            class="flex h-8 cursor-pointer items-center gap-2 rounded-lg px-3 text-sm font-medium transition-all outline-none active:scale-95"
+        <template #trigger="{ toggle, isOpen }" as-child>
+          <Button
+            @click="toggle"
+            variant="none"
             @wheel="TitleBarLeftControllerMessage.send($event)"
+            class="hover:text-primary"
           >
-            <span>{{ tct.currentViewName }}</span>
-            <ChevronDown :size="14" class="opacity-50" />
-          </button>
-        </DropdownMenuTrigger>
+            <div class="flex items-center justify-center gap-1">
+              <span>{{ tct.currentViewName }}</span>
+              <ChevronDown v-if="!isOpen" :size="14" class="opacity-50" />
+              <ChevronUp v-else :size="14" class="opacity-50" />
+            </div>
+          </Button>
+        </template>
 
-        <DropdownMenuContent
-          align="start"
-          class="bg-card/50 w-48 border shadow-2xl backdrop-blur-3xl"
-          :style="tcct.rootStyle"
-        >
-          <DropdownMenuLabel class="text-foreground text-sm tracking-widest uppercase opacity-50"
-            >Select View</DropdownMenuLabel
-          >
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            @click="tct.changeView('current-playlist')"
-            class="focus:bg-primary/10 text-foreground hover:text-foreground cursor-pointer"
-          >
-            <ListMusic class="mr-2 h-4 w-4" /> 播放列表
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            @click="tct.changeView('playlist-manager')"
-            class="focus:bg-primary/10 text-foreground hover:text-foreground cursor-pointer"
-          >
-            <Disc class="mr-2 h-4 w-4" /> 歌单列表
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            @click="tct.changeView('recent-play')"
-            class="focus:bg-primary/10 text-foreground hover:text-foreground cursor-pointer"
-          >
-            <Heart class="mr-2 h-4 w-4" /> 最近播放
-          </DropdownMenuItem>
-        </DropdownMenuContent>
+        <template #default>
+          <div class="flex flex-col gap-1 border p-2 shadow-2xl">
+            <label class="text-foreground text-sm tracking-widest uppercase opacity-50"
+              >Select View</label
+            >
+            <div class="bg-primary h-0.5 w-full"></div>
+            <Button
+              variant="none"
+              @click="tct.changeView('current-playlist')"
+              class="hover:bg-primary/10 hover:text-primary justify-start!"
+            >
+              <ListMusic class="mr-2 h-4 w-4" /> 播放列表
+            </Button>
+            <Button
+              variant="none"
+              @click="tct.changeView('playlist-manager')"
+              class="hover:bg-primary/10 hover:text-primary justify-start!"
+            >
+              <Disc class="mr-2 h-4 w-4" /> 歌单列表
+            </Button>
+            <Button
+              variant="none"
+              @click="tct.changeView('recent-play')"
+              class="hover:bg-primary/10 hover:text-primary justify-start!"
+            >
+              <Heart class="mr-2 h-4 w-4" /> 最近播放
+            </Button>
+          </div>
+        </template>
       </DropdownMenu>
     </div>
     <div class="drag h-full flex-1"></div>
     <div class="no-drag flex items-center">
       <Button
+        :size="18"
         v-if="tct.currentView === 'current-playlist'"
-        type="icon"
+        variant="icon"
         class="group flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden transition-all duration-300 active:scale-75"
         @click="MoveToCurrentSongMessage.send()"
       >
@@ -59,7 +65,8 @@
         />
       </Button>
       <Button
-        type="icon"
+        :size="18"
+        variant="icon"
         class="group flex h-10 w-10 cursor-pointer items-center justify-center overflow-hidden transition-all duration-300 active:scale-75"
         @click="$router.push({ name: 'setting' })"
       >
@@ -75,20 +82,12 @@
 
 <script setup lang="ts">
 import LoginDialog from '@/components/login/LoginDialog.vue'
-import { Settings, ChevronDown, ListMusic, Disc, Heart, MapPin } from 'lucide-vue-next'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui/dropdown-menu'
+import { Settings, ChevronDown, ChevronUp, ListMusic, Disc, Heart, MapPin } from 'lucide-vue-next'
+import DropdownMenu from '@/components/ui/DropdownMenu.vue'
 import { useController } from '@virid/vue'
-import { SettingThemeController } from '@/ccs/settings'
 import { TitleBarLeftController, TitleBarLeftControllerMessage } from '../controllers'
 import { MoveToCurrentSongMessage } from '@/components/sidebar/controllers'
-const tcct = useController(SettingThemeController)
+import Button from '@/components/ui/Button.vue'
 const tct = useController(TitleBarLeftController, {
   id: 'title-bar-left'
 })

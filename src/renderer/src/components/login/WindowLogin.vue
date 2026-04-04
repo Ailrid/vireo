@@ -24,21 +24,19 @@
         </svg>
       </div>
       <div>
-        <h3 class="text-base font-bold text-slate-800">网页安全登录</h3>
-        <p class="text-sm text-slate-400">通过网易云官方窗口完成身份验证</p>
+        <h3 class="text-base font-bold">网页安全登录</h3>
+        <p class="text-sm">通过网易云官方窗口完成身份验证</p>
       </div>
     </div>
     <!-- 提示 -->
     <div class="w-full max-w-72 space-y-3">
       <div class="flex items-start gap-3">
         <span class="prompt-text">1</span>
-        <p class="text-xs leading-5 text-slate-600">点击“去登录”，在弹出的官方页面完成登录操作</p>
+        <p class="text-xs leading-5">点击“去登录”，在弹出的官方页面完成登录操作</p>
       </div>
       <div class="flex items-start gap-3">
         <span class="prompt-text">2</span>
-        <p class="text-xs leading-5 text-slate-600">
-          完成后窗口将自动关闭，若未关闭可以点击按钮手动关闭
-        </p>
+        <p class="text-xs leading-5">完成后窗口将自动关闭，若未关闭可以点击按钮手动关闭</p>
       </div>
     </div>
     <!-- 登录状态 -->
@@ -55,21 +53,15 @@
         v-if="wct.loginStatus === 'waiting'"
         class="h-1.5 w-1.5 animate-ping rounded-full bg-blue-500"
       ></span>
-      <span class="text-[11px] font-semibold tracking-wide uppercase">{{
+      <span class="text-sm font-semibold tracking-wide uppercase">{{
         wct.loginInfo || '准备就绪'
       }}</span>
     </div>
     <!-- 按钮 -->
-    <div class="flex w-full gap-3">
+    <div class="flex w-full justify-around">
+      <Button variant="outline" @click="wct.openWindow()"> 打开窗口 </Button>
       <Button
         variant="outline"
-        class="flex-1 rounded-xl border-slate-200 transition-transform hover:bg-slate-50 active:scale-95"
-        @click="wct.openWindow()"
-      >
-        去登录
-      </Button>
-      <Button
-        class="flex-1 rounded-xl shadow-sm transition-transform active:scale-95"
         :disabled="wct.loginStatus !== 'waiting'"
         @click="wct.closeWindow()"
       >
@@ -77,14 +69,14 @@
       </Button>
     </div>
 
-    <p class="text-[10px] text-slate-400 opacity-80">您的密码不会被存储，登录行为由官方环境保护</p>
+    <p class="text-sm opacity-80">您的密码不会被存储，登录行为由官方环境保护</p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useController } from '@virid/vue'
 import { WindowLoginController } from './controllers'
-import { Button } from '@/components/ui/button'
+import Button from '@/components/ui/Button.vue'
 
 const wct = useController(WindowLoginController)
 </script>

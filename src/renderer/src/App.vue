@@ -7,6 +7,8 @@
     ></div>
     <!-- <div v-if="tct.theme.mode === 'image'" :style="tct.maskStyle" class="image-bg z-1"></div> -->
     <Layout></Layout>
+    <!-- 弹窗的坑 -->
+    <div id="dialog"></div>
   </div>
 </template>
 <script setup lang="ts">
@@ -57,4 +59,5 @@ body {
 /* ::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--primary), transparent 40%);
 } */
+
 </style>

@@ -1,56 +1,54 @@
 <template>
   <div class="h-full w-full flex-col">
     <div v-if="rct.songs" class="flex h-full w-full">
+      <div class="h-full w-8"></div>
       <!-- 侧边栏 -->
       <section
         class="relative flex h-full shrink-0 overflow-hidden transition-all duration-500 ease-in-out"
-        :class="rct.isSidebarOpen ? 'w-72' : 'pointer-events-none w-0'"
+        :class="rct.isSidebarOpen ? 'w-68' : 'pointer-events-none w-0'"
       >
-        <div class="flex h-full w-full">
-          <!-- 歌单信息 -->
-          <div class="flex h-full w-full flex-1 flex-col overflow-hidden pr-8 pl-8">
-            <div class="flex-1"></div>
-            <!-- 封面 -->
-            <div class="mb-6 aspect-square w-full shrink-0 overflow-hidden rounded-xl shadow-lg">
-              <img
-                v-if="rct.songs!.at(0)"
-                :src="rct.songs!.at(0)!.album.cover"
-                class="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
-                alt="Cover"
-              />
-              <div v-else class="bg-muted flex h-full w-full items-center justify-center">
-                <span class="text-xs opacity-20">No Cover</span>
-              </div>
+        <!-- 歌单信息 -->
+        <div class="flex h-full w-full flex-1 flex-col overflow-hidden pr-8">
+          <div class="flex-1"></div>
+          <!-- 封面 -->
+          <div class="mb-6 aspect-square w-full shrink-0 overflow-hidden rounded-xl shadow-lg">
+            <Img
+              v-if="rct.songs!.at(0)"
+              :cover="rct.songs!.at(0)!.album.cover"
+              class="transition-transform duration-700 hover:scale-105"
+            />
+            <div v-else class="bg-muted flex h-full w-full items-center justify-center">
+              <span class="text-xs opacity-20">No Cover</span>
             </div>
-            <!-- 操作按钮 -->
-            <div class="mb-6 flex w-full gap-2">
-              <div class="flex-1"></div>
-              <Button variant="icon" @click="rct.setPlaylist(rct.songs!.at(0)!)">
-                <Play :size="18" fill="currentColor" />
-              </Button>
-            </div>
-            <div class="flex-1"></div>
-            <!-- 歌单文字信息 -->
-            <div class="flex flex-1 flex-col justify-start">
-              <h1
-                class="mb-3 flex justify-between text-2xl leading-tight font-black tracking-tighter"
-              >
-                <span>每日推荐</span>
-                <span>{{ rct.getMonthAndDate() }}</span>
-              </h1>
-              <p class="mb-6 line-clamp-4 text-xs leading-relaxed opacity-60">
-                {{ rct.songs ? `今日为你推荐${rct.songs.length}首歌，每日6:00更新` : 'Loading...' }}
-              </p>
-            </div>
-            <div class="flex-1"></div>
           </div>
+          <!-- 操作按钮 -->
+          <div class="mb-6 flex w-full gap-2">
+            <div class="flex-1"></div>
+            <Button variant="icon" @click="rct.setPlaylist(rct.songs!.at(0)!)">
+              <Play :size="18" fill="currentColor" />
+            </Button>
+          </div>
+          <div class="flex-1"></div>
+          <!-- 歌单文字信息 -->
+          <div class="flex flex-1 flex-col justify-start">
+            <h1
+              class="mb-3 flex justify-between text-2xl leading-tight font-black tracking-tighter"
+            >
+              <span>每日推荐</span>
+              <span>{{ rct.getMonthAndDate() }}</span>
+            </h1>
+            <p class="mb-6 line-clamp-4 text-xs leading-relaxed opacity-60">
+              {{ rct.songs ? `今日为你推荐${rct.songs.length}首歌，每日6:00更新` : 'Loading...' }}
+            </p>
+          </div>
+          <div class="flex-1"></div>
         </div>
       </section>
       <!-- 列表 -->
       <section class="flex flex-1 overflow-hidden">
-        <div class="flex h-full w-full flex-1 flex-col pr-8" :class="[rct.isSidebarOpen ? 'pl-0' : 'pl-8']">
+        <div class="flex h-full w-full flex-1 flex-col pr-8">
           <!-- 列表标头 -->
-          <div class="mb-6 flex w-full items-end justify-between border-b border-current/10 pb-4">
+          <div class="flex w-full items-end justify-between border-b border-current/10 pb-4">
             <div class="flex items-center">
               <h2 class="text-lg font-bold">歌曲列表</h2>
               <p class="mr-2 ml-2 text-sm tracking-[0.2em] uppercase opacity-40">
@@ -68,7 +66,7 @@
             <div class="font-mono text-xs opacity-40">SHARD: 0 - {{ rct.songs?.length || 0 }}</div>
           </div>
           <!-- 列表 -->
-          <div class="flex-1 overflow-y-auto">
+          <div class="flex-1 overflow-y-auto pt-4">
             <div class="w-full">
               <div
                 v-for="(item, index) in rct.songs"
@@ -121,10 +119,11 @@
 import { useController } from '@virid/vue'
 import { RecommendedPageController } from './controllers'
 import { PlaySongMessage } from '@/ccs/playback'
-import { Button } from '@/components/ui/button'
+import Button from '@/components/ui/Button.vue'
 import { Play, ChevronLeft, ChevronRight } from 'lucide-vue-next'
 
 import Song from '@/components/public/Song.vue'
+import Img from '@/components/public/Img.vue'
 const rct = useController(RecommendedPageController)
 </script>
 

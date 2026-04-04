@@ -22,19 +22,7 @@
               <div
                 class="bg-primary relative aspect-square w-full shrink-0 overflow-hidden rounded-2xl shadow-md"
               >
-                <Transition name="bg-fade">
-                  <img
-                    v-if="item.cover"
-                    :key="item.cover"
-                    :src="item.cover"
-                    class="h-full w-full object-cover duration-700 ease-out group-hover:scale-110"
-                    alt="Cover"
-                  />
-                </Transition>
-                <div
-                  v-if="!item.cover"
-                  class="bg-primary flex h-full w-full animate-pulse items-center justify-center opacity-30"
-                ></div>
+                <Img :cover="item.cover" />
               </div>
               <div class="group relative mt-4 flex w-full flex-col px-1">
                 <div class="mb-1 flex items-center justify-between">
@@ -88,7 +76,7 @@
             <div></div>
             <span>推荐歌曲</span>
           </h2>
-          <div class="grid grid-flow-col auto-cols-fr gap-4 w-full">
+          <div class="grid w-full auto-cols-fr grid-flow-col gap-4">
             <div v-for="group in hct.pageSong" class="flex flex-col gap-4">
               <div class="flex h-10 w-full flex-col">
                 <span class="truncate text-sm">{{ group.title }}</span>
@@ -102,9 +90,9 @@
               >
                 <!-- 封面 -->
                 <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg shadow-sm">
-                  <img
-                    :src="item.album.cover + '?param=64y64'"
-                    class="h-full w-full cursor-pointer object-cover transition-all duration-300 group-hover:scale-110"
+                  <Img
+                    :cover="item.album.cover + '?param=64y64'"
+                    class="cursor-pointer transition-transform duration-500 group-hover:scale-105"
                   />
                 </div>
                 <!-- 歌曲信息-->
@@ -158,10 +146,9 @@
               @click="$router.push({ name: 'playlist', params: { id: item.id } })"
             >
               <div class="aspect-square w-full shrink-0 overflow-hidden rounded-2xl shadow-md">
-                <img
-                  :src="item.cover"
-                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  alt="Cover"
+                <Img
+                  :cover="item.cover"
+                  class="transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
               <div class="flex flex-col pt-3">
@@ -190,10 +177,9 @@
               @click="$router.push({ name: 'playlist', params: { id: item.id } })"
             >
               <div class="aspect-square w-full shrink-0 overflow-hidden rounded-2xl shadow-md">
-                <img
-                  :src="item.cover"
-                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  alt="Cover"
+                <Img
+                  :cover="item.cover"
+                  class="transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
               <div class="mt-3 h-12 w-full">
@@ -211,10 +197,11 @@
 
 <script setup lang="ts">
 import { useController } from '@virid/vue'
-import { Button } from '@/components/ui/button'
+import Button from '@/components/ui/Button.vue'
 import { RotateCcw } from 'lucide-vue-next'
 import { HomePageController } from './controllers'
 import { PlaySongMessage } from '@/ccs/playback'
+import Img from '@/components/public/Img.vue'
 const hct = useController(HomePageController)
 </script>
 
@@ -250,19 +237,5 @@ const hct = useController(HomePageController)
   @apply hover:text-primary min-w-0 cursor-pointer text-sm underline-offset-2 transition-all duration-300 hover:scale-105;
   color: var(--foreground);
   opacity: 0.6;
-}
-
-.bg-fade-enter-active,
-.bg-fade-leave-active {
-  transition: opacity 1s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.bg-fade-leave-active {
-  position: absolute;
-}
-
-.bg-fade-enter-from,
-.bg-fade-leave-to {
-  opacity: 0;
 }
 </style>

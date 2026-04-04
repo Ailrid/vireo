@@ -34,28 +34,7 @@ export class ThemeController {
 
   @Project(PlaylistComponent, i => i.currentSong)
   public currentSong!: SongDetail | null
-  /**
-   * *这一堆只是给组件用的,他要一个数组
-   */
-  public get opacityArray(): number[] {
-    return [this.setting.opacity]
-  }
-  public set opacityArray(val: number[]) {
-    this.setting.opacity = val[0]
-  }
-  public get fontSizeScaleArray(): number[] {
-    return [this.setting.fontSizeScale]
-  }
 
-  public set fontSizeScaleArray(val: number[]) {
-    this.setting.fontSizeScale = val[0]
-  }
-  public get borderRadiusArray(): number[] {
-    return [this.setting.borderRadius]
-  }
-  public set borderRadiusArray(val: number[]) {
-    this.setting.borderRadius = val[0]
-  }
   @Responsive()
   public setting!: ThemeConfig
   @Responsive()

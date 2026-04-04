@@ -12,9 +12,9 @@
           :class="{ 'h-6 opacity-100': pct.currentPlaylistId === item.id }"
         ></div>
         <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg shadow-sm">
-          <img
-            :src="item.cover + '?param=128y128'"
-            class="h-full w-full cursor-pointer object-cover transition-all duration-300 group-hover:scale-110"
+          <Img
+            :cover="item.cover + '?param=128y128'"
+            class="cursor-pointer transition-all duration-300 group-hover:scale-110"
           />
         </div>
         <div class="flex min-w-0 flex-1 flex-col justify-center gap-0.5">
@@ -40,5 +40,6 @@
 <script setup lang="ts">
 import { useController } from '@virid/vue'
 import { PlaylistManagerController } from './controllers'
+import Img from '../public/Img.vue'
 const pct = useController(PlaylistManagerController)
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="flex h-full w-full items-center justify-center">
-    <div class="flex w-full  flex-col gap-6">
+    <div class="flex w-full flex-col gap-6">
       <div class="setting-card-title flex justify-between">
         <div></div>
         <span> Player Settings </span>
@@ -42,7 +42,7 @@
                   >{{ (pct.setting.opacity * 100).toFixed(0) }}%</span
                 >
               </div>
-              <Slider v-model="pct.opacityArray" :min="0" :max="1" :step="0.01" class="w-full" />
+              <Slider v-model="pct.setting.opacity" :min="0" :max="1" :step="0.01" class="w-full" />
             </div>
           </div>
         </Transition>
@@ -79,9 +79,9 @@
 <script setup lang="ts">
 import { useController } from '@virid/vue'
 import { PlayerConfigController } from './controllers'
-import { Slider } from '@/components/ui/slider'
-import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
+import Slider from '@/components/ui/Slider.vue'
+import Input from '@/components/ui/Input.vue'
+import Switch from '@/components/ui/Switch.vue'
 import { SwitchViewMessage } from '@/pages/controllers'
 import { Undo2 } from 'lucide-vue-next'
 const pct = useController(PlayerConfigController)

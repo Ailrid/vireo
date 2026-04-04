@@ -2,7 +2,6 @@
   <div class="mr-2 flex items-center gap-2">
     <Button
       variant="icon"
-      size="icon"
       class="group/like h-9 w-9 rounded-full transition-all"
       :class="pct.currentSong?.like ? 'text-primary' : 'opacity-50 hover:opacity-100'"
       @click="SongLikeMessage.send()"
@@ -15,13 +14,13 @@
     </Button>
     <Button
       variant="icon"
-      size="icon"
       class="group/like h-9 w-9 rounded-full transition-all"
       @click="pct.changeMode()"
       @contextmenu.prevent="pct.changeMode('intelligence')"
     >
       <component
         :is="icons[pct.playMode]"
+        :size="18"
         class="transition-transform group-active/like:scale-75"
       />
     </Button>
@@ -54,7 +53,6 @@
 
       <Button
         variant="icon"
-        size="icon"
         class="relative h-9 w-9 rounded-full transition-all hover:bg-white/10 active:scale-90"
         @click="pct.mute()"
         @wheel.prevent="pct.onWheel($event)"
@@ -68,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+import Button from '@/components/ui/Button.vue'
 import {
   Heart,
   Volume2,

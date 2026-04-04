@@ -34,30 +34,31 @@
           v-if="qct.currentStatus === '请在手机上确认登陆'"
           class="flex h-2 w-2 animate-pulse rounded-full bg-green-500"
         ></span>
-        <p class="text-sm font-semibold tracking-tight text-slate-700">
+        <p class="text-sm font-semibold tracking-tight">
           {{ qct.currentStatus || '初始化安全连接...' }}
         </p>
       </div>
-      <p class="text-[11px] text-slate-400">请打开网易云音乐 APP 扫码</p>
+      <p class="text-sm">请打开网易云音乐 APP 扫码</p>
     </div>
 
-    <button
+    <Button
+      variant="none"
       @click="qct.getQrSvg()"
-      class="hover:text-primary cursor-pointer text-[11px] text-slate-400 underline underline-offset-4 transition-colors"
+      class="hover:text-primary cursor-pointer text-sm  underline underline-offset-4 transition-colors"
     >
       刷新二维码
-    </button>
+    </Button>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useController } from '@virid/vue'
 import { QrLoginController } from './controllers'
+import Button from '../ui/Button.vue'
 const qct = useController(QrLoginController)
 </script>
 
 <style scoped>
-/* 核心：解决发虚问题 */
 :deep(svg) {
   width: 100%;
   height: 100%;

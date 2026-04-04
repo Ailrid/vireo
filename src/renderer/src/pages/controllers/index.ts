@@ -4,12 +4,14 @@ import { PlayerPageController } from './player'
 import { HomePageController } from './home'
 import { PlaylistPageController } from './playlist'
 import { RecommendedPageController } from './recommended'
+import { AlbumPageController } from './album'
 export function bindPageControllers(app: ViridApp) {
   app.bindController(UserPlaylistPageController)
   app.bindController(PlayerPageController)
   app.bindController(HomePageController)
   app.bindController(PlaylistPageController)
   app.bindController(RecommendedPageController)
+  app.bindController(AlbumPageController)
 }
 
 export * from './user-playlist'
@@ -17,3 +19,4 @@ export * from './player'
 export * from './home'
 export * from './playlist'
 export * from './recommended'
+export * from './album'

@@ -1,66 +1,46 @@
-import { Component } from '@virid/core'
+import { Component, Observer } from '@virid/core'
 import { Responsive } from '@virid/vue'
+import { SetVolumeMessage } from '../playback'
 
 // 定义背景模式
 export type BackgroundMode = 'light' | 'dark' | 'image'
 
-export interface ThemeConfig {
-  mode: BackgroundMode
-  url: string // 当前使用的图片地址
-  fileUrl: string // 选中的图片文件地址
-  opacity: number // 背景亮度/透明度控制
-  blur: number // 模糊程度
-  imgAccentColor: Array<number> | null //从图片中提取的主色调
-  imgAvgColor: Array<number> | null
-  primaryColor: Array<number> | null //用户自定义的
-  // 字体系统
-  fontSizeScale: number // 字体缩放比例，控制全局 REM
-  fontFamily: string // 字体名称或分类 (sans-serif, serif, mono)
-  borderRadius: number // 全局圆角大小 (px)
-  textColor: string | null // 文字颜色
-  enableSliderAutoColor: boolean
-  immersiveMode: boolean
+export class PlayerConfig {
+  public coverBackground: boolean = true
+  public opacity: number = 0.3
+  public blur: number = 8
+  public autoColor: boolean = true
+  public mask: boolean = true
+  public center: boolean = false
+  public lyricBlur: boolean = false
+  public volume: number = 1
 }
 
-export interface PlayerConfig {
-  coverBackground: boolean // 使用专辑封面作为背景
-  opacity: number // 背景亮度/透明度控制
-  blur: number // 模糊程度
-  autoColor: boolean // 使用使用专辑封面颜色
-  mask: boolean // 启用歌词渐变遮罩
-  center: boolean // 歌词是否居中
-  lyricBlur: boolean // 歌词模糊
-  volume: number // 音量
+export class ThemeConfig {
+  public mode: BackgroundMode = 'light'
+  public url: string = ''
+  public fileUrl: string = ''
+  public opacity: number = 0.15 // 稍微降一点，配合背景色会有通透感
+  public blur: number = 0 // 默认给点模糊更高级
+  public imgAccentColor: Array<number> | null = null
+  public imgAvgColor: Array<number> | null = null
+  public primaryColor: Array<number> | null = null // 默认一个蓝色的 accent
+  public fontSizeScale: number = 1 // 100% 缩放
+  public fontFamily: string = 'Inter system-ui sans-serif'
+  public textColor: 'white' | 'black' | null = null // 为空时使用 Controller 逻辑自动计算
+  public borderRadius: number = 12 // 适中的圆角
+  public enableSliderAutoColor: boolean = true
+  public immersiveMode: boolean = false
 }
 
 @Component()
 export class SettingComponent {
   @Responsive()
-  public theme: ThemeConfig = {
-    mode: 'light',
-    url: '',
-    fileUrl: '',
-    opacity: 0.15, // 稍微降一点，配合背景色会有通透感
-    blur: 0, // 默认给点模糊更高级
-    imgAccentColor: null,
-    imgAvgColor: null,
-    primaryColor: null, // 默认一个蓝色的 accent
-    fontSizeScale: 1, // 100% 缩放
-    fontFamily: 'Inter, system-ui, sans-serif',
-    textColor: null, // 为空时使用 Controller 逻辑自动计算
-    borderRadius: 12, // 适中的圆角
-    enableSliderAutoColor: true,
-    immersiveMode: false
-  }
+  public theme: ThemeConfig = new ThemeConfig()
   @Responsive()
-  public player: PlayerConfig = {
-    coverBackground: true,
-    opacity: 0.3,
-    blur: 8,
-    autoColor: true,
-    mask: true,
-    center: false,
-    lyricBlur: false,
-    volume: 1
-  }
+  // 纯副作用，一次性的，在第一次加载设置的时候自动发出一个设置音量消息恢复上次的音量
+  @Observer((_old: PlayerConfig, newValue: PlayerConfig) => {
+    return SetVolumeMessage.send(newValue.volume)
+  })
+  public player: PlayerConfig = new PlayerConfig()
 }

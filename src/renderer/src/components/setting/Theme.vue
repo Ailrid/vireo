@@ -16,9 +16,8 @@
               { mode: 'image', icon: ImageIcon, effect: '-translate-y-0.5' }
             ] as const"
             :key="item.mode"
-            variant="ghost"
-            size="icon"
-            class="theme-toggle-btn h-8 w-8 transition-all"
+            variant="icon"
+            class="theme-toggle-btn h-8 w-8"
             :class="tch.activatedBtnClass(item.mode)"
             @click="tch.toggleTheme(item.mode)"
           >
@@ -44,7 +43,7 @@
                 >{{ (tch.setting.opacity * 100).toFixed(0) }}%</span
               >
             </div>
-            <Slider v-model="tch.opacityArray" :min="0" :max="1" :step="0.01" class="w-full" />
+            <Slider v-model="tch.setting.opacity" :min="0" :max="1" :step="0.01" class="w-full" />
           </div>
           <div class="w-40 space-y-2">
             <label class="setting-item-title">模糊半径 (Blur)</label>
@@ -74,7 +73,7 @@
             >
           </div>
           <Slider
-            v-model="tch.fontSizeScaleArray"
+            v-model="tch.setting.fontSizeScale"
             :min="0.5"
             :max="1.5"
             :step="0.01"
@@ -86,25 +85,23 @@
             <label class="setting-item-title">全局圆角 (Radius)</label>
             <span class="text-primary font-mono">{{ tch.setting.borderRadius }}px</span>
           </div>
-          <Slider v-model="tch.borderRadiusArray" :min="0" :max="24" :step="2" class="w-full" />
+          <Slider v-model="tch.setting.borderRadius" :min="0" :max="24" :step="2" class="w-full" />
         </div>
         <div class="space-y-3">
           <label class="setting-item-title block">字体族 (Family)</label>
           <div class="flex gap-2">
-            <Select @update:model-value="v => (tch.setting.fontFamily = v as string)">
-              <SelectTrigger class="select-trigger"> 预置字体 </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectItem value="ui-sans-serif, system-ui, sans-serif">默认无衬线</SelectItem>
-                  <SelectItem value="ui-monospace, Consolas, monospace">工业等宽</SelectItem>
-                  <SelectItem value="'Microsoft YaHei', sans-serif">微软雅黑</SelectItem>
-                  <SelectItem value="'PingFang SC', sans-serif">苹方 (Mac)</SelectItem>
-                  <SelectItem value="'STKaiti', 'KaiTi', serif">楷体 (书写)</SelectItem>
-                  <SelectItem value="'STZhongsong', serif">中宋 (古典)</SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-
+            <Select
+              v-model="tch.setting.fontFamily"
+              :options="[
+                { label: '默认无衬线', value: 'ui-sans-serif, system-ui, sans-serif' },
+                { label: '工业等宽', value: 'ui-monospace, Consolas, monospace' },
+                { label: '微软雅黑', value: '\'Microsoft YaHei\', sans-serif' },
+                { label: '苹方 (Mac)', value: '\'PingFang SC\', sans-serif' },
+                { label: '楷体 (书写)', value: '\'STKaiti\', \'KaiTi\', serif' },
+                { label: '中宋 (古典)', value: '\'STZhongsong\', serif' }
+              ]"
+              class="w-48"
+            />
             <div class="relative flex-1">
               <Input
                 v-model="tch.setting.fontFamily"
@@ -124,14 +121,14 @@
           <label class="setting-item-title block">文本对比度 (Text Contrast)</label>
           <div class="flex gap-2">
             <Button
-              variant="ghost"
+              variant="outline"
               class="font-color-btn bg-white shadow"
               @click="tch.setting.textColor = 'black'"
             >
               <span class="text-xs text-black">深色文字</span>
             </Button>
             <Button
-              variant="ghost"
+              variant="outline"
               class="font-color-btn bg-black shadow hover:bg-zinc-900"
               @click="tch.setting.textColor = 'white'"
             >
@@ -201,17 +198,12 @@
 <script setup lang="ts">
 import { useController } from '@virid/vue'
 import { ThemeController } from './controllers'
-import { Button } from '@/components/ui/button'
-import { Slider } from '@/components/ui/slider'
-import { Input } from '@/components/ui/input'
-import { Switch } from '@/components/ui/switch'
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectGroup
-} from '@/components/ui/select'
+import Button from '@/components/ui/Button.vue'
+import Slider from '@/components/ui/Slider.vue'
+import Input from '@/components/ui/Input.vue'
+import Switch from '@/components/ui/Switch.vue'
+import Select from '@/components/ui/Select.vue'
+
 import { Sun, Moon, Image as ImageIcon, Type as FontIcon } from 'lucide-vue-next'
 const tch = useController(ThemeController)
 </script>

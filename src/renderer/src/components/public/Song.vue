@@ -10,9 +10,9 @@
     </div>
     <!-- 封面 -->
     <div class="h-13 w-13 shrink-0 overflow-hidden rounded-lg shadow-sm">
-      <img
-        :src="item.album.cover + '?param=64y64'"
-        class="h-full w-full cursor-pointer object-cover transition-all duration-300 group-hover:scale-110"
+      <Img
+        :cover="item.album.cover + '?param=64y64'"
+        class="cursor-pointer transition-all duration-300 group-hover:scale-110"
       />
     </div>
     <!-- 歌曲信息，名字和歌手和专辑 -->
@@ -43,7 +43,7 @@
           class="song-info-text"
           @click.stop="
             $router.push({
-              name: 'artist',
+              name: 'album',
               params: { id: item.album.id }
             })
           "
@@ -57,6 +57,7 @@
 
 <script setup lang="ts">
 import { type SongDetail } from '@/utils'
+import Img from './Img.vue'
 defineProps<{
   item: SongDetail
   index: number

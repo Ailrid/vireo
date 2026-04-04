@@ -1,54 +1,67 @@
+<template>
+  <Teleport to="#dialog">
+    <div class="fixed inset-0 z-1000 flex items-center justify-center">
+      <!-- 遮罩 -->
+      <Transition name="fade" appear>
+        <div v-if="show" class="bg-card/50 absolute inset-0 backdrop-blur-md" @click="close"></div>
+      </Transition>
+      <!-- 主要内容 -->
+      <Transition name="pop" appear>
+        <div
+          v-if="show"
+          :style="{ height, width }"
+          class="bg-card relative z-10 overflow-hidden rounded-2xl shadow-xl backdrop-blur-md"
+        >
+          <slot name="context" :close="close"></slot>
+        </div>
+      </Transition>
+    </div>
+  </Teleport>
+</template>
+
 <script setup lang="ts">
-import type { DialogContentEmits, DialogContentProps } from 'reka-ui'
-import type { HTMLAttributes } from 'vue'
-import { reactiveOmit } from '@vueuse/core'
-import { X } from 'lucide-vue-next'
-import { DialogClose, DialogContent, DialogPortal, useForwardPropsEmits } from 'reka-ui'
-import { cn } from '@/lib/utils'
-import DialogOverlay from './DialogOverlay.vue'
+import { toRefs } from 'vue'
 
-defineOptions({
-  inheritAttrs: false
-})
+const props = defineProps<{
+  show: boolean
+  height: string
+  width: string
+}>()
+const { show } = toRefs(props)
 
-const props = withDefaults(
-  defineProps<
-    DialogContentProps & { class?: HTMLAttributes['class']; showCloseButton?: boolean }
-  >(),
-  {
-    showCloseButton: true
-  }
-)
-const emits = defineEmits<DialogContentEmits>()
+const emit = defineEmits(['update:show'])
 
-const delegatedProps = reactiveOmit(props, 'class')
-
-const forwarded = useForwardPropsEmits(delegatedProps, emits)
+const close = () => {
+  show.value = false
+  setTimeout(() => {
+    emit('update:show', false)
+  }, 500)
+}
 </script>
 
-<template>
-  <DialogPortal>
-    <DialogOverlay />
-    <DialogContent
-      data-slot="dialog-content"
-      v-bind="{ ...$attrs, ...forwarded }"
-      :class="
-        cn(
-          'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-lg border bg-white p-6 shadow-lg duration-200 sm:max-w-lg',
-          props.class
-        )
-      "
-    >
-      <slot />
+<style scoped>
+/* 动画样式保持你原来的即可 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
 
-      <DialogClose
-        v-if="showCloseButton"
-        data-slot="dialog-close"
-        class="ring-offset-background focus:ring-ring data-[state=open]:bg-accent data-[state=open]:text-muted-foreground absolute top-4 right-4 cursor-pointer rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4"
-      >
-        <X />
-        <span class="sr-only">Close</span>
-      </DialogClose>
-    </DialogContent>
-  </DialogPortal>
-</template>
+.pop-enter-active,
+.pop-leave-active {
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.3s ease;
+}
+.pop-enter-from {
+  opacity: 0;
+  transform: scale(0.9) translateY(20px);
+}
+.pop-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+</style>

@@ -8,7 +8,7 @@
             class="h-full w-full"
             :class="['animate-spin-slow', { 'pause-animation': !sct.isPlaying }]"
           >
-            <img :src="sct.cover" class="cover h-full w-full" alt="Cover" />
+            <Img :cover="sct.cover" class="cover" />
           </div>
         </Transition>
         <div
@@ -57,11 +57,12 @@
 </template>
 
 <script setup lang="ts">
-import { Button } from '@/components/ui/button'
+import Button from '@/components/ui/Button.vue'
 import { SkipBack, SkipForward, Play, Pause } from 'lucide-vue-next'
 import { PlayOrPauseMessage, NextSongMessage, PreviousSongMessage } from '@/ccs/playback'
 import { PlayerControllerMessage, SongCardController } from './controllers'
 import { useController } from '@virid/vue'
+import Img from '../public/Img.vue'
 
 const sct = useController(SongCardController)
 </script>

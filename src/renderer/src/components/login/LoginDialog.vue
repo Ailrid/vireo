@@ -1,18 +1,29 @@
 <template>
   <Dialog>
-    <DialogTrigger as-child>
-      <div class="cursor-pointer transition-transform hover:scale-105 active:scale-95">
-        <template v-if="lct.userProfile">
-          <img
-            :src="lct.userProfile.avatar"
-            class="h-7 w-7 rounded-full border border-slate-200/50 shadow-sm"
-          />
-        </template>
+    <template #trigger="{ open }">
+      <div
+        class="cursor-pointer transition-transform hover:scale-105 active:scale-95"
+        @click="open"
+      >
+        <Img
+          v-if="lct.userProfile"
+          :cover="lct.userProfile.avatar"
+          class="h-7! w-7! rounded-full border shadow-sm"
+        />
         <Button v-else variant="outline">登录</Button>
       </div>
-    </DialogTrigger>
-    <DialogContent class="overflow-hidden p-0 sm:max-w-96">
-      <div class="flex flex-col" :style="tct.rootStyle">
+    </template>
+    <template #context="{ close }">
+      <div class="relative flex flex-col border">
+        <Button
+          @click="close"
+          variant="icon"
+          class="hover:text-primary absolute top-2 right-2 z-10000 h-10 w-10 active:opacity-50"
+          :size="18"
+        >
+          <X :size="18" :stroke-width="1.2" />
+        </Button>
+
         <Transition name="fade-slide" mode="out-in">
           <!-- 登录成功显示信息 -->
           <div v-if="lct.userProfile" :key="'user'">
@@ -24,32 +35,33 @@
               <QrLogin v-if="lct.currentLoginMode === 'qr'" />
               <WindowLogin v-else />
             </div>
-            <div class="flex justify-center border-t border-slate-50 bg-slate-50/30 py-4">
-              <button
+            <div class="flex justify-center py-4">
+              <Button
+                variant="none"
                 @click="lct.currentLoginMode = lct.currentLoginMode === 'qr' ? 'window' : 'qr'"
-                class="text-xs font-medium text-slate-400 transition-colors hover:text-slate-900"
+                class="hover:text-primary text-xs font-medium transition-colors"
               >
                 {{ lct.switchText }}
-              </button>
+              </Button>
             </div>
           </div>
         </Transition>
       </div>
-    </DialogContent>
+    </template>
   </Dialog>
 </template>
 
 <script setup lang="ts">
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog'
-import { Button } from '@/components/ui/button'
+import Dialog from '../ui/dialog/Dialog.vue'
+import Button from '@/components/ui/Button.vue'
 import { useController } from '@virid/vue'
 import { LoginDialogController } from './controllers'
-import { SettingThemeController } from '@/ccs/settings'
 import QrLogin from './QrLogin.vue'
 import UserCard from './UserCard.vue'
 import WindowLogin from './WindowLogin.vue'
+import Img from '../public/Img.vue'
+import { X } from 'lucide-vue-next'
 const lct = useController(LoginDialogController)
-const tct = useController(SettingThemeController)
 </script>
 
 <style scoped>
