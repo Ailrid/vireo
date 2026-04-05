@@ -39,7 +39,7 @@ export class SearchSuggestSystem {
       name: al.name,
       cover: al.artist?.picUrl || '', // 借用歌手图作为临时封面
       publishTime: al.publishTime || 0,
-      size: al.size || 0,
+      songCount: al.size || 0,
       artists: al.artist ? [{ id: al.artist.id, name: al.artist.name }] : []
     }))
 
@@ -50,7 +50,8 @@ export class SearchSuggestSystem {
       avatar: ar.img1v1Url || ar.picUrl || '',
       alias: ar.alias || [],
       albumSize: ar.albumSize,
-      musicSize: ar.musicSize
+      songSize: ar.musicSize,
+      description: ar.briefDesc || ''
     }))
 
     // Playlists

@@ -5,6 +5,8 @@ import { Responsive, OnHook, Use, Project } from '@virid/vue'
 import { match } from 'ts-pattern'
 import { useRoute } from 'vue-router'
 let _isSidebarOpen = true
+let songs: SongDetail[] | null = null
+let album: AlbumDetail | null = null
 
 @Controller()
 export class AlbumPageController {
@@ -26,15 +28,16 @@ export class AlbumPageController {
   }
 
   @Responsive()
-  public songs: SongDetail[] | null = null
+  public songs: SongDetail[] | null = songs
   @Responsive()
-  public album: AlbumDetail | null = null
-  @Responsive()
-  public colors: Map<number, string> = new Map()
+  public album: AlbumDetail | null = album
 
   @OnHook('onSetup')
   async initAlbum() {
     if (!this.albumId) return
+    // 只缓存上次的内容，如果缓存的id和当前id一致，则不重新请求
+    if (this.albumId == this.album?.id && this.album) return
+    this.clearCache()
     const res = await albumDetail({
       id: this.albumId
     })
@@ -42,12 +45,11 @@ export class AlbumPageController {
       .with({ ok: true }, ({ val }) => {
         this.album = val.album
         this.songs = val.songs
+        songs = val.songs
+        album = val.album
       })
       .with({ ok: false }, ({ val }) => {
-        MessageWriter.write(
-          new Error(val),
-          '[AlbumPageController] Failed to fetch album detail'
-        )
+        MessageWriter.write(new Error(val), '[AlbumPageController] Failed to fetch album detail')
       })
   }
 
@@ -70,5 +72,11 @@ export class AlbumPageController {
       firstSongCover: this.songs[0].album.cover
     })
     PlaySongMessage.send(song)
+  }
+  clearCache() {
+    this.songs = null
+    this.album = null
+    songs = null
+    album = null
   }
 }

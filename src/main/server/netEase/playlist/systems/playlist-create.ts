@@ -12,14 +12,12 @@ export class PlaylistCreateSystem {
     @Cookies() cookies: Record<string, string>,
     @Headers() headers: Record<string, string>
   ) {
-    // 1. 解构参数，赋予合理的默认值
     const {
       name,
       privacy = 0, // 0: 普通, 10: 隐私
       type = 'NORMAL' // NORMAL, VIDEO, SHARED
     } = body
 
-    // 2. 发起请求：去掉 /api 前缀
     const answer = await createRequest(CryptoMode.weapi, {
       url: '/playlist/create',
       data: {

@@ -26,19 +26,18 @@ export class AlbumSublistSystem {
     })
     const rawData = answer.data as RawAlbumSublistResponse
 
-    // 直接在 System 内部处理转换，将 Raw 类型转化为标准的 AlbumInfo
+    // 转化为标准的 AlbumInfo
     const formattedData: AlbumInfo[] = (rawData.data || []).map(item => ({
       id: item.id,
       name: item.name,
       cover: item.picUrl, // 映射到标准字段 cover
       publishTime: item.publishTime || 0,
-      size: item.size,
-      // 提取极简歌手信息，过滤掉冗余的 followed/img1v1Url 等
+      songCount: item.size,
+      // 提取极简歌手信息
       artists: (item.artists || []).map(ar => ({
         id: ar.id,
         name: ar.name
       })),
-      // 处理可能的额外描述字段
       description: item.msg || item.description || ''
     }))
 

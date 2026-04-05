@@ -85,8 +85,7 @@ export interface AlbumInfo {
   name: string
   cover: string
   publishTime: number
-  size: number // 歌曲数量
-  /** 这里的歌手我们要统一成极简格式 */
+  songCount: number // 歌曲数量
   artists: {
     id: number
     name: string
@@ -99,10 +98,11 @@ export interface AlbumInfo {
 export interface ArtistInfo {
   id: number
   name: string
+  description: string
   avatar: string
   alias: string[]
-  albumSize?: number
-  musicSize?: number
+  albumSize: number
+  songSize: number
   mvSize?: number
 }
 

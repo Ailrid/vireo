@@ -15,7 +15,6 @@ const lct = useController(LayoutController)
 </script>
 
 <style lang="css">
-/* 基础过渡属性 */
 .fly-up-enter-active,
 .fly-up-leave-active,
 .fly-down-enter-active,

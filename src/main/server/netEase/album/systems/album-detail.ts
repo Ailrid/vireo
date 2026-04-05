@@ -14,7 +14,7 @@ export class AlbumDetailSystem {
   ) {
     const { id } = body
 
-    // 1. 获取原始专辑详情
+    // 获取原始专辑详情
     const albumAnswer = await createRequest(CryptoMode.weapi, {
       url: `/v1/album/${id}`,
       data: { id },
@@ -32,7 +32,7 @@ export class AlbumDetailSystem {
       name: rawAlbum.name,
       cover: rawAlbum.picUrl,
       publishTime: rawAlbum.publishTime,
-      size: rawAlbum.size,
+      songCount: rawAlbum.size,
       // 专辑歌手：统一极简格式
       artists: (rawAlbum.artists || []).map(ar => ({
         id: ar.id,

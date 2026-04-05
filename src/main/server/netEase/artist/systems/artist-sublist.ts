@@ -12,10 +12,9 @@ export class ArtistSublistSystem {
     @Cookies() cookies: Record<string, string>,
     @Headers() headers: Record<string, string>
   ) {
-    // 1. 提取参数并设置默认值
+    // 提取参数并设置默认值
     const { limit = 100, offset = 0 } = body
 
-    // 2. 发起请求：去掉 /api，使用 weapi 模式
     const answer = await createRequest(CryptoMode.weapi, {
       url: '/artist/sublist',
       data: {
@@ -27,7 +26,6 @@ export class ArtistSublistSystem {
       headers
     })
 
-    // 3. 返回强类型响应
     return Ok(answer.data as ArtistSublistResponse)
   }
 }

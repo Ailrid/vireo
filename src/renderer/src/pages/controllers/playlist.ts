@@ -6,6 +6,10 @@ import { match } from 'ts-pattern'
 import { useRoute } from 'vue-router'
 const PAGE_SIZE = 200
 let _isSidebarOpen = true
+// 歌单信息
+let _playlistsDetail: PlaylistDetail | null = null
+// 歌单歌曲
+let _playlistsSongs: Map<number, SongDetail[]> = new Map()
 
 export class PlaylistPageChangeMessage extends SingleMessage {
   constructor(public pageIndex: number) {
@@ -28,10 +32,10 @@ export class PlaylistPageController {
 
   // 歌单信息
   @Responsive()
-  public playlistsDetail: PlaylistDetail | null = null
+  public playlistsDetail: PlaylistDetail | null = _playlistsDetail
   // 歌单歌曲
   @Responsive()
-  public playlistsSongs: Map<number, SongDetail[]> | null = null
+  public playlistsSongs: Map<number, SongDetail[]> = _playlistsSongs
 
   // 当前的页面
   @Responsive()
@@ -51,15 +55,25 @@ export class PlaylistPageController {
   }
   @Project()
   get currentPageSong(): SongDetail[] | null {
-    if (!this.playlistsSongs?.has(this.pageIndex)) return null
+    if (!this.playlistsSongs.has(this.pageIndex)) return null
     return this.playlistsSongs.get(this.pageIndex)!
   }
-
+  @Project()
+  get firstIndex(): number {
+    return this.pageIndex * PAGE_SIZE
+  }
+  @Project()
+  get lastIndex(): number {
+    if (!this.playlistsDetail) return 0
+    if ((this.pageIndex + 1) * PAGE_SIZE > this.playlistsDetail.songCount)
+      return this.playlistsDetail.songCount - 1
+    else return this.pageIndex * PAGE_SIZE + PAGE_SIZE - 1
+  }
   /**
    * * 设置播放列表为此页
    */
-  setPlaylist(song: SongDetail | null) {
-    if (!this.playlistsDetail || !this.playlistsSongs || !song) return
+  setPlaylist(song: SongDetail | undefined | null) {
+    if (!this.playlistsDetail || !this.playlistsSongs.has(this.pageIndex) || !song) return
     //替换歌单并播放第一首
     SetPlaylistMessage.send(this.playlistsSongs.get(this.pageIndex)!, this.playlistsDetail)
     PlaySongMessage.send(song)
@@ -79,9 +93,9 @@ export class PlaylistPageController {
    */
   @OnHook('onSetup')
   public initPageData() {
-    this.getPlaylistDetail().then(() => {
-      this.getPlaylistSongs()
-    })
+    if (this.playlistsDetail?.id == this.playlistId && this.playlistsSongs) return
+    this.clearCache()
+    this.getPlaylistDetail()
   }
   /**
    * * 获取歌单信息
@@ -93,6 +107,8 @@ export class PlaylistPageController {
     match(detail)
       .with({ ok: true }, async ({ val }) => {
         this.playlistsDetail = val.playlist
+        _playlistsDetail = val.playlist
+        this.getPlaylistSongs()
       })
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(
@@ -117,10 +133,8 @@ export class PlaylistPageController {
     })
     match(playlist)
       .with({ ok: true }, ({ val }) => {
-        if (!this.playlistsSongs) {
-          this.playlistsSongs = new Map()
-        }
         this.playlistsSongs.set(this.pageIndex, val.songs)
+        _playlistsSongs.set(this.pageIndex, val.songs)
       })
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(
@@ -129,5 +143,11 @@ export class PlaylistPageController {
         )
       })
       .exhaustive()
+  }
+  clearCache() {
+    this.playlistsDetail = null
+    this.playlistsSongs = new Map()
+    _playlistsDetail = null
+    _playlistsSongs = new Map()
   }
 }

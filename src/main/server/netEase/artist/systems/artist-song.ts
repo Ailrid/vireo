@@ -1,9 +1,7 @@
 import {
   createRequest,
   CryptoMode,
-  type RawSongDetailResponse,
-  convertSongDetail,
-  type SongDetail
+  getSongDetail
 } from '../../utils'
 import { Body, Cookies, Headers, HttpSystem, Ok } from '@virid/express'
 import { ArtistSongsRequestMessage } from '../message'
@@ -20,7 +18,7 @@ export class ArtistSongsSystem {
   ) {
     const { id, order = 'hot', limit = 100, offset = 0 } = body
 
-    // 1. 获取歌手歌曲索引 (使用 EAPI 拿 ID 列表)
+    // 获取歌手歌曲索引
     const listAnswer = await createRequest(CryptoMode.eapi, {
       url: '/v1/artist/songs',
       data: {
@@ -45,23 +43,9 @@ export class ArtistSongsSystem {
       } as ArtistSongResponse)
     }
 
-    // 2. 提取 ID 准备补全
-    const tracksID = rawSongs.map((item: any) => ({ id: item.id }))
+    const tracksID = rawSongs.map((item: any) => item.id)
+    const formattedSongs = await getSongDetail(tracksID, cookies, headers)
 
-    // 3. 批量查询标准详情 (补全版权、高清封面等)
-    const tracksAnswer = await createRequest(CryptoMode.weapi, {
-      url: '/v3/song/detail',
-      data: { c: JSON.stringify(tracksID) },
-      cookies,
-      headers
-    })
-
-    // 4. 使用你的黄金转换器清洗数据
-    const formattedSongs: SongDetail[] = convertSongDetail(
-      tracksAnswer.data as RawSongDetailResponse
-    )
-
-    // 5. 组装最简响应体，彻底抛弃 listAnswer.data 里的原始脏数据
     return Ok({
       code: 200,
       songs: formattedSongs,

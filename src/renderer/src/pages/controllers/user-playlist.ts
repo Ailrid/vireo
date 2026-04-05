@@ -4,7 +4,7 @@ import { SongDetail, type PlaylistDetail } from '@/utils'
 import { Controller, SingleMessage } from '@virid/core'
 import { Project, Responsive, Use, Listener, OnHook } from '@virid/vue'
 import { useRoute } from 'vue-router'
-
+const PAGE_SIZE = 200
 let _isSidebarOpen = true
 
 export class UserPlaylistPageChangeMessage extends SingleMessage {
@@ -34,6 +34,7 @@ export class UserPlaylistPageController {
   // 当前的页面
   @Responsive()
   public pageIndex: number = 0
+
   //当前的歌单id
   @Project()
   get currentPlaylistId(): number | null {
@@ -60,6 +61,18 @@ export class UserPlaylistPageController {
   get maxPageLength() {
     const count = this.currentPlaylist?.songCount || 0
     return Math.ceil(count / 200) || 1
+  }
+
+  @Project()
+  get firstIndex(): number {
+    return this.pageIndex * PAGE_SIZE
+  }
+  @Project()
+  get lastIndex(): number {
+    if (!this.currentPageSong || !this.currentPlaylist) return 0
+    if ((this.pageIndex + 1) * PAGE_SIZE > this.currentPlaylist.songCount)
+      return this.currentPlaylist.songCount - 1
+    else return this.pageIndex * PAGE_SIZE + PAGE_SIZE - 1
   }
   /**
    * * 设置播放列表为此页

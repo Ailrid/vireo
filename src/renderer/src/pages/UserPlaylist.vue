@@ -57,7 +57,7 @@
       </div>
     </section>
     <!-- 列表 -->
-    <section class="flex flex-1 overflow-hidden pt-4">
+    <section class="flex flex-1 overflow-hidden">
       <div class="flex h-full flex-1 flex-col pr-8">
         <!-- 列表标头 -->
         <div class="mb-6 flex items-end justify-between border-b border-current/10 pb-4">
@@ -76,7 +76,7 @@
             </div>
           </div>
           <div class="font-mono text-xs opacity-40">
-            SHARD: {{ pct.pageIndex * 200 }} - {{ (pct.pageIndex + 1) * 200 }}
+            SHARD: {{ pct.firstIndex + 1 }} - {{ pct.lastIndex + 1 }}
           </div>
         </div>
         <!-- 列表 -->
@@ -110,7 +110,7 @@
         </div>
       </div>
       <!-- 分页控制 -->
-      <div class="flex h-full w-8 flex-col" v-if="pct.maxPageLength !== 1">
+      <div class="absolute right-0 flex h-full w-8 flex-col" v-if="pct.maxPageLength !== 1">
         <Scrubber
           :page-index="pct.pageIndex"
           :max-page-length="pct.maxPageLength"

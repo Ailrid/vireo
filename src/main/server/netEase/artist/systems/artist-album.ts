@@ -24,17 +24,16 @@ export class ArtistAlbumsSystem {
       cookies,
       headers
     })
-
     const rawData = answer.data as RawArtistAlbumResponse
-
     // 1. 转换歌手基础信息
     const artist: ArtistInfo = {
       id: rawData.artist.id,
       name: rawData.artist.name,
+      description: rawData.artist.briefDesc,
       avatar: rawData.artist.picUrl || rawData.artist.img1v1Url,
       alias: rawData.artist.alias || [],
       albumSize: rawData.artist.albumSize,
-      musicSize: rawData.artist.musicSize
+      songSize: rawData.artist.musicSize
     }
 
     // 转换专辑列表
@@ -43,7 +42,7 @@ export class ArtistAlbumsSystem {
       name: album.name,
       cover: album.picUrl,
       publishTime: album.publishTime,
-      size: album.size,
+      songCount: album.size,
       // 将原始的 artists 阵列简化为 id 和 name
       artists: (album.artists || []).map(ar => ({
         id: ar.id,

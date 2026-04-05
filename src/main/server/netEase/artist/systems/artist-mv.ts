@@ -26,7 +26,6 @@ export class ArtistMvsSystem {
       headers
     })
 
-    // 返回强类型响应
     return Ok(answer.data as ArtistMvResponse)
   }
 }

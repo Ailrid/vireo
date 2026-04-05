@@ -4,6 +4,11 @@ import { Controller, MessageWriter } from '@virid/core'
 import { Responsive, OnHook } from '@virid/vue'
 import { match } from 'ts-pattern'
 let _isSidebarOpen = true
+
+let _songs: SongDetail[] | null = null
+
+let _colors: Map<number, string> = new Map()
+
 @Controller()
 export class RecommendedPageController {
   @Responsive()
@@ -14,17 +19,19 @@ export class RecommendedPageController {
   }
 
   @Responsive()
-  public songs: SongDetail[] | null = null
+  public songs: SongDetail[] | null = _songs
 
   @Responsive()
-  public colors: Map<number, string> = new Map()
+  public colors: Map<number, string> = _colors
 
   @OnHook('onSetup')
   async initRecommended() {
+    if (this.songs) return
     const res = await recommendSong()
     match(res)
       .with({ ok: true }, ({ val }) => {
         this.songs = val.data
+        _songs = val.data
         val.data.forEach(song => this.getColor(song))
       })
       .with({ ok: false }, ({ val }) => {
@@ -40,6 +47,7 @@ export class RecommendedPageController {
     const coverUrl = song.album.cover + '?param=64y64'
     const { avgColor } = await getAccentRGB(coverUrl)
     this.colors.set(song.id, `rgb(${avgColor[0]}, ${avgColor[1]}, ${avgColor[2]})`)
+    _colors.set(song.id, `rgb(${avgColor[0]}, ${avgColor[1]}, ${avgColor[2]})`)
   }
 
   setPlaylist(song: SongDetail) {
@@ -71,5 +79,11 @@ export class RecommendedPageController {
     const month = date.getMonth() + 1
     const day = date.getDate()
     return `${month}/${day}`
+  }
+  clearCache() {
+    this.songs = null
+    this.colors = new Map()
+    _songs = null
+    _colors = new Map()
   }
 }

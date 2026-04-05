@@ -63,7 +63,7 @@
                 <ChevronRight v-else class="h-4 w-4 transition-transform" :size="16" />
               </div>
             </div>
-            <div class="font-mono text-xs opacity-40">SHARD: 0 - {{ rct.songs?.length || 0 }}</div>
+            <div class="font-mono text-xs opacity-40">SHARD: 1 - {{ rct.songs?.length || 0 }}</div>
           </div>
           <!-- 列表 -->
           <div class="flex-1 overflow-y-auto pt-4">
@@ -77,19 +77,7 @@
                   animationDuration: '600ms'
                 }"
               >
-                <div class="relative flex flex-col items-center self-stretch px-3">
-                  <div
-                    class="absolute top-0 bottom-0 w-[2px] bg-white/20 shadow-[0_0_1px_rgba(0,0,0,0.1)]"
-                  ></div>
-                  <div
-                    class="relative z-10 h-3 w-3 shrink-0 rounded-full border-2 border-white shadow-lg transition-all duration-300 group-hover:scale-150 dark:border-zinc-900"
-                    :style="{
-                      backgroundColor: rct.colors.get(item.id),
-                      boxShadow: `0 0 10px ${rct.colors.get(item.id)}80`
-                    }"
-                  ></div>
-                </div>
-                <div class="min-w-0 flex-1">
+                <div class="w-full">
                   <Song
                     @click="PlaySongMessage.send(item)"
                     @dblclick="rct.setPlaylist(item)"

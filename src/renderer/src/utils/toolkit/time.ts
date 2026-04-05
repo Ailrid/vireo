@@ -12,3 +12,14 @@ export const formatTime = (seconds: number): string => {
   const ss = s.toString().padStart(2, '0')
   return h > 0 ? `${h.toString().padStart(2, '0')}:${mm}:${ss}` : `${mm}:${ss}`
 }
+/**
+ * 将秒数转换为 xxxx年xx月xx日日期
+ * @param time 秒数
+ */
+export function convertDate(time: number): string {
+  const date = new Date(time)
+  const year = date.getFullYear()
+  const month = (date.getMonth() + 1).toString().padStart(2, '0') // 月份从0开始，需要加1，并且确保是两位数
+  const day = date.getDate().toString().padStart(2, '0') // 确保是两位数
+  return `${year}-${month}-${day}`
+}

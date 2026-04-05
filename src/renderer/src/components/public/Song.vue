@@ -4,7 +4,6 @@
   >
     <!-- 序号 -->
     <div
-      v-if="index && pageIndex"
       class="group-hover:text-primary mr-1 ml-1 w-4 text-center font-mono text-xs transition-all duration-300 group-hover:opacity-100"
     >
       {{ (pageIndex * 200 + index + 1).toString().padStart(2, '0') }}
@@ -59,17 +58,12 @@
 <script setup lang="ts">
 import { type SongDetail } from '@/utils'
 import Img from './Img.vue'
-withDefaults(
-  defineProps<{
-    item: SongDetail
-    index?: number | null
-    pageIndex?: number | null
-  }>(),
-  {
-    index: null,
-    pageIndex: null
-  }
-)
+
+defineProps<{
+  item: SongDetail
+  index: number
+  pageIndex: number
+}>()
 </script>
 
 <style>

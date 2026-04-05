@@ -12,7 +12,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import SongCard from './SongCard.vue'
+import SongCard from './PlayerCard.vue'
 import Slider from './Slider.vue'
 import Volume from './PlayerButton.vue'
 import { useController } from '@virid/vue'

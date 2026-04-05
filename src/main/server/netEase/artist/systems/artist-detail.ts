@@ -14,7 +14,7 @@ export class ArtistDetailSystem {
   ) {
     const { id } = body
 
-    // 1. 获取歌手原始详情
+    // 获取歌手原始详情
     const answer = await createRequest(CryptoMode.weapi, {
       url: `/v1/artist/${id}`,
       data: {},
@@ -29,10 +29,11 @@ export class ArtistDetailSystem {
     const artist: ArtistInfo = {
       id: rawArtist.id,
       name: rawArtist.name,
+      description: rawArtist.briefDesc || '',
       avatar: rawArtist.picUrl || rawArtist.img1v1Url,
       alias: rawArtist.alias || [],
       albumSize: rawArtist.albumSize,
-      musicSize: rawArtist.musicSize,
+      songSize: rawArtist.musicSize,
       mvSize: rawArtist.mvSize
     }
 

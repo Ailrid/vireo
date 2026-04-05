@@ -14,7 +14,7 @@ export class AlbumSubSystem {
   ) {
     const { id, type } = body
 
-    // 逻辑映射：sub -> /api/album/sub, unsub -> /api/album/unsub
+    // sub -> /api/album/sub, unsub -> /api/album/unsub
     const url = `/album/${type}`
 
     const answer = await createRequest(CryptoMode.weapi, {

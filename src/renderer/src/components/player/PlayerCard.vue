@@ -42,11 +42,19 @@
       <div class="flex w-full">
         <div class="flex-1" @dblclick="PlayerControllerMessage.send($event, true)"></div>
         <div v-if="sct.currentSong" class="flex max-w-[80%] items-center px-2 whitespace-nowrap">
-          <span class="song-text text-right">
+          <span
+            class="song-text text-right"
+            @click.stop="$router.push({ name: 'album', params: { id: sct.currentSong.album.id } })"
+          >
             {{ sct.currentSong?.name }}
           </span>
           <span class="mx-0.5 shrink-0">-</span>
-          <span class="song-text text-left">
+          <span
+            class="song-text text-left"
+            @click.stop="
+              $router.push({ name: 'artist', params: { id: sct.currentSong.artists[0].id } })
+            "
+          >
             {{ sct.currentSong?.artists[0].name }}
           </span>
         </div>

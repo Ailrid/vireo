@@ -30,7 +30,7 @@ export class PlaylistUpdateSystem {
     return Ok({
       code: answer.data?.code || answer.status,
       message: 'Playlist updated successfully',
-      // 如果你想看细节，可以把 answer.data 返回回去
+      // 如果想看细节，可以把 answer.data 返回回去
       details: answer.data
     })
   }
