@@ -5,7 +5,7 @@
       :width="'18rem'"
       :height="'18rem'"
       :show="sct.show"
-      @update:show="sct.show = false"
+      @update:show="sct.closeDialog()"
     >
       <template #context="{ close }">
         <div

@@ -84,4 +84,10 @@ export class ShareDialogController {
         )
       })
   }
+
+  closeDialog() {
+    this.songDetail = null
+    this.playlistDetail = null
+    this.show = false
+  }
 }
