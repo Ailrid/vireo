@@ -14,31 +14,27 @@
       "reflect-metadata"
     ],
     "composite": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/renderer/src/*"
+        "./src/renderer/src/*"
       ],
       "@renderer/*": [
-        "src/renderer/src/*"
+        "./src/renderer/src/*"
       ],
       "@assets/*": [
-        "src/renderer/src/assets/*"
+        "./src/renderer/src/assets/*"
       ],
       "@components/*": [
-        "src/renderer/src/components/*"
-      ],
-      "@core/*": [
-        "starry/*"
+        "./src/renderer/src/components/*"
       ],
       "@utils/*": [
-        "src/renderer/src/utils/*"
+        "./src/renderer/src/utils/*"
       ],
       "@services/*": [
-        "src/renderer/src/ccs/*"
+        "./src/renderer/src/ccs/*"
       ],
       "@controllers/*": [
-        "src/renderer/src/ccs/systems/*"
+        "./src/renderer/src/ccs/systems/*"
       ]
     }
   }

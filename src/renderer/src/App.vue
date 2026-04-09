@@ -7,7 +7,7 @@
     ></div>
     <!-- <div v-if="tct.theme.mode === 'image'" :style="tct.maskStyle" class="image-bg z-1"></div> -->
     <Layout></Layout>
-    <!-- 弹窗的坑 -->
+    <!-- 弹窗的位置 -->
     <div id="dialog"></div>
     <ShareDialog></ShareDialog>
   </div>
@@ -40,7 +40,7 @@ body {
 }
 /* 滚动条整体轨道 */
 ::-webkit-scrollbar {
-  width: 8px; /* 稍微窄一点更精致 */
+  width: 8px; 
   height: 8px;
 }
 /* 滚动条轨道 */

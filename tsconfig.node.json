@@ -14,10 +14,9 @@
       "electron-vite/node",
       "reflect-metadata"
     ],
-    "baseUrl": ".",
     "paths": {
       "@main/*": [
-        "src/main/*"
+        "./src/main/*"
       ],
     }
   }

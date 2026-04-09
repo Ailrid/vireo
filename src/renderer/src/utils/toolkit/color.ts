@@ -59,7 +59,7 @@ function hslToRgb(h: number, s: number, l: number): [number, number, number] {
 }
 
 /**
- * 核心函数：提取增强后的强调色
+ * 提取增强后的强调色
  */
 export async function getAccentRGB(imageUrl: string): Promise<{
   accentColor: number[]
