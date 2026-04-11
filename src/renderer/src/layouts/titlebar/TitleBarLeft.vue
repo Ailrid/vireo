@@ -40,10 +40,10 @@
             </Button>
             <Button
               variant="none"
-              @click="tct.changeView('recent-play')"
+              @click="tct.changeView('menu-area')"
               class="hover:bg-primary/10 hover:text-primary justify-start!"
             >
-              <Heart class="mr-2 h-4 w-4" /> 最近播放
+              <Heart class="mr-2 h-4 w-4" /> 功能菜单
             </Button>
           </div>
         </template>

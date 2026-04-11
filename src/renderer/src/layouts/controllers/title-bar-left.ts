@@ -1,23 +1,23 @@
 import { Controller, SingleMessage } from '@virid/core'
 import { Listener, Project, Responsive } from '@virid/vue'
 //一个小局部变量，让player页面且回来的时候，sidebar能找到上次的正确的选项
-let currentViewBackup = 'current-playlist'
+let currentViewBackup = 'menu-area'
 
 export class TitleBarLeftControllerMessage extends SingleMessage {
   constructor(public event: WheelEvent) {
     super()
   }
 }
-type NameType = 'current-playlist' | 'playlist-manager' | 'recent-play'
+type NameType = 'menu-area' | 'current-playlist' | 'playlist-manager'
 
 @Controller()
 export class TitleBarLeftController {
   public nameMap = {
+    'menu-area': '最近播放',
     'current-playlist': '播放列表',
-    'playlist-manager': '歌单列表',
-    'recent-play': '最近播放'
+    'playlist-manager': '功能菜单'
   }
-  public nameList = ['current-playlist', 'playlist-manager', 'recent-play']
+  public nameList = ['menu-area', 'current-playlist', 'playlist-manager']
   @Responsive()
   public currentView: string = currentViewBackup
   public changeView(name: NameType) {

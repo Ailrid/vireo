@@ -9,14 +9,15 @@
 <script setup lang="ts">
 import CurrentPlaylist from './CurrentPlaylist.vue'
 import PlaylistManager from './PlaylistManager.vue'
-import RecentPlay from './RecentPlay.vue'
+import MenuArea from './MenuArea.vue'
 import { useController } from '@virid/vue'
 import { SideBarController } from './controllers'
+
 const sct = useController(SideBarController)
 const componentsMap = {
+  'menu-area': MenuArea,
   'current-playlist': CurrentPlaylist,
-  'playlist-manager': PlaylistManager,
-  'recent-play': RecentPlay
+  'playlist-manager': PlaylistManager
 }
 </script>
 <style scoped>
