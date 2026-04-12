@@ -1,5 +1,5 @@
 {
-  "name": "starry",
+  "name": "vireo",
   "version": "0.1.1",
   "description": "An Electron application with Vue and Virid",
   "main": "./out/main/index.js",
@@ -7,7 +7,7 @@
     "name": "Ailrid",
     "email": "ailrid.code@gmail.com"
   },
-  "homepage": "https://electron-vite.org",
+  "homepage": "https://github.com/Ailrid/vireo",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint --cache .",
@@ -45,10 +45,10 @@
     "vue-router": "^5.0.4"
   },
   "build": {
-    "appId": "com.starry.music",
-    "productName": "starry",
-    "executableName": "starry",
-    "copyright": "Copyright © 2026 Starry",
+    "appId": "com.ailrid.vireo",
+    "productName": "Vireo",
+    "executableName": "Vireo",
+    "copyright": "Copyright © 2026 Ailrid",
     "compression": "maximum",
     "asar": true,
     "protocols": [
@@ -70,15 +70,17 @@
       "resources/**/*"
     ],
     "win": {
-      "target": "nsis"
+      "target": "nsis",
+      "requestedExecutionLevel": "asInvoker"
     },
     "linux": {
       "target": [
-        "deb"
+        "deb",
+        "AppImage"
       ],
-      "category": "Music;",
+      "category": "AudioVideo;Audio;Music;Player;",
       "mimeTypes": [
-        "x-scheme-handler/orpheus"
+        "x-scheme-handler/vireo"
       ]
     },
     "nsis": {
@@ -86,7 +88,8 @@
       "perMachine": true,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": false
+      "createStartMenuShortcut": true,
+      "shortcutName": "Vireo"
     }
   },
   "devDependencies": {

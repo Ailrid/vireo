@@ -145,7 +145,7 @@ export class InitElectronSystem {
   })
   static initApp(electronComponent: ElectronComponent) {
     //配置设置
-    electronApp.setAppUserModelId('starry')
+    electronApp.setAppUserModelId('com.ailrid.vireo')
     //创建窗口
     CreateMainWindowMessage.send(electronComponent.port)
     //mac用的东西
@@ -171,7 +171,7 @@ export class LogSystem {
   private static write(level: string, context: string, detail?: any) {
     const time = new Date().toLocaleString()
     let logEntry = `[${time}] [${level}]\nContext: ${context}\n`
-    if(detail) logEntry += `Detail: ${JSON.stringify(detail)}\n`
+    if (detail) logEntry += `Detail: ${JSON.stringify(detail)}\n`
     fs.appendFile(this.logPath, logEntry, err => {
       if (err) console.error('Failed to write log:', err)
     })
