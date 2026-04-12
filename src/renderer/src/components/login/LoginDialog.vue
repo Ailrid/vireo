@@ -10,7 +10,9 @@
           :cover="lct.userProfile.avatar"
           class="h-7! w-7! rounded-full border shadow-sm"
         />
-        <Button v-else variant="outline">登录</Button>
+        <Button v-else variant="none">
+          <User :size="18"></User>
+        </Button>
       </div>
     </template>
     <template #context="{ close }">
@@ -60,7 +62,7 @@ import QrLogin from './QrLogin.vue'
 import UserCard from './UserCard.vue'
 import WindowLogin from './WindowLogin.vue'
 import Img from '../public/Img.vue'
-import { X } from 'lucide-vue-next'
+import { X, User } from 'lucide-vue-next'
 const lct = useController(LoginDialogController)
 </script>
 

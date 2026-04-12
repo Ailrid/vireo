@@ -18,6 +18,11 @@ export class MaximizeWindowMessage extends ToMainMessage {
   __virid_messageType: string = 'maximize-window'
 }
 
+export class HiddenWindowMessage extends ToMainMessage {
+  __virid_target = 'main'
+  __virid_messageType: string = 'hidden-window'
+}
+
 export class RendererErrorMessage extends ToMainMessage {
   __virid_target = 'main'
   __virid_messageType: string = 'renderer-error'

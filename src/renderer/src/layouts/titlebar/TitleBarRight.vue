@@ -38,7 +38,7 @@
       <Button
         variant="icon"
         class="hover:text-primary h-10 w-10 active:opacity-50"
-        @click="BackupPlaybackMessage.send()"
+        @click="HiddenWindowMessage.send()"
       >
         <X :size="18" :stroke-width="1.2" />
       </Button>
@@ -49,7 +49,7 @@
 <script setup lang="ts">
 import Button from '@/components/ui/Button.vue'
 import { Minus, Square, X, ArrowLeft, ArrowRight } from 'lucide-vue-next'
-import { BackupPlaybackMessage, MinimizeWindowMessage, MaximizeWindowMessage } from '@/ccs/electron'
+import { HiddenWindowMessage, MinimizeWindowMessage, MaximizeWindowMessage } from '@/ccs/electron'
 </script>
 
 <style scoped>
