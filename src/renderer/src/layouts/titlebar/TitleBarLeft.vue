@@ -11,7 +11,7 @@
             class="hover:text-primary"
           >
             <div class="flex items-center justify-center gap-1">
-              <span>{{ tct.currentViewName }}</span>
+              <span class="text-sm">{{ tct.currentViewName }}</span>
               <ChevronDown v-if="!isOpen" :size="14" class="opacity-50" />
               <ChevronUp v-else :size="14" class="opacity-50" />
             </div>

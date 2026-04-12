@@ -7,6 +7,7 @@ import {
 import { DatabaseComponent, DB } from './component'
 import fs from 'fs'
 import { System, MessageWriter, Message } from '@virid/core'
+import path from 'node:path'
 
 export class DatabaseSystem {
   /*
@@ -19,12 +20,18 @@ export class DatabaseSystem {
     @Message(InitDatabaseMessage) message: InitDatabaseMessage,
     dbComp: DatabaseComponent
   ) {
-    const path = message.path
-    if (!fs.existsSync(path)) {
-      fs.mkdirSync(path, { recursive: true })
+    const dbFilePath = message.path
+    const dbDir = path.dirname(dbFilePath)
+
+    // 确保目录存在
+    if (!fs.existsSync(dbDir)) {
+      fs.mkdirSync(dbDir, { recursive: true })
+    }
+    if (!fs.existsSync(message.cachePath)) {
+      fs.mkdirSync(message.cachePath, { recursive: true })
     }
     // 绑定数据库
-    dbComp.db = new DB(path)
+    dbComp.db = new DB(dbFilePath)
     dbComp.cachePath = message.cachePath
     MessageWriter.info('[Express] Database: Database and Cache path bound successfully.')
   }

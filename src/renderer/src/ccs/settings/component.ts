@@ -8,7 +8,7 @@ export type BackgroundMode = 'light' | 'dark' | 'image'
 export class PlayerConfig {
   public coverBackground: boolean = true
   public opacity: number = 0.3
-  public blur: number = 8
+  public blur: number = 12
   public autoColor: boolean = true
   public mask: boolean = true
   public center: boolean = false
@@ -20,8 +20,8 @@ export class ThemeConfig {
   public mode: BackgroundMode = 'light'
   public url: string = ''
   public fileUrl: string = ''
-  public opacity: number = 0.15 // 稍微降一点，配合背景色会有通透感
-  public blur: number = 0 // 默认给点模糊更高级
+  public opacity: number = 0.20 // 稍微降一点，配合背景色会有通透感
+  public blur: number = 12 // 默认给点模糊更高级
   public imgAccentColor: Array<number> | null = null
   public imgAvgColor: Array<number> | null = null
   public primaryColor: Array<number> | null = null // 默认一个蓝色的 accent
