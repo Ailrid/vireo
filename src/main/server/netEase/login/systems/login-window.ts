@@ -45,7 +45,6 @@ export class LoginCellphoneSystem {
     // 加载官方登录入口
     this.loginWindow.loadURL('https://music.163.com/#/login')
     this.loginWindow.on('closed', () => {
-      this.loginWindow = null
     })
     // 监听并绑定事件
     let key = false
@@ -132,6 +131,7 @@ export class LoginCellphoneSystem {
         return cookieStr
       })
     this.loginWindow.close()
+    this.loginWindow = null
 
     // 返回结果，Set-Cookie 会让前端浏览器层自动持久化
     return Ok({ code: 200, message: 'success' } as CloseLoginWindowResponse, {

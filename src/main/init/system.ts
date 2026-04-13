@@ -88,22 +88,18 @@ export class InitElectronSystem {
     } else {
       app.setAsDefaultProtocolClient(PROTOCOL)
     }
-    // 单例锁
-    const gotTheLock = app.requestSingleInstanceLock()
-    if (!gotTheLock) {
-      app.quit()
-      return
-    }
+
     // 监听热启动
     app.on('second-instance', (_event, commandLine) => {
       const url = commandLine.find(arg => arg.startsWith(`${PROTOCOL}://`))
       if (url) ShareMusicCommandMessage.send(url)
-
       // 唤醒主窗口
       const windows = BrowserWindow.getAllWindows()
       if (windows.length > 0) {
-        if (windows[0].isMinimized()) windows[0].restore()
-        windows[0].focus()
+        const win = windows[0]
+        if (win.isMinimized()) win.restore()
+        win.show()
+        win.focus()
       }
     })
     // 处理冷启动
