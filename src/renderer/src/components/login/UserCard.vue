@@ -70,8 +70,9 @@
       <Button
         variant="outline"
         @click="
-          () => {
-            ;(logout(), CloseWindowMessage.send())
+          async () => {
+            await logout()
+            CloseWindowMessage.send()
           }
         "
       >

@@ -18,7 +18,6 @@ import {
   songDetail,
   type SongDetail
 } from '@/utils/server'
-import { AsyncQueueMessage } from '../utils'
 
 const PAGE_SIZE = 200
 
@@ -156,144 +155,138 @@ export class UserSystem {
    * * 向歌单添加歌曲
    */
   @System()
-  static addSong(@Message(AddSongMessage) message: AddSongMessage, userComponent: UserComponent) {
-    const asyncTask = async () => {
-      const { playlistId, songDetail: newSong } = message
-      const playlistMap = userComponent.userPlaylistsSongs.get(playlistId)
-      const playlistDetail = userComponent.userPlaylistsDetail.get(playlistId)
+  static async addSong(
+    @Message(AddSongMessage) message: AddSongMessage,
+    userComponent: UserComponent
+  ) {
+    const { playlistId, songDetail: newSong } = message
+    const playlistMap = userComponent.userPlaylistsSongs.get(playlistId)
+    const playlistDetail = userComponent.userPlaylistsDetail.get(playlistId)
 
-      if (!playlistMap || !playlistDetail) return
-      // 更新ID 序列
-      playlistDetail.playCount += 1
-      playlistDetail.songsIds = [newSong.id, ...playlistDetail.songsIds]
-      // 找出所有已缓存的页码并排序
-      const cachedPageIndexes = Array.from(playlistMap.keys()).sort((a, b) => a - b)
-      // 计算每一页位移后“理论上”的第一首歌 ID
-      const neededIds = cachedPageIndexes.map(idx => playlistDetail.songsIds[idx * PAGE_SIZE])
-      const res = await songDetail({ ids: neededIds })
+    if (!playlistMap || !playlistDetail) return
+    // 更新ID 序列
+    playlistDetail.playCount += 1
+    playlistDetail.songsIds = [newSong.id, ...playlistDetail.songsIds]
+    // 找出所有已缓存的页码并排序
+    const cachedPageIndexes = Array.from(playlistMap.keys()).sort((a, b) => a - b)
+    // 计算每一页位移后“理论上”的第一首歌 ID
+    const neededIds = cachedPageIndexes.map(idx => playlistDetail.songsIds[idx * PAGE_SIZE])
+    const res = await songDetail({ ids: neededIds })
 
-      match(res)
-        .with({ ok: true }, ({ val }) => {
-          // 将获取到的歌曲详情转为 Map 方便快速取用
-          const fetchedSongsMap = new Map(val.songs.map(s => [s.id, s]))
-          // 更新每一页的数据
-          for (const pageIdx of cachedPageIndexes) {
-            const oldPage = playlistMap.get(pageIdx)!
-            // 拿到新的每页的第一个
-            const targetId = playlistDetail.songsIds[pageIdx * PAGE_SIZE]
-            const newHeaderSong = fetchedSongsMap.get(targetId)!
-            // 构造新页面
-            let newPageData: SongDetail[]
-            if (oldPage.length >= PAGE_SIZE) {
-              // 满了就踢掉最后一个，把新头塞进去
-              newPageData = [newHeaderSong, ...oldPage.slice(0, PAGE_SIZE - 1)]
-            } else {
-              // 没满就直接塞进去
-              newPageData = [newHeaderSong, ...oldPage]
-            }
-            playlistMap.set(pageIdx, newPageData)
+    match(res)
+      .with({ ok: true }, ({ val }) => {
+        // 将获取到的歌曲详情转为 Map 方便快速取用
+        const fetchedSongsMap = new Map(val.songs.map(s => [s.id, s]))
+        // 更新每一页的数据
+        for (const pageIdx of cachedPageIndexes) {
+          const oldPage = playlistMap.get(pageIdx)!
+          // 拿到新的每页的第一个
+          const targetId = playlistDetail.songsIds[pageIdx * PAGE_SIZE]
+          const newHeaderSong = fetchedSongsMap.get(targetId)!
+          // 构造新页面
+          let newPageData: SongDetail[]
+          if (oldPage.length >= PAGE_SIZE) {
+            // 满了就踢掉最后一个，把新头塞进去
+            newPageData = [newHeaderSong, ...oldPage.slice(0, PAGE_SIZE - 1)]
+          } else {
+            // 没满就直接塞进去
+            newPageData = [newHeaderSong, ...oldPage]
           }
-        })
-        .with({ ok: false }, ({ val }) => {
-          MessageWriter.error(
-            new Error(val),
-            `[UserSystem] Add Song Failed: Cannot get song detail`
-          )
-        })
-        .exhaustive()
-    }
-    return new AsyncQueueMessage(asyncTask)
+          playlistMap.set(pageIdx, newPageData)
+        }
+      })
+      .with({ ok: false }, ({ val }) => {
+        MessageWriter.error(new Error(val), `[UserSystem] Add Song Failed: Cannot get song detail`)
+      })
+      .exhaustive()
   }
 
   /**
    * * 从歌单删除歌曲
    */
   @System()
-  static deleteSong(
+  static async deleteSong(
     @Message(DeleteSongMessage) message: DeleteSongMessage,
     userComponent: UserComponent
   ) {
-    const asyncTask = async () => {
-      const { playlistId, songId } = message
-      const playlistMap = userComponent.userPlaylistsSongs.get(playlistId)
-      const playlistDetail = userComponent.userPlaylistsDetail.get(playlistId)
+    const { playlistId, songId } = message
+    const playlistMap = userComponent.userPlaylistsSongs.get(playlistId)
+    const playlistDetail = userComponent.userPlaylistsDetail.get(playlistId)
 
-      if (!playlistMap || !playlistDetail) return
+    if (!playlistMap || !playlistDetail) return
 
-      const index = playlistDetail.songsIds.findIndex(id => id === songId)
-      if (index === -1) return
+    const index = playlistDetail.songsIds.findIndex(id => id === songId)
+    if (index === -1) return
 
-      // 同步更新
-      playlistDetail.playCount = Math.max(0, playlistDetail.playCount - 1)
-      playlistDetail.songsIds.splice(index, 1)
+    // 同步更新
+    playlistDetail.playCount = Math.max(0, playlistDetail.playCount - 1)
+    playlistDetail.songsIds.splice(index, 1)
 
-      const affectedPageIndex = Math.floor(index / PAGE_SIZE)
-      const cachedAffectedPages = Array.from(playlistMap.keys())
-        .filter(pageIdx => pageIdx >= affectedPageIndex)
-        .sort((a, b) => a - b)
+    const affectedPageIndex = Math.floor(index / PAGE_SIZE)
+    const cachedAffectedPages = Array.from(playlistMap.keys())
+      .filter(pageIdx => pageIdx >= affectedPageIndex)
+      .sort((a, b) => a - b)
 
-      if (cachedAffectedPages.length === 0) return
+    if (cachedAffectedPages.length === 0) return
 
-      // 预计算补位 ID
-      const neededIds: number[] = []
-      for (const pageIdx of cachedAffectedPages) {
-        const nextLastIndex = (pageIdx + 1) * PAGE_SIZE - 1
-        if (nextLastIndex < playlistDetail.songsIds.length) {
-          neededIds.push(playlistDetail.songsIds[nextLastIndex])
-        }
+    // 预计算补位 ID
+    const neededIds: number[] = []
+    for (const pageIdx of cachedAffectedPages) {
+      const nextLastIndex = (pageIdx + 1) * PAGE_SIZE - 1
+      if (nextLastIndex < playlistDetail.songsIds.length) {
+        neededIds.push(playlistDetail.songsIds[nextLastIndex])
       }
+    }
 
-      // 处理不需要补位的简单情况（只有一页，或者删的是最后一页的末尾）
-      if (neededIds.length === 0) {
+    // 处理不需要补位的简单情况（只有一页，或者删的是最后一页的末尾）
+    if (neededIds.length === 0) {
+      for (const pageIdx of cachedAffectedPages) {
+        // 如果删完后这页彻底没了
+        if (pageIdx * PAGE_SIZE >= playlistDetail.songsIds.length) {
+          if (pageIdx !== 0) playlistMap.delete(pageIdx)
+          else playlistMap.set(pageIdx, [])
+          continue
+        }
+        // 否则只是简单减员
+        const currentPage = playlistMap.get(pageIdx)!.filter(s => s.id !== songId)
+        playlistMap.set(pageIdx, currentPage)
+      }
+      return
+    }
+
+    // 需要补位的复杂情况
+    const res = await songDetail({ ids: neededIds })
+    match(res)
+      .with({ ok: true }, ({ val }) => {
+        const fetchedSongsMap = new Map(val.songs.map(s => [s.id, s]))
         for (const pageIdx of cachedAffectedPages) {
-          // 如果删完后这页彻底没了
+          // 删掉空页面
           if (pageIdx * PAGE_SIZE >= playlistDetail.songsIds.length) {
-            if (pageIdx !== 0) playlistMap.delete(pageIdx)
-            else playlistMap.set(pageIdx, [])
+            playlistMap.delete(pageIdx)
             continue
           }
-          // 否则只是简单减员
-          const currentPage = playlistMap.get(pageIdx)!.filter(s => s.id !== songId)
+          // 计算补位之后的内容
+          let currentPage = [...playlistMap.get(pageIdx)!]
+          if (pageIdx === affectedPageIndex) {
+            const targetIdx = currentPage.findIndex(s => s.id === songId)
+            if (targetIdx !== -1) currentPage.splice(targetIdx, 1)
+          } else {
+            // 后续页面掐头
+            currentPage.shift()
+          }
+          const newLastSongId = playlistDetail.songsIds[(pageIdx + 1) * PAGE_SIZE - 1]
+          const refillSong = fetchedSongsMap.get(newLastSongId)
+          if (refillSong && currentPage.length < PAGE_SIZE) {
+            currentPage.push(refillSong)
+          }
+          // 更新缓存
           playlistMap.set(pageIdx, currentPage)
         }
-        return
-      }
-
-      // 需要补位的复杂情况
-      const res = await songDetail({ ids: neededIds })
-      match(res)
-        .with({ ok: true }, ({ val }) => {
-          const fetchedSongsMap = new Map(val.songs.map(s => [s.id, s]))
-          for (const pageIdx of cachedAffectedPages) {
-            // 删掉空页面
-            if (pageIdx * PAGE_SIZE >= playlistDetail.songsIds.length) {
-              playlistMap.delete(pageIdx)
-              continue
-            }
-            // 计算补位之后的内容
-            let currentPage = [...playlistMap.get(pageIdx)!]
-            if (pageIdx === affectedPageIndex) {
-              const targetIdx = currentPage.findIndex(s => s.id === songId)
-              if (targetIdx !== -1) currentPage.splice(targetIdx, 1)
-            } else {
-              // 后续页面掐头
-              currentPage.shift()
-            }
-            const newLastSongId = playlistDetail.songsIds[(pageIdx + 1) * PAGE_SIZE - 1]
-            const refillSong = fetchedSongsMap.get(newLastSongId)
-            if (refillSong && currentPage.length < PAGE_SIZE) {
-              currentPage.push(refillSong)
-            }
-            // 更新缓存
-            playlistMap.set(pageIdx, currentPage)
-          }
-        })
-        .with({ ok: false }, ({ val }) => {
-          MessageWriter.error(new Error(val), `[UserSystem] Delete Fallback Failed`)
-        })
-        .exhaustive()
-    }
-    return new AsyncQueueMessage(asyncTask)
+      })
+      .with({ ok: false }, ({ val }) => {
+        MessageWriter.error(new Error(val), `[UserSystem] Delete Fallback Failed`)
+      })
+      .exhaustive()
   }
   /**
    *

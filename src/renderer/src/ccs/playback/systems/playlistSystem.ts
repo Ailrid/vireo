@@ -11,7 +11,7 @@ import { PlayerComponent, PlaylistComponent } from '../components'
 import { personalFm, intelligence, songLike } from '@/utils/server'
 import { match } from 'ts-pattern'
 import { AddSongMessage, DeleteSongMessage, UserComponent } from '@/ccs/user'
-import { AsyncQueueMessage } from '@/ccs/utils'
+
 export class PlaylistSystem {
   /**
    * *加载FM模式歌曲的buffer
@@ -130,30 +130,30 @@ export class PlaylistSystem {
   @System({
     messageClass: SongLikeMessage
   })
-  static likeCurrentSong(playlistComponent: PlaylistComponent, userComponent: UserComponent) {
-    const asyncTask = async () => {
-      if (!playlistComponent.currentSong) return
-      const currentSong = playlistComponent.currentSong
-      const newState = !currentSong.like
-      //第一步，把网易云的状态改了
-      const res = await songLike({
-        id: currentSong.id,
-        like: newState
+  static async likeCurrentSong(playlistComponent: PlaylistComponent, userComponent: UserComponent) {
+    if (!playlistComponent.currentSong) return
+    const currentSong = playlistComponent.currentSong
+    const newState = !currentSong.like
+    //第一步，把网易云的状态改了
+    const res = await songLike({
+      id: currentSong.id,
+      like: newState
+    })
+    match(res)
+      .with({ ok: true }, () => {
+        //第二步，更改当前歌曲的喜欢状态
+        currentSong.like = newState
+        playlistComponent.currentList.find(song => song.id === currentSong.id)!.like = newState
+        //第三步，从“喜欢“列表里删除这首歌，如果有的话
+
+        if (!newState)
+          DeleteSongMessage.send(userComponent.userPlaylists.at(0)!.id, currentSong!.id)
+        else AddSongMessage.send(userComponent.userPlaylists.at(0)!.id, currentSong)
+
+        
       })
-      match(res)
-        .with({ ok: true }, () => {
-          //第二步，更改当前歌曲的喜欢状态
-          currentSong.like = newState
-          playlistComponent.currentList.find(song => song.id === currentSong.id)!.like = newState
-          //第三步，从“喜欢“列表里删除这首歌，如果有的话
-          if (!newState)
-            DeleteSongMessage.send(userComponent.userPlaylists.at(0)!.id, currentSong!.id)
-          else AddSongMessage.send(userComponent.userPlaylists.at(0)!.id, currentSong)
-        })
-        .with({ ok: false }, ({ val }) => {
-          MessageWriter.error(new Error(val), '[PlayerSystem] Failed to like song.')
-        })
-    }
-    return new AsyncQueueMessage(asyncTask)
+      .with({ ok: false }, ({ val }) => {
+        MessageWriter.error(new Error(val), '[PlayerSystem] Failed to like song.')
+      })
   }
 }

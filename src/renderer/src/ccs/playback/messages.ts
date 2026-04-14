@@ -1,7 +1,9 @@
-import { SingleMessage } from '@virid/core'
-import { PlaylistDetail, SongDetail } from '@/utils/server'
+import { SingleMessage, EventMessage } from '@virid/core'
+import { PlaylistDetail, type SongDetail } from '@/utils/server'
+import { AsyncQueue } from '@virid/std'
 
-export class PlaySongMessage extends SingleMessage {
+@AsyncQueue('play-song')
+export class PlaySongMessage extends EventMessage {
   constructor(
     public song: SongDetail,
     public playImmediately: boolean = true
@@ -9,16 +11,18 @@ export class PlaySongMessage extends SingleMessage {
     super()
   }
 }
+@AsyncQueue('song-like')
+export class SongLikeMessage extends EventMessage {}
+
 export class PlayOrPauseMessage extends SingleMessage {
   constructor(public play: boolean) {
     super()
   }
 }
 
-export class NextSongMessage extends SingleMessage { }
+export class NextSongMessage extends SingleMessage {}
 
-export class PreviousSongMessage extends SingleMessage { }
-
+export class PreviousSongMessage extends SingleMessage {}
 
 export class SetVolumeMessage extends SingleMessage {
   constructor(public volume: number) {
@@ -65,5 +69,3 @@ export class LoadIntelligencePlaylistMessage extends SingleMessage {
 }
 
 export class MediaSessionMessage extends SingleMessage {}
-
-export class SongLikeMessage extends SingleMessage {}

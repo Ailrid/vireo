@@ -1,5 +1,6 @@
 import { EventMessage } from '@virid/core'
 import { type SongDetail } from '@/utils'
+import { AsyncQueue } from '@virid/std'
 export class FetchUserAccountMessage extends EventMessage {}
 export class FetchUserPlaylistMessage extends EventMessage {}
 export class FetchUserPlaylistDetailMessage extends EventMessage {
@@ -15,7 +16,7 @@ export class FetchUserPlaylistSongMessage extends EventMessage {
     super()
   }
 }
-
+@AsyncQueue('song-like')
 export class DeleteSongMessage extends EventMessage {
   constructor(
     public playlistId: number,
@@ -24,7 +25,7 @@ export class DeleteSongMessage extends EventMessage {
     super()
   }
 }
-
+@AsyncQueue('song-like')
 export class AddSongMessage extends EventMessage {
   constructor(
     public playlistId: number,

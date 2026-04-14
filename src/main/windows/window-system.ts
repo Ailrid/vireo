@@ -59,7 +59,7 @@ export class WindowControllerSystem {
   }
 }
 
-export class WindowSystem {
+export class WindowCommandSystem {
   /**
    * * 当窗口准备好时执行对应的所有命令
    */
@@ -82,8 +82,13 @@ export class WindowSystem {
     @Message(SetCommandQueueMessage) message: SetCommandQueueMessage,
     windowComponent: WindowComponent
   ) {
+    if (windowComponent.windows.has(message.window)) {
+      message.command(windowComponent.windows.get(message.window)!)
+      return
+    }
     const queue = windowComponent.commandQueue.get(message.window) || []
     queue.push(message.command)
     windowComponent.commandQueue.set(message.window, queue)
+    // 如果窗口已经准备好了，直接发射
   }
 }

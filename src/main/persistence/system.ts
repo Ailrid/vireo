@@ -13,9 +13,7 @@ export class DatabaseSystem {
   /*
    * 创建数据库
    */
-  @System({
-    priority: 1000
-  })
+  @System()
   static initDatabase(
     @Message(InitDatabaseMessage) message: InitDatabaseMessage,
     dbComp: DatabaseComponent
@@ -33,7 +31,9 @@ export class DatabaseSystem {
     // 绑定数据库
     dbComp.db = new DB(dbFilePath)
     dbComp.cachePath = message.cachePath
-    MessageWriter.info('[DatabaseSystem] Database: Database and Cache path bound successfully.')
+    MessageWriter.info(
+      '[DatabaseSystem] Database Initialization Completed: Database and Cache path bound successfully.'
+    )
   }
 }
 

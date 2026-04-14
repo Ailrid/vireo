@@ -1,6 +1,7 @@
 import { createVirid } from '@virid/core'
 import { VuePlugin } from '@virid/vue'
 import { RenderPlugin } from '@virid/renderer'
+import { StdPlugin } from '@virid/std'
 import { bindPlayback } from './playback'
 import { bindSetting } from './settings'
 import { bindUser } from './user'
@@ -12,12 +13,9 @@ import { bindSidebarControllers } from '@/components/sidebar/controllers'
 import { bindLayoutControllers } from '@/layouts/controllers'
 import { bindPageControllers } from '@/pages/controllers'
 import { InitializationMessage } from './init'
-import * as _ from './utils'
 export * from './electron'
 const app = createVirid()
-// @ts-ignore
-app.use(VuePlugin, undefined)
-app.use(RenderPlugin, {
+app.use(StdPlugin, {}).use(VuePlugin, undefined).use(RenderPlugin, {
   windowId: 'renderer'
 })
 /**

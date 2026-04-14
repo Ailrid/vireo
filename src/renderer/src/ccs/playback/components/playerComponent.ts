@@ -6,6 +6,7 @@ export class Player {
   private ctx: AudioContext
   private gainNode: GainNode
   private analyser: AnalyserNode
+  private retryCount: number = 0
   @Responsive() public volume: number = 1.0
   @Responsive() public isPlaying: boolean = false
   @Responsive() public currentTime: number = 0.0
@@ -43,30 +44,46 @@ export class Player {
     this.audio.addEventListener('ended', () => {
       NextSongMessage.send()
     })
-    // 注入元数据探查
+    // 注入元数据,重新确认一次时长
     this.audio.addEventListener('loadedmetadata', () => {
       this.duration = this.audio.duration
     })
     // 出错的时候重新发起请求
+    const MAX_RETRIES = 3
     this.audio.addEventListener('error', () => {
       const errorCode = this.audio.error?.code
       const currentTime = this.audio.currentTime
 
-      MessageWriter.error(new Error(`[Player] Play Error：Attempt to reload, code: ${errorCode}`))
+      if (this.retryCount < MAX_RETRIES) {
+        this.retryCount++
+        MessageWriter.error(
+          new Error(`[Player] Retry: ${this.retryCount} times, code: ${errorCode}`)
+        )
 
-      setTimeout(() => {
-        // 重新加载当前的 src
-        this.audio.load()
-        // 监听可以播放的事件
-        this.audio.oncanplay = () => {
-          this.audio.currentTime = currentTime
-          this.audio.play().catch(e => {
-            MessageWriter.error(new Error(`[Player] Play Error：${e}`), '[Oncanplay]')
-          })
-          // 防止重复触发
-          this.audio.oncanplay = null
-        }
-      }, 500)
+        setTimeout(() => {
+          this.audio.load()
+          this.audio.oncanplay = () => {
+            this.audio.currentTime = currentTime
+            this.audio
+              .play()
+              .then(() => {
+                // 播放成功，重置计数器
+                this.retryCount = 0
+              })
+              .catch(e => {
+                MessageWriter.error(new Error(`[Player] Retry Failed: Error ${e}`))
+              })
+            this.audio.oncanplay = null
+          }
+        }, 500)
+      } else {
+        // 超过最大重试次数
+        MessageWriter.error(
+          new Error(`[Player] All retries have failed, skipping the current song`)
+        )
+        this.retryCount = 0 // 切换前重置计数器
+        NextSongMessage.send()
+      }
     })
     // this.audio.addEventListener('progress', () => {
     //   this.buffered = this.audio.buffered
@@ -97,10 +114,11 @@ export class Player {
       this.audio.removeEventListener(eventName, listener)
     }
   }
-  @Safe()
+
   /**
    * * 返回0-1
    */
+  @Safe()
   public getAveragePower() {
     const dataArray = new Uint8Array(this.analyser.frequencyBinCount)
     // 获取时域数据

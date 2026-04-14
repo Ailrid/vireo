@@ -75,11 +75,7 @@ export class MusicShareSystem {
     }
 
     // 如果窗口已经好了，直接发射消息
-    if (window) {
-      command()
-    } else {
-      // 否则暂时缓存起来
-      SetCommandQueueMessage.send('mainWindow', command)
-    }
+    if (window) command()
+    else SetCommandQueueMessage.send('mainWindow', command) // 否则暂时缓存起来
   }
 }

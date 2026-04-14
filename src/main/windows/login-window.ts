@@ -15,6 +15,7 @@ import { DatabaseComponent } from '@main/persistence'
 class FetchCookieMessage extends SingleMessage {}
 
 export class LoginWindowSystem {
+  static singletonLock = false
   /*
    * 创建登陆窗口
    */
@@ -22,7 +23,8 @@ export class LoginWindowSystem {
     messageClass: CreateLoginWindowMessage
   })
   static createLoginWindow(windowComponent: WindowComponent, electronComponent: ElectronComponent) {
-    if (windowComponent.windows.has('loginWindow')) return
+    if (windowComponent.windows.has('loginWindow') || this.singletonLock) return
+    this.singletonLock = true
     const loginWindow = new BrowserWindow({
       width: 350,
       height: 500,
@@ -40,12 +42,14 @@ export class LoginWindowSystem {
       }
     })
     // 注册自己
-    windowComponent.windows.set('loginWindow', loginWindow)
+
     loginWindow.on('closed', () => {
       windowComponent.windows.delete('loginWindow')
+      this.singletonLock = false
     })
     loginWindow.on('ready-to-show', () => {
       loginWindow.show()
+      windowComponent.windows.set('loginWindow', loginWindow)
     })
 
     // 获得焦点时自动检查一遍剪切板
@@ -75,7 +79,7 @@ export class LoginWindowSystem {
     loginWindow.loadURL(`http://localhost:${electronComponent.port}/login.html`)
 
     MessageWriter.info(
-      '[LoginWindowSystem] LoginWindow: Initialize window and mount page completed.'
+      '[LoginWindowSystem] Created LoginWindow: Initialize window and mount page completed.'
     )
   }
 
@@ -92,45 +96,8 @@ export class LoginWindowSystem {
       CreateLoginWindowMessage.send()
       return
     }
-
-    const allCookies = await loginWindow.webContents.session.cookies.get({
-      domain: '.music.163.com'
-    })
-    // 清除cookie
-    await loginWindow.webContents.session.clearStorageData({
-      storages: ['cookies']
-    })
-    // 判定是否真的登录成功
-    const hasCsrf = allCookies.find(c => c.name === '__csrf')
-    const hasMusicU = allCookies.find(c => c.name === 'MUSIC_U')
-
-    if (!hasCsrf || !hasMusicU) {
-      MessageWriter.error(
-        new Error('[BrowserWindowSystem] LoginWindow: Login failed, please try again.')
-      )
-      return
-    }
-
-    const requiredKeys = ['__csrf', 'MUSIC_U', 'MUSIC_A_T', 'MUSIC_R_T']
-
-    // 转换并注入生命周期
-    const setCookieHeaders = allCookies
-      .filter(c => requiredKeys.includes(c.name))
-      .map(c => {
-        let cookieStr = `${c.name}=${c.value}; Path=/;`
-
-        // 处理过期时间：将 Unix 时间戳转换为 Max-Age
-        if (c.expirationDate) {
-          const maxAge = Math.floor(c.expirationDate - Date.now() / 1000)
-          if (maxAge > 0) {
-            cookieStr += ` Max-Age=${maxAge};`
-          }
-        } else {
-          cookieStr += ` Max-Age=31536000;`
-        }
-        if (c.secure) cookieStr += ' Secure;'
-        return cookieStr
-      })
+    const setCookieHeaders = await tryGetCookies(loginWindow)
+    if (!setCookieHeaders) return
     // 关闭窗口然后发送一个消息给主窗口，让他过来拿cookie
     loginWindow.close()
     dbComponent.db.setCookies(setCookieHeaders.join('\n'))
@@ -140,4 +107,46 @@ export class LoginWindowSystem {
     })
     CreateMainWindowMessage.send()
   }
+}
+
+async function tryGetCookies(window: BrowserWindow): Promise<string[] | null> {
+  const allCookies = await window.webContents.session.cookies.get({
+    domain: '.music.163.com'
+  })
+
+  // 判定是否真的登录成功
+  const hasCsrf = allCookies.find(c => c.name === '__csrf')
+  const hasMusicU = allCookies.find(c => c.name === 'MUSIC_U')
+
+  if (!hasCsrf || !hasMusicU) {
+    MessageWriter.error(
+      new Error('[BrowserWindowSystem] Cookies Not Found: Login failed, please try again.')
+    )
+    return null
+  }
+  // 清除cookie
+  await window.webContents.session.clearStorageData({
+    storages: ['cookies']
+  })
+  const requiredKeys = ['__csrf', 'MUSIC_U', 'MUSIC_A_T', 'MUSIC_R_T']
+
+  // 转换并注入生命周期
+  const setCookieHeaders = allCookies
+    .filter(c => requiredKeys.includes(c.name))
+    .map(c => {
+      let cookieStr = `${c.name}=${c.value}; Path=/;`
+
+      // 处理过期时间：将 Unix 时间戳转换为 Max-Age
+      if (c.expirationDate) {
+        const maxAge = Math.floor(c.expirationDate - Date.now() / 1000)
+        if (maxAge > 0) {
+          cookieStr += ` Max-Age=${maxAge};`
+        }
+      } else {
+        cookieStr += ` Max-Age=31536000;`
+      }
+      if (c.secure) cookieStr += ' Secure;'
+      return cookieStr
+    })
+  return setCookieHeaders
 }

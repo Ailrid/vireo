@@ -57,7 +57,7 @@ export class LogSystem {
   @System()
   static error(@Message(ErrorMessage) message: ErrorMessage) {
     // 这里必须要检查是否预加载脚本加载完成了，不然会导致递归报错卡死
-    // 因为如RendererErrorMessage出错了，又会导致ErrorMessage被发送，然后继续出错，在一个微队列里直接永远死循环
+    // 因为RendererErrorMessage出错了，又会导致ErrorMessage被发送，然后继续出错，在一个微队列里直接永远死循环
     if (!window.__VIRID_BRIDGE__) return
     return new RendererErrorMessage(message.error.message, message.context)
   }

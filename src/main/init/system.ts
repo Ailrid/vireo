@@ -3,7 +3,7 @@ import path from 'path'
 import { System, MessageWriter, Message, ErrorMessage, WarnMessage, InfoMessage } from '@virid/core'
 import {
   BootStrapElectronMessage,
-  InitStarryMessage,
+  InitVireoMessage,
   RegisterProtocolMessage,
   RendererErrorMessage,
   RendererInfoMessage,
@@ -19,8 +19,9 @@ import {
   ShareMusicCommandMessage
 } from '@main/windows'
 import { DatabaseComponent, InitDatabaseMessage } from '@main/persistence'
-import { InitServerMessage, ServerInitializedMessage } from '@main/server'
+import { InitServerMessage } from '@main/server'
 import { ElectronComponent } from './component'
+import { executeGroup, nextTick } from '@virid/std'
 // 注册文件协议
 protocol.registerSchemesAsPrivileged([
   {
@@ -38,10 +39,10 @@ protocol.registerSchemesAsPrivileged([
 /**
  * * 应用初始化
  */
-export class InitStarrySystem {
+export class InitVireoSystem {
   @System()
-  static initStarry(
-    @Message(InitStarryMessage) message: InitStarryMessage,
+  static async initVireo(
+    @Message(InitVireoMessage) message: InitVireoMessage,
     electronComponent: ElectronComponent
   ) {
     electronComponent.port = message.port
@@ -49,21 +50,27 @@ export class InitStarrySystem {
     const userDataPath = app.getPath('userData')
     const dbPath = join(userDataPath, 'music.db')
     const cacheFilesPath = join(userDataPath, 'cache_files')
-    // 先初始化数据库
-    InitDatabaseMessage.send(dbPath, cacheFilesPath)
-    // 然后初始化express服务器
-    InitServerMessage.send(message.port)
-  }
-
-  @System({
-    messageClass: ServerInitializedMessage
-  })
-  static initElectron() {
-    // 初始化协议并启动electron
-    app.whenReady().then(() => {
-      RegisterProtocolMessage.send()
-      BootStrapElectronMessage.send()
-    })
+    // 触发初始化流程，连续执行四条消息
+    const res = await executeGroup([
+      new InitDatabaseMessage(dbPath, cacheFilesPath),
+      new InitServerMessage(message.port),
+      new RegisterProtocolMessage(),
+      new BootStrapElectronMessage()
+    ])
+    if (res) {
+      MessageWriter.info(
+        '[InitVireoSystem] App Initialization Successful: All initialization work has been completed.'
+      )
+    } else {
+      MessageWriter.error(
+        new Error(
+          `[InitVireoSystem] App Initialization Failed: Due to an error during the process, initialization has stopped and the app has exited`
+        )
+      )
+      nextTick(() => {
+        app.quit()
+      })
+    }
   }
 }
 
@@ -72,10 +79,10 @@ export class InitElectronSystem {
    * * 注册各种协议
    */
   @System({
-    messageClass: RegisterProtocolMessage,
-    priority: 1000
+    messageClass: RegisterProtocolMessage
   })
-  static protocols() {
+  static async protocols() {
+    await app.whenReady()
     /**
      * * 处理网易云协议
      */
@@ -134,6 +141,9 @@ export class InitElectronSystem {
         return new Response('File not found', { status: 404 })
       }
     })
+    MessageWriter.info(
+      '[InitElectronSystem] Protocol Registration Completed: Protocol Initialization completed.'
+    )
   }
 
   /*
@@ -143,7 +153,8 @@ export class InitElectronSystem {
   @System({
     messageClass: BootStrapElectronMessage
   })
-  static initApp(dbComponent: DatabaseComponent) {
+  static async initApp(dbComponent: DatabaseComponent) {
+    await app.whenReady()
     //配置设置
     electronApp.setAppUserModelId('com.ailrid.vireo')
     if (dbComponent.db.getCookies()) {
@@ -162,7 +173,9 @@ export class InitElectronSystem {
         app.quit()
       }
     })
-    MessageWriter.info('[InitElectronSystem] Initialization: App Initialization completed.')
+    MessageWriter.info(
+      '[InitElectronSystem] Electron Initialization Completed: Ready to create windows.'
+    )
   }
 }
 

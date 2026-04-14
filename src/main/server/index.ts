@@ -9,21 +9,23 @@ export class InitServerMessage extends EventMessage {
     super()
   }
 }
-export class ServerInitializedMessage extends EventMessage {}
 export class InitServerSystem {
   /*
    * 启动服务器
    */
-  @System({
-    priority: 999
-  })
-  static initExpress(@Message(InitServerMessage) message: InitServerMessage) {
+  @System()
+  static async initExpress(@Message(InitServerMessage) message: InitServerMessage) {
+    console.log('-------------------------------------------------');
+    let resolver: () => void
+    const promise = new Promise<void>(res => {
+      resolver = res
+    })
     server.listen(message.port, 'localhost', () => {
-      //express已启动，开始创建窗口
-      ServerInitializedMessage.send()
+      resolver()
       MessageWriter.info(
-        `[InitServerSystem] Bootstrap: Server listening on localhost:${message.port}`
+        `[InitServerSystem] Server Initialization Completed: Server listening on localhost:${message.port}`
       )
     })
+    await promise
   }
 }

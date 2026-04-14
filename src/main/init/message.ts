@@ -2,7 +2,7 @@ import { EventMessage } from '@virid/core'
 import { FromRenderer, FromRendererMessage } from '@virid/main'
 export class BootStrapElectronMessage extends EventMessage {}
 
-export class InitStarryMessage extends EventMessage {
+export class InitVireoMessage extends EventMessage {
   constructor(public port: number) {
     super()
   }

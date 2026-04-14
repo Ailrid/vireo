@@ -91,7 +91,9 @@ export class _NextSongMessage extends FromMainMessage {}
  */
 @FromMain('previous-song')
 export class _PreviousSongMessage extends FromMainMessage {}
-
+/**
+ * * 主进程托盘播放控制转发
+ */
 export class SongControlSystem {
   @System({
     messageClass: _PlayOrPauseMessage
@@ -112,7 +114,7 @@ export class SongControlSystem {
 }
 
 /**
- * * 尝试登陆
+ * * 登陆成功，刷新账户信息
  */
 @FromMain('netease-login-success')
 export class NeteaseLoginSuccessMessage extends FromMainMessage {}
@@ -131,6 +133,6 @@ export class NeteaseLoginSystem {
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(new Error(val), '[NeteaseLoginSystem] Login Failed')
       })
-      .otherwise(() => {})
+      .exhaustive()
   }
 }
