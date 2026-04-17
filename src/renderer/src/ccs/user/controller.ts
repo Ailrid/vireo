@@ -23,6 +23,4 @@ export class UserController {
     const { avgColor } = await getAccentRGB(this.userProfile!.avatar)
     this.songColor = `rgb(${avgColor[0]},${avgColor[1]},${avgColor[2]})`
   }
-
-  
 }

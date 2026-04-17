@@ -7,10 +7,10 @@ export type BackgroundMode = 'light' | 'dark' | 'image'
 
 export class PipelineConfig {
   public bass_gain: number = 1.0
-  public bass_switch: boolean = true
-  public crystallization_switch: boolean = true
-  public limiter_switch: boolean = true
-  public stereo_switch: boolean = true
+  public bass_switch: boolean = false
+  public crystallization_switch: boolean = false
+  public limiter_switch: boolean = false
+  public stereo_switch: boolean = false
   public crystallization_amount: number = -30
 }
 
