@@ -5,7 +5,7 @@
         <div
           v-for="item in pct.playlists"
           :key="item.id"
-          class="group flex h-15 w-full items-center gap-1 rounded-xl px-1 transition-all duration-300 hover:bg-current/5 active:scale-[0.98]"
+          class="group relative flex h-15 w-full items-center gap-1 rounded-xl px-1 pl-1.5 transition-all duration-300 hover:bg-current/5 active:scale-[0.98]"
           @click="$router.push({ name: 'user-playlist', params: { id: item.id } })"
         >
           <div

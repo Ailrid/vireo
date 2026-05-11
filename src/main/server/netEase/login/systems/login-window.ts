@@ -44,8 +44,7 @@ export class LoginCellphoneSystem {
     })
     // 加载官方登录入口
     this.loginWindow.loadURL('https://music.163.com/#/login')
-    this.loginWindow.on('closed', () => {
-    })
+    this.loginWindow.on('closed', () => {})
     // 监听并绑定事件
     let key = false
     this.loginWindow.webContents.session.cookies.on('changed', async () => {
@@ -116,7 +115,7 @@ export class LoginCellphoneSystem {
     const setCookieHeaders = allCookies
       .filter(c => requiredKeys.includes(c.name))
       .map(c => {
-        let cookieStr = `${c.name}=${c.value}; Path=/;`
+        let cookieStr = `${c.name}=${c.value}; Path=/;domain=localhost;`
 
         // 处理过期时间：将 Unix 时间戳转换为 Max-Age
         if (c.expirationDate) {

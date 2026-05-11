@@ -56,13 +56,17 @@ export class LoginWindowSystem {
       shell.openExternal(details.url)
       return { action: 'deny' }
     })
+    // 先清空cookie，确保每次登录都是新的会话
+    loginWindow.webContents.session.clearStorageData({
+      storages: ['cookies']
+    })
     // 当检测到需要的cookie之后，发送一个获取cookie消息
     let key = false
     loginWindow.webContents.session.cookies.on('changed', async () => {
       if (key) return
       key = true
       const allCookies = await loginWindow!.webContents.session.cookies.get({
-        domain: '.music.163.com'
+        domain: 'localhost'
       })
       const hasCsrf = allCookies.find(c => c.name === '__csrf')
       const hasMusicU = allCookies.find(c => c.name === 'MUSIC_U')
@@ -107,7 +111,7 @@ export class LoginWindowSystem {
 
 async function tryGetCookies(window: BrowserWindow): Promise<string[] | null> {
   const allCookies = await window.webContents.session.cookies.get({
-    domain: '.music.163.com'
+    domain: 'localhost'
   })
 
   // 判定是否真的登录成功
@@ -130,7 +134,7 @@ async function tryGetCookies(window: BrowserWindow): Promise<string[] | null> {
   const setCookieHeaders = allCookies
     .filter(c => requiredKeys.includes(c.name))
     .map(c => {
-      let cookieStr = `${c.name}=${c.value}; Path=/;`
+      let cookieStr = `${c.name}=${c.value}; Path=/;domain=localhost;`
 
       // 处理过期时间：将 Unix 时间戳转换为 Max-Age
       if (c.expirationDate) {
