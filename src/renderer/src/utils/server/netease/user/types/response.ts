@@ -61,8 +61,8 @@ export interface PlayRecord {
  * * 用户最近播放记录返回数据
  */
 export interface UserRecordResponse {
-  weekData?: PlayRecord[]
-  allData?: PlayRecord[]
+  weekData: PlayRecord[]
+  allData: PlayRecord[]
   code: number
 }
 

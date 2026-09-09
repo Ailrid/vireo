@@ -46,8 +46,8 @@ export interface MvInfo {
  */
 export interface SearchResponse<T> {
   code: number
-  items: T[] // 这里的 T 对应不同的清理后模型
-  total: number // 自动对齐各种 xxxCount
+  items: T[]
+  total: number
   hasMore: boolean
 }
 

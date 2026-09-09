@@ -6,23 +6,8 @@ import {
   search,
   SearchType,
   SearchResultMap,
-  SongDetail,
-  AlbumInfo,
-  ArtistInfo,
-  PlaylistInfo,
-  UserInfo,
-  MvInfo
 } from '@/utils/server'
 
-export interface SearchDataMap {
-  [SearchType.Song]: SongDetail[]
-  [SearchType.Album]: AlbumInfo[]
-  [SearchType.Artist]: ArtistInfo[]
-  [SearchType.Playlist]: PlaylistInfo[]
-  [SearchType.User]: UserInfo[]
-  [SearchType.Mv]: MvInfo[]
-  [SearchType.Lyric]: SongDetail[]
-}
 export const categoryMap = {
   song: '歌曲',
   album: '专辑',
@@ -33,19 +18,19 @@ export const categoryMap = {
   lyric: '歌词'
 } as const
 
-let _song: SongDetail[] = []
+let _song: SearchResultMap[SearchType.Song] | null = null
 
-let _artist: ArtistInfo[] = []
+let _artist: SearchResultMap[SearchType.Artist] | null = null
 
-let _album: AlbumInfo[] = []
+let _album: SearchResultMap[SearchType.Album] | null = null
 
-let _playlist: PlaylistInfo[] = []
+let _playlist: SearchResultMap[SearchType.Playlist] | null = null
 
-let _user: UserInfo[] = []
+let _user: SearchResultMap[SearchType.User] | null = null
+let _mv: SearchResultMap[SearchType.Mv] | null = null
 
-let _mv: MvInfo[] = []
+let _lyric: SearchResultMap[SearchType.Lyric] | null = null
 
-let _lyric: SongDetail[] = []
 const keywordsHistory = {
   song: '',
   album: '',
@@ -74,19 +59,19 @@ export class SearchController {
   public isSidebarOpen: Boolean = true
 
   @Responsive()
-  public song: SongDetail[] = _song
+  public song: SearchResultMap[SearchType.Song] | null = _song
   @Responsive()
-  public artist: ArtistInfo[] = _artist
+  public artist: SearchResultMap[SearchType.Artist] | null = _artist
   @Responsive()
-  public album: AlbumInfo[] = _album
+  public album: SearchResultMap[SearchType.Album] | null = _album
   @Responsive()
-  public playlist: PlaylistInfo[] = _playlist
+  public playlist: SearchResultMap[SearchType.Playlist] | null = _playlist
   @Responsive()
-  public user: UserInfo[] = _user
+  public user: SearchResultMap[SearchType.User] | null = _user
   @Responsive()
-  public mv: MvInfo[] = _mv
+  public mv: SearchResultMap[SearchType.Mv] | null = _mv
   @Responsive()
-  public lyric: SongDetail[] = _lyric
+  public lyric: SearchResultMap[SearchType.Lyric] | null = _lyric
 
   @Responsive()
   public currentView: CategoryKey = 'song'
@@ -103,44 +88,44 @@ export class SearchController {
     match(this.currentView)
       .with('song', () => {
         this.searchGeneral(this.keywords, SearchType.Song, val => {
-          this.song = val.items
-          _song = val.items
+          this.song = val
+          _song = val
         })
       })
       .with('album', () => {
         this.searchGeneral(this.keywords, SearchType.Album, val => {
-          this.album = val.items
-          _album = val.items
+          this.album = val
+          _album = val
         })
       })
       .with('artist', () => {
         this.searchGeneral(this.keywords, SearchType.Artist, val => {
-          this.artist = val.items
-          _artist = val.items
+          this.artist = val
+          _artist = val
         })
       })
       .with('playlist', () => {
         this.searchGeneral(this.keywords, SearchType.Playlist, val => {
-          this.playlist = val.items
-          _playlist = val.items
+          this.playlist = val
+          _playlist = val
         })
       })
       .with('user', () => {
         this.searchGeneral(this.keywords, SearchType.User, val => {
-          this.user = val.items
-          _user = val.items
+          this.user = val
+          _user = val
         })
       })
       .with('mv', () => {
         this.searchGeneral(this.keywords, SearchType.Mv, val => {
-          this.mv = val.items
-          _mv = val.items
+          this.mv = val
+          _mv = val
         })
       })
       .with('lyric', () => {
         this.searchGeneral(this.keywords, SearchType.Lyric, val => {
-          this.lyric = val.items
-          _lyric = val.items
+          this.lyric = val
+          _lyric = val
         })
       })
       .exhaustive()

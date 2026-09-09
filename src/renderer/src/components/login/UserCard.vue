@@ -17,7 +17,10 @@
     </div>
     <!-- 用户信息 -->
     <div class="relative w-full px-8 pb-8">
-      <div class="absolute -top-10 left-8">
+      <div
+        class="absolute -top-10 left-8 cursor-pointer"
+        @click="$router.push({ name: 'account', params: { id: uct.userProfile?.userId } })"
+      >
         <div class="bg-card rounded-full border-4 shadow-xl">
           <Img
             v-if="uct.userProfile?.avatar"

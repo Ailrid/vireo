@@ -7,6 +7,7 @@ import { RecommendedPageController } from './recommended'
 import { AlbumPageController } from './album'
 import { ArtistPageController } from './artist'
 import { SearchController } from './search'
+import { AccountController } from './account'
 export function bindPageControllers(app: ViridApp) {
   app.bind(UserPlaylistPageController)
   app.bind(PlayerPageController)
@@ -16,6 +17,7 @@ export function bindPageControllers(app: ViridApp) {
   app.bind(AlbumPageController)
   app.bind(ArtistPageController)
   app.bind(SearchController)
+  app.bind(AccountController)
 }
 
 export * from './user-playlist'
@@ -26,3 +28,4 @@ export * from './recommended'
 export * from './album'
 export * from './artist'
 export * from './search'
+export * from './account'

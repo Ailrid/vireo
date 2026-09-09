@@ -13,8 +13,8 @@
           <!-- 封面 -->
           <div class="mb-6 aspect-square w-full shrink-0 overflow-hidden rounded-xl shadow-lg">
             <Img
-              v-if="sct.song!.at(0)"
-              :cover="sct.song!.at(0)!.album.cover"
+              v-if="sct.song?.items.at(0)"
+              :cover="sct.song?.items.at(0)!.album.cover"
               class="transition-transform duration-700 hover:scale-105"
             />
             <div v-else class="bg-muted flex h-full w-full items-center justify-center">
@@ -31,7 +31,7 @@
                   @wheel.passive="sct.onWheel($event)"
                   class="hover:text-primary"
                 >
-                  <div class="flex items-center justify-center gap-1">
+                  <div class="flex items-center justify-center gap-1 pr-1">
                     <span class="text-sm">{{ sct.categoryName }}</span>
                     <ChevronDown v-if="!isOpen" :size="14" class="opacity-50" />
                     <ChevronUp v-else :size="14" class="opacity-50" />
@@ -99,7 +99,7 @@
               <span>{{ sct.categoryName }}</span>
             </h1>
             <p class="mb-6 line-clamp-4 text-xs leading-relaxed opacity-60">
-              {{ `查询到${sct[sct.currentView].length}个结果` }}
+              {{ `查询到${sct[sct.currentView]?.items.length}个结果` }}
             </p>
           </div>
           <div class="flex-1"></div>
@@ -113,7 +113,7 @@
             <div class="flex items-center">
               <h2 class="text-lg font-bold">查询结果</h2>
               <p class="mr-2 ml-2 text-sm tracking-[0.2em] uppercase opacity-40">
-                Total {{ sct[sct.currentView].length || 0 }} Tracks
+                Total {{ sct[sct.currentView]?.items.length || 0 }} Result
               </p>
               <div class="cursor-pointer" @click="sct.isSidebarOpen = !sct.isSidebarOpen">
                 <ChevronLeft
@@ -125,16 +125,27 @@
               </div>
             </div>
             <div class="font-mono text-xs opacity-40">
-              SHARD: 1 - {{ sct[sct.currentView].length || 0 }}
+              SHARD: 1 - {{ sct[sct.currentView]?.items.length || 0 }}
             </div>
           </div>
           <!-- 列表 -->
           <div class="flex-1 overflow-y-auto pt-4">
-            <div v-if="sct[sct.currentView].length" class="w-full">
+            <div
+              v-if="sct[sct.currentView]"
+              class="w-full"
+              :class="{ 'h-full': sct[sct.currentView]?.total == 0 }"
+            >
+              <div
+                v-if="sct[sct.currentView]?.total == 0"
+                class="flex h-full items-center justify-center"
+              >
+                <Ghost :size="24"></Ghost>
+                <div class="text-lg tracking-widest uppercase">这里什么都没有找到...</div>
+              </div>
               <!-- song -->
-              <div v-if="sct.currentView === 'song'">
+              <div v-else-if="sct.currentView === 'song'">
                 <div
-                  v-for="(item, index) in sct.song"
+                  v-for="(item, index) in sct.song?.items"
                   :key="item.id"
                   class="animate-in fade-in slide-in-from-left-4 fill-mode-both group flex h-[4rem] w-full items-center"
                   :style="{
@@ -154,9 +165,9 @@
                 </div>
               </div>
               <!-- artist -->
-              <div v-if="sct.currentView === 'artist'">
+              <div v-else-if="sct.currentView === 'artist'">
                 <div
-                  v-for="(item, index) in sct.artist"
+                  v-for="(item, index) in sct.artist?.items"
                   :key="item.id"
                   class="animate-in fade-in slide-in-from-left-4 fill-mode-both group flex h-[4rem] w-full items-center"
                   :style="{
@@ -178,9 +189,9 @@
                 </div>
               </div>
               <!-- album -->
-              <div v-if="sct.currentView === 'album'">
+              <div v-else-if="sct.currentView === 'album'">
                 <div
-                  v-for="(item, index) in sct.song"
+                  v-for="(item, index) in sct.album?.items"
                   :key="item.id"
                   class="animate-in fade-in slide-in-from-left-4 fill-mode-both group flex h-[4rem] w-full items-center"
                   :style="{
@@ -191,7 +202,7 @@
                   <div class="w-full">
                     <Card
                       @click="$router.push({ name: 'album', params: { id: item.id } })"
-                      :url="item.album.cover"
+                      :url="item.cover"
                       :name="item.name"
                       desc=""
                       :index="index"
@@ -202,9 +213,9 @@
                 </div>
               </div>
               <!-- playlist -->
-              <div v-if="sct.currentView === 'playlist'">
+              <div v-else-if="sct.currentView === 'playlist'">
                 <div
-                  v-for="(item, index) in sct.playlist"
+                  v-for="(item, index) in sct.playlist?.items"
                   :key="item.id"
                   class="animate-in fade-in slide-in-from-left-4 fill-mode-both group flex h-[4rem] w-full items-center"
                   :style="{
@@ -226,9 +237,9 @@
                 </div>
               </div>
               <!-- user -->
-              <div v-if="sct.currentView === 'user'">
+              <div v-else-if="sct.currentView === 'user'">
                 <div
-                  v-for="(item, index) in sct.user"
+                  v-for="(item, index) in sct.user?.items"
                   :key="item.id"
                   class="animate-in fade-in slide-in-from-left-4 fill-mode-both group flex h-[4rem] w-full items-center"
                   :style="{
@@ -238,7 +249,7 @@
                 >
                   <div class="w-full">
                     <Card
-                      @click="$router.push({ name: 'user', params: { id: item.id } })"
+                      @click="$router.push({ name: 'account', params: { id: item.id } })"
                       :url="item.avatar"
                       :name="item.name"
                       :desc="item.signature"
@@ -250,9 +261,9 @@
                 </div>
               </div>
               <!-- mv -->
-              <div v-if="sct.currentView === 'mv'">
+              <div v-else-if="sct.currentView === 'mv'">
                 <div
-                  v-for="(item, index) in sct.song"
+                  v-for="(item, index) in sct.mv?.items"
                   :key="item.id"
                   class="animate-in fade-in slide-in-from-left-4 fill-mode-both group flex h-[4rem] w-full items-center"
                   :style="{
@@ -275,9 +286,9 @@
                 </div>
               </div>
               <!-- lyric -->
-              <div v-if="sct.currentView === 'lyric'">
+              <div v-else-if="sct.currentView === 'lyric'">
                 <div
-                  v-for="(item, index) in sct.song"
+                  v-for="(item, index) in sct.lyric?.items"
                   :key="item.id"
                   class="animate-in fade-in slide-in-from-left-4 fill-mode-both group flex h-[4rem] w-full items-center"
                   :style="{
@@ -314,7 +325,7 @@
 <script setup lang="ts">
 import { useController } from '@virid/vue'
 import { SearchController } from './controllers'
-import { ChevronDown, ChevronUp } from 'lucide-vue-next'
+import { ChevronDown, ChevronUp, Ghost } from 'lucide-vue-next'
 import DropdownMenu from '@/components/ui/DropdownMenu.vue'
 import Button from '@/components/ui/Button.vue'
 import { PlaySongMessage } from '@/ccs/playback'
