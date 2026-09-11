@@ -1,6 +1,6 @@
 {
   "name": "vireo",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "An Electron application with Vue and Virid",
   "main": "./out/main/index.js",
   "author": {
@@ -25,13 +25,13 @@
   "dependencies": {
     "@swc/core": "^1.15.43",
     "@tailwindcss/vite": "^4.3.2",
-    "@virid/bridge": "^0.4.1",
-    "@virid/core": "^0.4.1",
-    "@virid/express": "^0.4.1",
-    "@virid/main": "^0.4.1",
-    "@virid/renderer": "^0.4.1",
-    "@virid/std": "^0.4.1",
-    "@virid/vue": "^0.4.1",
+    "@virid/bridge": "^0.4.2",
+    "@virid/core": "^0.4.2",
+    "@virid/express": "^0.4.2",
+    "@virid/main": "^0.4.2",
+    "@virid/renderer": "^0.4.2",
+    "@virid/std": "^0.4.2",
+    "@virid/vue": "^0.4.2",
     "better-sqlite3": "^12.11.1",
     "cors": "^2.8.6",
     "express": "^5.2.1",
