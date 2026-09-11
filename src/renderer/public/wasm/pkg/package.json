@@ -1,0 +1,15 @@
+{
+  "name": "audio",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "audio_bg.wasm",
+    "audio.js",
+    "audio.d.ts"
+  ],
+  "main": "audio.js",
+  "types": "audio.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}

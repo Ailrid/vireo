@@ -1,7 +1,6 @@
 import { Component, MessageWriter, Safe } from '@virid/core'
 import { Responsive } from '@virid/vue'
-// import { NextSongMessage, SetPipelineParamsMessage } from '../messages'
-import { NextSongMessage } from '../messages'
+import { NextSongMessage, SetPipelineParamsMessage } from '../messages'
 import { type PipelineConfig } from '../../settings'
 
 export class Player {
@@ -111,36 +110,36 @@ export class Player {
   async initEffect() {
     // const workletUrl = new URL('../../wasm/effect-processor.js', import.meta.url)
     // 注册 Worklet
-    // await this.ctx.audioWorklet.addModule('/wasm/effect-processor.js')
+    await this.ctx.audioWorklet.addModule('/wasm/effect-processor.js')
     // 加载 .wasm 字节码
     // const response = await fetch(new URL('../../wasm/pkg/audio_bg.wasm', import.meta.url))
-    // const response = await fetch('/wasm/pkg/audio_bg.wasm')
-    // const wasmModule = await WebAssembly.compileStreaming(response)
-    // this.effectNode = new AudioWorkletNode(this.ctx, 'rust-effect-processor', {
-    //   processorOptions: {
-    //     wasmModule: wasmModule,
-    //     rs: this.ctx.sampleRate
-    //   }
-    // })
-    // // 重新连接链路
-    // this.source.disconnect()
-    // this.source
-    //   .connect(this.effectNode)
-    //   .connect(this.gainNode)
-    //   .connect(this.analyser)
-    //   .connect(this.ctx.destination)
+    const response = await fetch('/wasm/pkg/audio_bg.wasm')
+    const wasmModule = await WebAssembly.compileStreaming(response)
+    this.effectNode = new AudioWorkletNode(this.ctx, 'rust-effect-processor', {
+      processorOptions: {
+        wasmModule: wasmModule,
+        rs: this.ctx.sampleRate
+      }
+    })
+    // 重新连接链路
+    this.source.disconnect()
+    this.source
+      .connect(this.effectNode)
+      .connect(this.gainNode)
+      .connect(this.analyser)
+      .connect(this.ctx.destination)
     // 初始化完成的时候自动加载一次音频设置
-    // SetPipelineParamsMessage.send()
+    SetPipelineParamsMessage.send()
   }
   /**
    * * 设置参数
    */
 
-  async set_audio_params(_params: PipelineConfig) {
-    // this.effectNode?.port.postMessage({
-    //   type: 'set_params',
-    //   params: params
-    // })
+  async set_audio_params(params: PipelineConfig) {
+    this.effectNode?.port.postMessage({
+      type: 'set_params',
+      params: params
+    })
   }
 
   // 唯一可直接被Controller调用的方法

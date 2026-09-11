@@ -6,12 +6,14 @@ import { SetPipelineParamsMessage, SetVolumeMessage } from '../playback/messages
 export type BackgroundMode = 'light' | 'dark' | 'image'
 
 export class PipelineConfig {
-  public bass_gain: number = 1.0
   public bass_switch: boolean = false
   public crystallization_switch: boolean = false
-  public limiter_switch: boolean = false
   public stereo_switch: boolean = false
-  public crystallization_amount: number = -30
+  public limiter_switch: boolean = false
+  public bass_gain: number = 1.0
+  public crystallization_gain: number = 1.0
+  public stereo_gain: number = 1.0
+  public limiter_gain: number = 0.0
 }
 
 export class PlayerConfig {

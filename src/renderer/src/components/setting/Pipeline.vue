@@ -10,7 +10,7 @@
       <div class="grid grid-cols-2 gap-x-8 gap-y-4">
         <div class="space-y-3">
           <div class="flex justify-between">
-            <label class="setting-item-title">总开关 (Switch)</label>
+            <label class="setting-item-title">开关 (Switch)</label>
           </div>
           <Switch v-model="pct.setting.bass_switch" />
         </div>
@@ -19,7 +19,7 @@
             <label class="setting-item-title">增益倍数 (Gain)</label>
           </div>
           <Input
-            v-model.number="pct.setting.bass_gain"
+            v-model="pct.setting.bass_gain"
             type="number"
             :min="0"
             :max="3"
@@ -28,11 +28,11 @@
           />
         </div>
       </div>
-      <!-- <span class="setting-sheet-title">音质晶化 (CRYSTALLIZATION)</span>
+      <span class="setting-sheet-title">音质晶化 (CRYSTALLIZATION)</span>
       <div class="grid grid-cols-2 gap-x-8 gap-y-4">
         <div class="space-y-3">
           <div class="flex justify-between">
-            <label class="setting-item-title">总开关 (Switch)</label>
+            <label class="setting-item-title">开关 (Switch)</label>
           </div>
           <Switch v-model="pct.setting.crystallization_switch" />
         </div>
@@ -41,11 +41,11 @@
             <label class="setting-item-title">增益倍数 (Gain)</label>
           </div>
           <Input
-            v-model.number="pct.setting.crystallization_amount"
+            v-model="pct.setting.crystallization_gain"
             type="number"
-            :min="-40"
-            :max="-12"
-            :step="1"
+            :min="0"
+            :max="3"
+            :step="0.1"
             class="h-8 flex-1 border"
           />
         </div>
@@ -54,7 +54,7 @@
       <div class="grid grid-cols-2 gap-x-8 gap-y-4">
         <div class="space-y-3">
           <div class="flex justify-between">
-            <label class="setting-item-title">总开关 (Switch)</label>
+            <label class="setting-item-title">开关 (Switch)</label>
           </div>
           <Switch v-model="pct.setting.stereo_switch" />
         </div>
@@ -63,7 +63,7 @@
             <label class="setting-item-title">增益倍数 (Gain)</label>
           </div>
           <Input
-            v-model.number="pct.setting.bass_gain"
+            v-model="pct.setting.stereo_gain"
             type="number"
             :min="0"
             :max="3"
@@ -76,7 +76,7 @@
       <div class="grid grid-cols-2 gap-x-8 gap-y-4">
         <div class="space-y-3">
           <div class="flex justify-between">
-            <label class="setting-item-title">总开关 (Switch)</label>
+            <label class="setting-item-title">开关 (Switch)</label>
           </div>
           <Switch v-model="pct.setting.limiter_switch" />
         </div>
@@ -85,7 +85,7 @@
             <label class="setting-item-title">增益倍数 (Gain)</label>
           </div>
           <Input
-            v-model.number="pct.setting.bass_gain"
+            v-model="pct.setting.limiter_gain"
             type="number"
             :min="0"
             :max="3"
@@ -93,7 +93,7 @@
             class="h-8 flex-1 border"
           />
         </div>
-      </div> -->
+      </div>
     </div>
   </div>
 </template>

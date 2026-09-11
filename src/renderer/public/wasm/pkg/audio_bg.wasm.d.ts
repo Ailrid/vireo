@@ -1,0 +1,36 @@
+/* tslint:disable */
+/* eslint-disable */
+export const memory: WebAssembly.Memory;
+export const __wbg_get_pipelineparams_bass_gain: (a: number) => number;
+export const __wbg_get_pipelineparams_bass_switch: (a: number) => number;
+export const __wbg_get_pipelineparams_crystallization_gain: (a: number) => number;
+export const __wbg_get_pipelineparams_crystallization_switch: (a: number) => number;
+export const __wbg_get_pipelineparams_limiter_gain: (a: number) => number;
+export const __wbg_get_pipelineparams_limiter_switch: (a: number) => number;
+export const __wbg_get_pipelineparams_stereo_gain: (a: number) => number;
+export const __wbg_get_pipelineparams_stereo_switch: (a: number) => number;
+export const __wbg_pipelineparams_free: (a: number, b: number) => void;
+export const __wbg_set_pipelineparams_bass_gain: (a: number, b: number) => void;
+export const __wbg_set_pipelineparams_bass_switch: (a: number, b: number) => void;
+export const __wbg_set_pipelineparams_crystallization_gain: (a: number, b: number) => void;
+export const __wbg_set_pipelineparams_crystallization_switch: (a: number, b: number) => void;
+export const __wbg_set_pipelineparams_limiter_gain: (a: number, b: number) => void;
+export const __wbg_set_pipelineparams_limiter_switch: (a: number, b: number) => void;
+export const __wbg_set_pipelineparams_stereo_gain: (a: number, b: number) => void;
+export const __wbg_set_pipelineparams_stereo_switch: (a: number, b: number) => void;
+export const pipelineparams_new: (a: number, b: number, c: number, d: number, e: number, f: number, g: number, h: number) => number;
+export const __wbg_audiokernel_free: (a: number, b: number) => void;
+export const audiokernel_get_params: (a: number) => number;
+export const audiokernel_in_l_ptr: (a: number) => number;
+export const audiokernel_in_r_ptr: (a: number) => number;
+export const audiokernel_new: (a: number) => number;
+export const audiokernel_out_l_ptr: (a: number) => number;
+export const audiokernel_out_r_ptr: (a: number) => number;
+export const audiokernel_process: (a: number) => void;
+export const audiokernel_reset_bass: (a: number) => void;
+export const audiokernel_reset_crystallization: (a: number) => void;
+export const audiokernel_reset_limiter: (a: number) => void;
+export const audiokernel_reset_stereo: (a: number) => void;
+export const audiokernel_set_params: (a: number, b: number) => void;
+export const __wbindgen_externrefs: WebAssembly.Table;
+export const __wbindgen_start: () => void;
