@@ -65,11 +65,11 @@ export class AccountController {
           this.profile = profile.val.profile
           _profile = profile.val.profile
           this.playlist = playlist.val.playlists
-          _profile = profile.val.profile
+          _playlist = playlist.val.playlists
           this.recordWeek = recordWeek.val.weekData
-          _profile = profile.val.profile
+          _recordWeek = recordWeek.val.weekData
           this.recordAll = recordAll.val.allData
-          _profile = profile.val.profile
+          _recordAll = recordAll.val.allData
 
           _uid = this.uid
         }
