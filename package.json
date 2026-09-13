@@ -1,6 +1,6 @@
 {
   "name": "vireo",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "description": "An Electron application with Vue and Virid",
   "main": "./out/main/index.js",
   "author": {

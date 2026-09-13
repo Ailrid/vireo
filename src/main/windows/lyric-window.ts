@@ -25,6 +25,7 @@ export class LyricWindowSystem {
     const lyricWindow = new BrowserWindow({
       width: 1200,
       height: 150,
+      transparent: true,
       autoHideMenuBar: true,
       titleBarStyle: 'hidden',
       titleBarOverlay: false,
