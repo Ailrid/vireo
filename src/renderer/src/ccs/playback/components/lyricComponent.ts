@@ -8,4 +8,5 @@ export class LyricComponent {
   public lyric: LyricDetail | null = null
   @Responsive()
   public currentIndex: number = 0
+  public destLyric: boolean = false
 }

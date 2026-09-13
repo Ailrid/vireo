@@ -55,6 +55,7 @@ export class TraySystem {
         type: 'normal',
         click: () => {
           // 注意！！这里要发给主窗口让他主动备份歌单后自己关闭，不能直接关闭否则歌单丢失！！
+          windowComponent.windows.get('lyricWindow')?.close()
           BackupAndCloseMessage.send()
         }
       }

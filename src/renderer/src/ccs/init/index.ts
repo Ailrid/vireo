@@ -5,10 +5,12 @@ import {
   PlayOrPauseMessage,
   PreviousSongMessage,
   NextSongMessage,
-  PlaylistComponent
+  PlaylistComponent,
+  SyncLyricMessage
 } from '../playback'
 import { LoadSettingsMessage } from '../settings'
 import { FetchUserAccountMessage } from '../user'
+
 export class InitializationMessage extends SingleMessage {}
 
 export class InitSystem {
@@ -53,9 +55,12 @@ export class InitSystem {
       if (index !== -1 && index !== lyricComponent.currentIndex) {
         lyricComponent.currentIndex = index
         navigator.mediaSession.metadata!.title = data.lyrics[index].text
+        // 同步窗口歌词
+        SyncLyricMessage.send()
       }
     })
   }
+
   @System({
     priority: 998,
     messageClass: InitializationMessage

@@ -6,7 +6,7 @@ import {
   LoadIntelligencePlaylistMessage,
   SongLikeMessage,
   SetPlayModeMessage
-} from '../messages'
+} from '../message'
 import { PlayerComponent, PlaylistComponent } from '../components'
 import { personalFm, intelligence, songLike } from '@/utils/server'
 import { match } from 'ts-pattern'
@@ -145,7 +145,7 @@ export class PlaylistSystem {
         currentSong.like = newState
         playlistComponent.currentList.find(song => song.id === currentSong.id)!.like = newState
         //第三步，从“喜欢“列表里删除这首歌，如果有的话
-        
+
         if (!newState)
           DeleteSongMessage.send(userComponent.userPlaylists.at(0)!.id, currentSong!.id)
         else AddSongMessage.send(userComponent.userPlaylists.at(0)!.id, currentSong)

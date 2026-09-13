@@ -8,6 +8,8 @@
     "src/renderer/src/env.d.ts",
     "src/renderer/login/**/*",
     "src/renderer/login/**/*.vue",
+    "src/renderer/lyric/**/*",
+    "src/renderer/lyric/**/*.vue",
     "src/preload/*.d.ts",
     "src/renderer/public",
   ],

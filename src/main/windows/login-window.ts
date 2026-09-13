@@ -28,7 +28,6 @@ export class LoginWindowSystem {
       height: 500,
       minWidth: 350,
       minHeight: 500,
-      show: false,
       autoHideMenuBar: true,
       titleBarStyle: 'hidden',
       titleBarOverlay: false,

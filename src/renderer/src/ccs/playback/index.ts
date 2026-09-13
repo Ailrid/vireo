@@ -1,4 +1,4 @@
-export * from './messages'
+export * from './message'
 export * from './components'
 export * from './systems'
 import { type ViridApp } from '@virid/core'

@@ -33,7 +33,6 @@ export class MainWindowSystem {
       height: 800,
       minWidth: 900,
       minHeight: 600,
-      show: false,
       autoHideMenuBar: true,
       titleBarStyle: 'hidden',
       titleBarOverlay: false,

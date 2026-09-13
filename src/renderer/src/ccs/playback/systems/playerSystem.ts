@@ -11,7 +11,7 @@ import {
   MediaSessionMessage,
   SeekTimeMessage,
   SetPipelineParamsMessage
-} from '../messages'
+} from '../message'
 import { PlayerComponent, PlaylistComponent, LyricComponent } from '../components'
 import { songUrl, lyric } from '@/utils/server'
 import { match, P } from 'ts-pattern'

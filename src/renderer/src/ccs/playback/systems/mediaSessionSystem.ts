@@ -1,5 +1,5 @@
 import { System } from '@virid/core'
-import { MediaSessionMessage } from '../messages'
+import { MediaSessionMessage } from '../message'
 import { LyricComponent, PlaylistComponent } from '../components'
 
 export class MediaSessionSystem {

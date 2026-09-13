@@ -1,6 +1,6 @@
-import { Component, MessageWriter, Safe } from '@virid/core'
+import { Component, MessageWriter, Observer, Safe } from '@virid/core'
 import { Responsive } from '@virid/vue'
-import { NextSongMessage, SetPipelineParamsMessage } from '../messages'
+import { NextSongMessage, SetPipelineParamsMessage, SyncLyricMessage } from '../message'
 import { type PipelineConfig } from '../../settings'
 
 export class Player {
@@ -12,7 +12,13 @@ export class Player {
   private analyser: AnalyserNode
   private retryCount: number = 0
   @Responsive() public volume: number = 1.0
-  @Responsive() public isPlaying: boolean = false
+
+  @Observer(() => {
+    SyncLyricMessage.send()
+  })
+  @Responsive()
+  public isPlaying: boolean = false
+  
   @Responsive() public currentTime: number = 0.0
   @Responsive() public duration: number = 999999.0
   // @Responsive(true) public buffered: TimeRanges | null = null

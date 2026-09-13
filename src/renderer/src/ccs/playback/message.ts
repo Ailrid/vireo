@@ -70,6 +70,6 @@ export class LoadIntelligencePlaylistMessage extends SingleMessage {
 
 export class MediaSessionMessage extends SingleMessage {}
 
-export class SetPipelineParamsMessage extends SingleMessage {
+export class SetPipelineParamsMessage extends SingleMessage {}
 
-}
+export class SyncLyricMessage extends SingleMessage {}

@@ -1,6 +1,6 @@
 import { Component, Observer } from '@virid/core'
 import { Responsive } from '@virid/vue'
-import { SetPipelineParamsMessage, SetVolumeMessage } from '../playback/messages'
+import { SetPipelineParamsMessage, SetVolumeMessage } from '../playback/message'
 
 // 定义背景模式
 export type BackgroundMode = 'light' | 'dark' | 'image'

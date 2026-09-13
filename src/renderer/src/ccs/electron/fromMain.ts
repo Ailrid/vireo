@@ -53,6 +53,12 @@ export class _BackupPlaybackMessage extends ToMainMessage {
   }
 }
 
+@FromMain('enable-lyric')
+export class EnableLyricMessage extends FromMainMessage {
+  constructor(public enable: boolean) {
+    super()
+  }
+}
 /**
  * * 播放列表备份系统
  */
@@ -130,6 +136,7 @@ export function registerFromMainSystems(app: ViridApp, plugin: RendererPlugin) {
   plugin.bindRoute(_NextSongMessage)
   plugin.bindRoute(_PreviousSongMessage)
   plugin.bindRoute(NeteaseLoginSuccessMessage)
+  plugin.bindRoute(EnableLyricMessage)
 
   app.register(PlaybackRecoverAndBackupSystem.recover)
   app.register(PlaybackRecoverAndBackupSystem.backup)

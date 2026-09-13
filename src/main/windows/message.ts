@@ -85,7 +85,16 @@ export class CreateMainWindowMessage extends SingleMessage {}
 
 export class CreateLoginWindowMessage extends SingleMessage {}
 
-export class CreateLyricWindowMessage extends SingleMessage {}
+@FromRenderer('create-lyric-window')
+export class CreateLyricWindowMessage extends FromRendererMessage {}
+
+@FromRenderer('lock-lyric-window')
+export class LockLyricWindowMessage extends FromRendererMessage { }
+
+export class UnlockLyricMessage extends ToRendererMessage {
+  __virid_message_type: string = 'unlock-lyric'
+  __virid_target: string = 'lyric'
+}
 
 export class ExecuteCommandQueueMessage extends EventMessage {
   constructor(public window: string) {
@@ -116,4 +125,6 @@ export function bindWindowMessages(plugin: MainPlugin) {
   plugin.bindRoute(MaximizeWindowMessage)
   plugin.bindRoute(HiddenWindowMessage)
   plugin.bindRoute(OpenDialogMessage)
+  plugin.bindRoute(CreateLyricWindowMessage)
+  plugin.bindRoute(LockLyricWindowMessage)
 }

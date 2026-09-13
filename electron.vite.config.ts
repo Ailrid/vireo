@@ -26,7 +26,8 @@ export default defineConfig({
       rollupOptions: {
         input: {
           index: resolve(__dirname, './src/preload/index.ts'),
-          login: resolve(__dirname, './src/preload/index.ts')
+          login: resolve(__dirname, './src/preload/index.ts'),
+          lyric: resolve(__dirname, './src/preload/index.ts')
         }
       }
     }
@@ -37,7 +38,8 @@ export default defineConfig({
       rollupOptions: {
         input: {
           index: resolve(__dirname, './src/renderer/index.html'),
-          login: resolve(__dirname, './src/renderer/login.html')
+          login: resolve(__dirname, './src/renderer/login.html'),
+          lyric: resolve(__dirname, './src/renderer/lyric.html')
         }
       }
     },

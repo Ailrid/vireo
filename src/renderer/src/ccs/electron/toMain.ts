@@ -1,5 +1,6 @@
 import { ToMainMessage } from '@virid/renderer'
 import { System, ErrorMessage, InfoMessage, WarnMessage, ViridApp } from '@virid/core'
+import { type ThemeConfig } from '../settings'
 export class CloseWindowMessage extends ToMainMessage {
   __virid_target = 'main'
   __virid_message_type: string = 'close-window'
@@ -46,6 +47,27 @@ export class RendererInfoMessage extends ToMainMessage {
   __virid_target = 'main'
   __virid_message_type: string = 'renderer-info'
   constructor(public context: string) {
+    super()
+  }
+}
+
+export class CreateLyricWindowMessage extends ToMainMessage {
+  __virid_target = 'main'
+  __virid_message_type: string = 'create-lyric-window'
+}
+
+export class _SyncLyricMessage extends ToMainMessage {
+  __virid_target = 'lyric'
+  __virid_message_type = 'sync-lyric'
+  constructor(
+    public theme: ThemeConfig,
+    public lyric: {
+      time: number
+      text: string
+      trans: string
+    },
+    public isPlaying: boolean
+  ) {
     super()
   }
 }
