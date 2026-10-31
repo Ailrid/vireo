@@ -10,7 +10,8 @@ import {
   LoadIntelligencePlaylistMessage,
   MediaSessionMessage,
   SeekTimeMessage,
-  SetPipelineParamsMessage
+  SetPipelineParamsMessage,
+  SyncLyricMessage
 } from '../message'
 import { PlayerComponent, PlaylistComponent, LyricComponent } from '../components'
 import { songUrl, lyric } from '@/utils/server'
@@ -77,6 +78,7 @@ export class PlayerSystem {
         //转交播放权并通知MediaSession
         if (message.playImmediately) PlayOrPauseMessage.send(true)
         MediaSessionMessage.send()
+        SyncLyricMessage.send()
       })
       .with({ ok: false }, ({ val }) => {
         MessageWriter.error(new Error(val))

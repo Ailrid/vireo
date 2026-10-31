@@ -1,5 +1,4 @@
 import { System, type ViridApp } from '@virid/core'
-import { type RendererPlugin } from '@virid/renderer'
 import { SyncLyricMessage } from './message'
 import { DestLyricComponent } from './component'
 
@@ -12,7 +11,6 @@ export class LyricSystems {
   }
 }
 
-export function registerLyricSystems(app: ViridApp, plugin: RendererPlugin) {
-  plugin.bindRoute(SyncLyricMessage)
+export function registerLyricSystems(app: ViridApp) {
   app.register(LyricSystems.syncLyric)
 }

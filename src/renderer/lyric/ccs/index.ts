@@ -16,7 +16,7 @@ app.use(renderPlugin, {
 export function bootstrapVirid() {
   registerFromMainMessage(renderPlugin)
   bindDestLyricComponent(app)
-  registerLyricSystems(app, renderPlugin)
+  registerLyricSystems(app)
   bindLyricControllers(app)
 
   return app

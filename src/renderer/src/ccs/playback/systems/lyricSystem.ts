@@ -29,6 +29,7 @@ export class LyricSystems {
     // true 歌词窗口创建完成后发送EnableLyricMessage，告诉渲染进程现在可以同步消息了
     // false 歌词窗口关闭后发送EnableLyricMessage，告诉渲染进程停止同步
     lyricComponent.destLyric = msg.enable
+    SyncLyricMessage.send()
   }
 }
 
