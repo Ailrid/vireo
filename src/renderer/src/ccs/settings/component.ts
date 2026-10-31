@@ -12,8 +12,8 @@ export class PipelineConfig {
   public limiter_switch: boolean = false
   public bass_gain: number = 2.0
   public crystallization_gain: number = 0.3
-  public stereo_gain: number = 1.0
-  public limiter_gain: number = 0.0
+  public stereo_gain: number = 0.5
+  public limiter_gain: number = 1.0
 }
 
 export class PlayerConfig {
