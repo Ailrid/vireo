@@ -162,7 +162,7 @@ export class UserSystem {
 
     if (!playlistMap || !playlistDetail) return
     // 更新ID 序列
-    playlistDetail.playCount += 1
+    playlistDetail.songCount += 1
     playlistDetail.songsIds = [newSong.id, ...playlistDetail.songsIds]
     // 找出所有已缓存的页码并排序
     const cachedPageIndexes = Array.from(playlistMap.keys()).sort((a, b) => a - b)
@@ -213,7 +213,7 @@ export class UserSystem {
     if (index === -1) return
 
     // 同步更新
-    playlistDetail.playCount = Math.max(0, playlistDetail.playCount - 1)
+    playlistDetail.songCount = Math.max(0, playlistDetail.songCount - 1)
     playlistDetail.songsIds.splice(index, 1)
 
     const affectedPageIndex = Math.floor(index / PAGE_SIZE)

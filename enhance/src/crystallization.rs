@@ -493,14 +493,14 @@ impl Crystallization {
             return in_chs;
         }
 
-        // 对齐 C++：先计算原始输入的二阶导数
+        // 先计算原始输入的二阶导数
         self.global_d2x.process(
             MAX_BUFFER_SIZE,
             &in_chs.buffer_ref(),
             &mut self.global_out_dx2.buffer_mut(),
         );
 
-        // 全局统计基于原始输入的二阶导数
+        // 基于原始输入的二阶导数
         self.statistic.kurtosis(&self.global_out_dx2);
         self.statistic.crest(&self.global_out_dx2);
         self.statistic.flux(&self.global_out_dx2);

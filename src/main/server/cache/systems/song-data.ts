@@ -54,7 +54,7 @@ export class CacheSongDataSystem {
     message: CacheSongDataRequestMessage,
     @Query('id') id: number,
     @Query('md5') md5: string,
-    @Query('source') source: 'netease' | 'local',
+    @Query('source') source: string,
     @Headers() headers: Record<string, string>,
     dbComponent: DatabaseComponent
   ) {

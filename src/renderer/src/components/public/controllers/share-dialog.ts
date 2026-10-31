@@ -9,6 +9,7 @@ import {
 import { match } from 'ts-pattern'
 import { Controller, MessageWriter, SingleMessage } from '@virid/core'
 import { Listener, Responsive } from '@virid/vue'
+import { PlaySongMessage } from '@/ccs/playback'
 
 @FromMain('play-song')
 export class MainPlaySongMessage extends FromMainMessage {
@@ -85,5 +86,10 @@ export class ShareDialogController {
     this.songDetail = null
     this.playlistDetail = null
     this.show = false
+  }
+
+  playSong(songDetail: SongDetail, close: () => void) {
+    PlaySongMessage.send(songDetail)
+    close()
   }
 }

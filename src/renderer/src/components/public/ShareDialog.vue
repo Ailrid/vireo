@@ -26,12 +26,7 @@
           <div
             class="z-10 flex cursor-pointer items-center px-4 py-2"
             :style="{ backgroundColor: sct.songColor }"
-            @click="
-              () => {
-                PlaySongMessage.send(sct.songDetail!)
-                close()
-              }
-            "
+            @click="sct.playSong(sct.songDetail, close)"
           >
             <span
               class="line-clamp-1 text-xs font-bold tracking-widest uppercase brightness-50 contrast-150"
@@ -84,7 +79,6 @@
 import DialogContent from '../ui/dialog/DialogContent.vue'
 import { useController } from '@virid/vue'
 import { ShareDialogController } from './controllers'
-import { PlaySongMessage } from '@/ccs/playback'
 import Img from './Img.vue'
 const sct = useController(ShareDialogController)
 </script>
