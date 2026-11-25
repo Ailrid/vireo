@@ -1,6 +1,6 @@
 {
   "name": "vireo",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "An Electron application with Vue and Virid",
   "main": "./out/main/index.js",
   "author": {
@@ -23,7 +23,6 @@
     "build:linux": "pnpm run build && electron-builder --linux"
   },
   "dependencies": {
-    "@swc/core": "^1.15.43",
     "@tailwindcss/vite": "^4.3.2",
     "@virid/bridge": "^0.5.0",
     "@virid/core": "^0.5.0",
@@ -33,7 +32,6 @@
     "@virid/std": "^0.5.0",
     "@virid/vue": "^0.5.0",
     "better-sqlite3": "^12.11.1",
-    "cors": "^2.8.6",
     "express": "^5.2.1",
     "lucide-vue-next": "^0.562.0",
     "reflect-metadata": "^0.2.2",

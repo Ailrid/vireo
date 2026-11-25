@@ -1,7 +1,6 @@
 import { System, MessageWriter, EventMessage, ViridApp, Component } from '@virid/core'
 import { Express } from 'express'
 import express from 'express'
-import cors from 'cors'
 import { join } from 'node:path'
 
 export class InitServerMessage extends EventMessage {
@@ -15,7 +14,6 @@ export class Server {
   public server: Express
   constructor() {
     this.server = express()
-    this.server.use(cors({ origin: true, credentials: true }))
     this.server.use(express.json())
     this.server.use(express.urlencoded({ extended: true }))
     this.server.use('/', express.static(join(__dirname, '../renderer')))

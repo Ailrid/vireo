@@ -33,9 +33,8 @@ export function bootstrapVirid() {
   settingBunch(app)
   playbackBunch(app)
   userBunch(app)
-
   bindLoginControllers(app)
-  bindPublicControllers(app)
+  bindPublicControllers(app, rendererPlugin)
   bindSettingThemeControllers(app)
   bindPlayerControllers(app)
   bindLayoutControllers(app)
